@@ -53,9 +53,6 @@ public class Badges {
 		FOUND_RATMOGRIFY,
 
 		//bronze
-		UNLOCK_MAGE                 ( 1 ),
-		UNLOCK_ROGUE                ( 2 ),
-		UNLOCK_HUNTRESS             ( 3 ),
 		MONSTERS_SLAIN_1            ( 4 ),
 		MONSTERS_SLAIN_2            ( 5 ),
 		GOLD_COLLECTED_1            ( 6 ),
@@ -709,21 +706,12 @@ public class Badges {
 	}
 	
 	public static void validateMageUnlock(){
-		if (Statistics.upgradesUsed >= 1 && !global.contains(Badge.UNLOCK_MAGE)){
-			displayBadge( Badge.UNLOCK_MAGE );
-		}
 	}
 	
 	public static void validateRogueUnlock(){
-		if (Statistics.sneakAttacks >= 10 && !global.contains(Badge.UNLOCK_ROGUE)){
-			displayBadge( Badge.UNLOCK_ROGUE );
-		}
 	}
 	
 	public static void validateHuntressUnlock(){
-		if (Statistics.thrownAssists >= 15 && !global.contains(Badge.UNLOCK_HUNTRESS)){
-			displayBadge( Badge.UNLOCK_HUNTRESS );
-		}
 	}
 	
 	public static void validateMasteryCombo( int n ) {
