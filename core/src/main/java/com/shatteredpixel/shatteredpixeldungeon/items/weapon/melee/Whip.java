@@ -37,8 +37,8 @@ public class Whip extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  3*(tier+1) +    //12 base, down from 20
-				lvl*(tier);     //+3 per level, down from +4
+		return  5*(tier-1) +    //10 base, down from 16
+				lvl*(tier-1);     //+2 per level, down from +3
 	}
 
 }

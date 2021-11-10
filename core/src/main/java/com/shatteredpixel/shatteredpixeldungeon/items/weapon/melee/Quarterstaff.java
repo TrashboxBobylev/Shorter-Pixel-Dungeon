@@ -37,12 +37,12 @@ public class Quarterstaff extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //12 base, down from 15
-				lvl*(tier+1);   //scaling unchanged
+		return  5*(tier) +    //10 base, down from 12
+				lvl*(tier);   //scaling unchanged
 	}
 
 	@Override
 	public int defenseFactor( Char owner ) {
-		return 2;	//2 extra defence
+		return 1;	//1 extra defence
 	}
 }

@@ -88,8 +88,8 @@ public class MagesStaff extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(3.5f*(tier+1)) + //7 base damage, down from 10
-				lvl*(tier+1);               //scaling unaffected
+		return  Math.round(6f*(tier)) + //6 base damage, down from 8
+				lvl*(tier);               //scaling unaffected
 	}
 
 	public MagesStaff(Wand wand){
