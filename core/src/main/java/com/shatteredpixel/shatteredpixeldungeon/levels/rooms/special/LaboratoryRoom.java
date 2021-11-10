@@ -61,10 +61,10 @@ public class LaboratoryRoom extends SpecialRoom {
 		}
 		Painter.set( level, pot, Terrain.ALCHEMY );
 		
-		int chapter = 1 + Dungeon.depth/5;
-		Blob.seed( pot.x + level.width() * pot.y, 1 + chapter*10 + Random.NormalIntRange(0, 10), Alchemy.class, level );
+		int chapter = 1 + Dungeon.depth/4;
+		Blob.seed( pot.x + level.width() * pot.y, 1 + chapter*8 + Random.NormalIntRange(0, 8), Alchemy.class, level );
 		
-		int n = Random.NormalIntRange( 1, 3 );
+		int n = Random.NormalIntRange( 1, 2 );
 		for (int i=0; i < n; i++) {
 			int pos;
 			do {
