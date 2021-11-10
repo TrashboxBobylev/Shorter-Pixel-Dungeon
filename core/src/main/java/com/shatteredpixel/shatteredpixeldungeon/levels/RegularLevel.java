@@ -165,7 +165,7 @@ public abstract class RegularLevel extends Level {
 	protected abstract Painter painter();
 	
 	protected int nTraps() {
-		return Random.NormalIntRange( 2, 3 + (Dungeon.depth/5) );
+		return Random.NormalIntRange( 0, 2 + (Dungeon.depth/4) );
 	}
 	
 	protected Class<?>[] trapClasses(){
@@ -180,7 +180,7 @@ public abstract class RegularLevel extends Level {
 	public int nMobs() {
 		if (Dungeon.depth <= 1) return 0;
 
-		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
+		int mobs = 1 + Dungeon.depth % 4 + Random.Int(2);
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
@@ -310,8 +310,8 @@ public abstract class RegularLevel extends Level {
 	@Override
 	protected void createItems() {
 		
-		// drops 3/4/5 items 60%/30%/10% of the time
-		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
+		// drops 1/2/3 items 50%/40%/10% of the time
+		int nItems = 1 + Random.chances(new float[]{5, 4, 1});
 
 		if (feeling == Feeling.LARGE){
 			nItems += 2;
