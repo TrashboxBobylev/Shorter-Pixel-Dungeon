@@ -249,49 +249,44 @@ public class Dungeon {
 		case 1:
 		case 2:
 		case 3:
-		case 4:
 			level = new SewerLevel();
 			break;
-		case 5:
+		case 4:
 			level = new SewerBossLevel();
 			break;
+		case 5:
 		case 6:
 		case 7:
-		case 8:
-		case 9:
 			level = new PrisonLevel();
 			break;
-		case 10:
+		case 8:
 			level = new PrisonBossLevel();
 			break;
+		case 9:
+		case 10:
 		case 11:
-		case 12:
-		case 13:
-		case 14:
 			level = new CavesLevel();
 			break;
-		case 15:
+		case 12:
 			level = new CavesBossLevel();
 			break;
+		case 13:
+		case 14:
+		case 15:
+			level = new CityLevel();
+			break;
 		case 16:
+			level = new CityBossLevel();
+			break;
 		case 17:
 		case 18:
 		case 19:
-			level = new CityLevel();
-			break;
-		case 20:
-			level = new CityBossLevel();
-			break;
-		case 21:
-		case 22:
-		case 23:
-		case 24:
 			level = new HallsLevel();
 			break;
-		case 25:
+		case 20:
 			level = new HallsBossLevel();
 			break;
-		case 26:
+		case 21:
 			level = new LastLevel();
 			break;
 		default:
