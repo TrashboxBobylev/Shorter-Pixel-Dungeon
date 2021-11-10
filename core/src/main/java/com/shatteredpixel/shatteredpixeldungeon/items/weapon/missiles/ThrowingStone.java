@@ -37,7 +37,12 @@ public class ThrowingStone extends MissileWeapon {
 		baseUses = 5;
 		sticky = false;
 	}
-	
+
+	@Override
+	public int max(int lvl) {
+		return 3 + (tier == 1 ? lvl : (tier-1)*lvl);
+	}
+
 	@Override
 	public int value() {
 		return super.value()/2; //half normal value

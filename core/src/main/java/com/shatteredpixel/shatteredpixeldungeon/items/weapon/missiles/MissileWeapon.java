@@ -79,8 +79,8 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
-		return  2 * tier +                      //base
-				(tier == 1 ? lvl : 2*lvl);      //level scaling
+		return  Math.round(0.75f*tier) +                      //base
+				(tier == 1 ? Math.round(0.75f*lvl) : lvl);      //level scaling
 	}
 	
 	@Override
@@ -90,12 +90,12 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public int max(int lvl) {
-		return  5 * tier +                      //base
-				(tier == 1 ? 2*lvl : tier*lvl); //level scaling
+		return  7 * (tier-1) +                      //base
+				(tier == 1 ? lvl : (tier-1)*lvl); //level scaling
 	}
 	
 	public int STRReq(int lvl){
-		return STRReq(tier, lvl) - 1; //1 less str than normal for their tier
+		return tier == 1 ? 9 : STRReq(tier, lvl); //same str as normal for their tier, except t1
 	}
 	
 	@Override

@@ -38,7 +38,7 @@ public class ThrowingHammer extends MissileWeapon {
 	
 	@Override
 	public int max(int lvl) {
-		return  4 * tier +                  //20 base, down from 25
-				(tier) * lvl;               //scaling unchanged
+		return  6 * (tier-1) +                  //24 base, down from 28
+				(tier-1) * lvl;               //scaling unchanged
 	}
 }
