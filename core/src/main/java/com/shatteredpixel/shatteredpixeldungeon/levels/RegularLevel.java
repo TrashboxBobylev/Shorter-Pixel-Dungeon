@@ -106,11 +106,8 @@ public abstract class RegularLevel extends Level {
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
 		for (int i = 0; i < standards; i++) {
-			StandardRoom s;
-			do {
-				s = StandardRoom.createRoom();
-			} while (!s.setSizeCat( standards-i ));
-			i += s.sizeCat.roomValue-1;
+			StandardRoom s = StandardRoom.createRoom();
+			s.setSizeCat(0, 0);
 			initRooms.add(s);
 		}
 		
