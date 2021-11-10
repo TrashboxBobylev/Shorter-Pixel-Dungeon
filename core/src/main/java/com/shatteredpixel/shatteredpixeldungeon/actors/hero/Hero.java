@@ -154,7 +154,7 @@ public class Hero extends Char {
 		alignment = Alignment.ALLY;
 	}
 	
-	public static final int MAX_LEVEL = 30;
+	public static final int MAX_LEVEL = 24;
 
 	public static final int STARTING_STR = 10;
 	
@@ -1449,7 +1449,7 @@ public class Hero extends Char {
 			curAction = new HeroAction.Unlock( cell );
 			
 		} else if ((cell == Dungeon.level.exit || Dungeon.level.map[cell] == Terrain.EXIT || Dungeon.level.map[cell] == Terrain.UNLOCKED_EXIT)
-				&& Dungeon.depth < 26) {
+				&& Dungeon.depth < 21) {
 			
 			curAction = new HeroAction.Descend( cell );
 			
@@ -1555,7 +1555,7 @@ public class Hero extends Char {
 	}
 	
 	public static int maxExp( int lvl ){
-		return 5 + lvl * 5;
+		return 4 + lvl * 4;
 	}
 	
 	public boolean isStarving() {
@@ -1931,13 +1931,13 @@ public class Hero extends Char {
 						} else if (cursed) {
 							chance = 0f;
 							
-						//unintentional trap detection scales from 40% at floor 0 to 30% at floor 25
+						//unintentional trap detection scales from 40% at floor 0 to 30% at floor 20
 						} else if (Dungeon.level.map[p] == Terrain.SECRET_TRAP) {
-							chance = 0.4f - (Dungeon.depth / 250f);
+							chance = 0.4f - (Dungeon.depth / 200f);
 							
-						//unintentional door detection scales from 20% at floor 0 to 0% at floor 20
+						//unintentional door detection scales from 20% at floor 0 to 0% at floor 16
 						} else {
-							chance = 0.2f - (Dungeon.depth / 100f);
+							chance = 0.2f - (Dungeon.depth / 80f);
 						}
 						
 						if (Random.Float() < chance) {
