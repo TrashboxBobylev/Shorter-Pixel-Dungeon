@@ -214,7 +214,7 @@ abstract public class ClassArmor extends Armor {
 		public boolean act() {
 			LockedFloor lock = target.buff(LockedFloor.class);
 			if (lock == null || lock.regenOn()) {
-				charge += 100 / 500f; //500 turns to full charge
+				charge += 100 / 250f; //250 turns to full charge
 				updateQuickslot();
 				if (charge > 100) {
 					charge = 100;
