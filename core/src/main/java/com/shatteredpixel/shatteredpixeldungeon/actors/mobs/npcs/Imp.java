@@ -194,7 +194,7 @@ public class Imp extends NPC {
 		}
 		
 		public static void spawn( CityLevel level ) {
-			if (!spawned && Dungeon.depth > 16 && Random.Int( 20 - Dungeon.depth ) == 0) {
+			if (!spawned && Dungeon.depth > 13 && Random.Int( 16 - Dungeon.depth ) == 0) {
 				
 				Imp npc = new Imp();
 				do {
@@ -211,19 +211,9 @@ public class Imp extends NPC {
 				
 				spawned = true;
 
-				//always assigns monks on floor 17, golems on floor 19, and 50/50 between either on 18
-				switch (Dungeon.depth){
-					case 17: default:
-						alternative = true;
-						break;
-					case 18:
-						alternative = Random.Int(2) == 0;
-						break;
-					case 19:
-						alternative = false;
-						break;
-				}
-				
+				//always assigns monks
+				alternative = true;
+
 				given = false;
 				
 				do {
@@ -235,9 +225,8 @@ public class Imp extends NPC {
 		}
 		
 		public static void process( Mob mob ) {
-			if (spawned && given && !completed && Dungeon.depth != 20) {
-				if ((alternative && mob instanceof Monk) ||
-					(!alternative && mob instanceof Golem)) {
+			if (spawned && given && !completed && Dungeon.depth != 16) {
+				if ((alternative && mob instanceof Monk)) {
 					
 					Dungeon.level.drop( new DwarfToken(), mob.pos ).sprite.drop();
 				}
