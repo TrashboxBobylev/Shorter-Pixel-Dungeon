@@ -55,12 +55,12 @@ public class WandOfLivingEarth extends DamageWand {
 	
 	@Override
 	public int min(int lvl) {
-		return 4;
+		return 2;
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return 6 + 2*lvl;
+		return 4 + lvl;
 	}
 	
 	@Override
@@ -233,7 +233,7 @@ public class WandOfLivingEarth extends DamageWand {
 		}
 
 		private int armorToGuardian(){
-			return 8 + wandLevel*4;
+			return 5 + wandLevel*3;
 		}
 
 		public int absorb( int damage ) {
@@ -306,7 +306,7 @@ public class WandOfLivingEarth extends DamageWand {
 		public void setInfo(Hero hero, int wandLevel, int healthToAdd){
 			if (wandLevel > this.wandLevel) {
 				this.wandLevel = wandLevel;
-				HT = 16 + 8 * wandLevel;
+				HT = 10 + 4 * wandLevel;
 			}
 			HP = Math.min(HT, HP + healthToAdd);
 			//half of hero's evasion

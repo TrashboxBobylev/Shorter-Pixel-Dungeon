@@ -55,11 +55,11 @@ public class WandOfBlastWave extends DamageWand {
 	}
 
 	public int min(int lvl){
-		return 1+lvl;
+		return lvl;
 	}
 
 	public int max(int lvl){
-		return 3+3*lvl;
+		return 3+2*lvl;
 	}
 
 	@Override
