@@ -175,8 +175,8 @@ public abstract class RegularPainter extends Painter {
 
 		float hiddenDoorChance = 0;
 		if (Dungeon.depth > 1){
-			//chance for a hidden door scales from 2/20 on floor 2 to 20/20 on floor 20
-			hiddenDoorChance = Math.min(1f, Dungeon.depth / 20f);
+			//chance for a hidden door scales from 2/20 on floor 2 to 20/20 on floor 16
+			hiddenDoorChance = Math.min(1f, Dungeon.depth / 16f);
 		}
 		if (l.feeling == Level.Feeling.SECRETS){
 			//pull the value of extra secret doors toward 50% on secrets level feel
@@ -188,13 +188,11 @@ public abstract class RegularPainter extends Painter {
 		for (Room r : rooms) {
 			for (Room n : r.connected.keySet()) {
 
-				//normal sized rooms can be merged at most once. Large and Giant rooms can be merged many times
+				//rooms can be merged many times
 				if (roomMerges.get(r) == n || roomMerges.get(n) == r){
 					continue;
 				} else if (!roomMerges.containsKey(r) && !roomMerges.containsKey(n) &&
 						mergeRooms(l, r, n, r.connected.get(n), Terrain.EMPTY)) {
-					if (((StandardRoom) r).sizeCat == StandardRoom.SizeCategory.NORMAL) roomMerges.put(r, n);
-					if (((StandardRoom) n).sizeCat == StandardRoom.SizeCategory.NORMAL) roomMerges.put(n, r);
 					continue;
 				}
 				
