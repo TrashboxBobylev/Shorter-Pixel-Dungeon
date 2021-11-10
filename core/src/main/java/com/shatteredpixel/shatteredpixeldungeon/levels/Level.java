@@ -203,13 +203,13 @@ public abstract class Level implements Bundlable {
 				Dungeon.LimitedDrops.ARCANE_STYLI.count++;
 			}
 			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
-			int enchChapter = (int)((Dungeon.seed / 10) % 3) + 1;
-			if ( Dungeon.depth / 5 == enchChapter &&
-					Dungeon.seed % 4 + 1 == Dungeon.depth % 5){
+			int enchChapter = (int)((Dungeon.seed / 8) % 3) + 1;
+			if ( Dungeon.depth / 4 == enchChapter &&
+					Dungeon.seed % 3 + 1 == Dungeon.depth % 4){
 				addItemToSpawn( new StoneOfEnchantment() );
 			}
 			
-			if ( Dungeon.depth == ((Dungeon.seed % 3) + 1)){
+			if ( Dungeon.depth == ((Dungeon.seed % 2) + 1)){
 				addItemToSpawn( new StoneOfIntuition() );
 			}
 			
