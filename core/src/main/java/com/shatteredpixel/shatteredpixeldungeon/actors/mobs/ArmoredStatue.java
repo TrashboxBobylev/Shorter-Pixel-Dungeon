@@ -48,7 +48,7 @@ public class ArmoredStatue extends Statue {
 		armor.inscribe(Armor.Glyph.random());
 
 		//double HP
-		HP = HT = 30 + Dungeon.depth * 10;
+		HP = HT = 20 + Dungeon.depth * 6;
 	}
 
 	private static final String ARMOR	= "armor";

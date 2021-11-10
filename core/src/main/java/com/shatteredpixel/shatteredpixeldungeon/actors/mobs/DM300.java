@@ -80,9 +80,9 @@ public class DM300 extends Mob {
 	{
 		spriteClass = DM300Sprite.class;
 
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 400 : 300;
-		EXP = 30;
-		defenseSkill = 15;
+		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 320 : 240;
+		EXP = 24;
+		defenseSkill = 13;
 
 		properties.add(Property.BOSS);
 		properties.add(Property.INORGANIC);
@@ -91,17 +91,17 @@ public class DM300 extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 15, 25 );
+		return Random.NormalIntRange( 10, 18 );
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 20;
+		return 15;
 	}
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 10);
+		return Random.NormalIntRange(0, 7);
 	}
 
 	public int pylonsActivated = 0;

@@ -83,9 +83,9 @@ public class Tengu extends Mob {
 	{
 		spriteClass = TenguSprite.class;
 		
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 250 : 200;
-		EXP = 20;
-		defenseSkill = 15;
+		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 168 : 136;
+		EXP = 14;
+		defenseSkill = 12;
 		
 		HUNTING = new Hunting();
 		
@@ -108,21 +108,21 @@ public class Tengu extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 6, 12 );
+		return Random.NormalIntRange( 3, 9 );
 	}
 	
 	@Override
 	public int attackSkill( Char target ) {
 		if (Dungeon.level.adjacent(pos, target.pos)){
-			return 10;
+			return 8;
 		} else {
-			return 20;
+			return 16;
 		}
 	}
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
+		return Random.NormalIntRange(0, 4);
 	}
 
 	boolean loading = false;
@@ -603,7 +603,7 @@ public class Tengu extends Mob {
 					if (PathFinder.distance[cell] < Integer.MAX_VALUE) {
 						Char ch = Actor.findChar(cell);
 						if (ch != null && !(ch instanceof Tengu)) {
-							int dmg = Random.NormalIntRange(5 + Dungeon.depth, 10 + Dungeon.depth * 2);
+							int dmg = Random.NormalIntRange(5 + Dungeon.depth, 8 + Dungeon.depth);
 							dmg -= ch.drRoll();
 
 							if (dmg > 0) {
@@ -1017,7 +1017,7 @@ public class Tengu extends Mob {
 							
 							Char ch = Actor.findChar(cell);
 							if (ch != null && !(ch instanceof Tengu)){
-								ch.damage(2 + Dungeon.depth, new Electricity());
+								ch.damage( Dungeon.depth, new Electricity());
 								
 								if (ch == Dungeon.hero && !ch.isAlive()) {
 									Dungeon.fail(Tengu.class);

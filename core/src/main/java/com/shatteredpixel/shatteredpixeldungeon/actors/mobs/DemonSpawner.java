@@ -46,11 +46,11 @@ public class DemonSpawner extends Mob {
 	{
 		spriteClass = SpawnerSprite.class;
 
-		HP = HT = 120;
+		HP = HT = 80;
 		defenseSkill = 0;
 
-		EXP = 15;
-		maxLvl = 29;
+		EXP = 10;
+		maxLvl = 23;
 
 		state = PASSIVE;
 

@@ -56,7 +56,7 @@ public class Pylon extends Mob {
 	{
 		spriteClass = PylonSprite.class;
 
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 80 : 50;
+		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 55 : 35;
 
 		maxLvl = -2;
 
@@ -129,7 +129,7 @@ public class Pylon extends Mob {
 	private void shockChar( Char ch ){
 		if (ch != null && !(ch instanceof DM300)){
 			ch.sprite.flash();
-			ch.damage(Random.NormalIntRange(10, 20), new Electricity());
+			ch.damage(Random.NormalIntRange(8, 16), new Electricity());
 
 			if (ch == Dungeon.hero && !ch.isAlive()){
 				Dungeon.fail(DM300.class);

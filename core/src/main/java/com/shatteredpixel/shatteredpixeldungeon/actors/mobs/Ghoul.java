@@ -43,11 +43,11 @@ public class Ghoul extends Mob {
 	{
 		spriteClass = GhoulSprite.class;
 		
-		HP = HT = 45;
-		defenseSkill = 20;
+		HP = HT = 30;
+		defenseSkill = 12;
 		
-		EXP = 5;
-		maxLvl = 20;
+		EXP = 3;
+		maxLvl = 15;
 		
 		SLEEPING = new Sleeping();
 		WANDERING = new Wandering();
@@ -61,17 +61,17 @@ public class Ghoul extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 16, 22 );
+		return Random.NormalIntRange( 10, 17 );
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 24;
+		return 17;
 	}
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 4);
+		return Random.NormalIntRange(0, 2);
 	}
 
 	@Override

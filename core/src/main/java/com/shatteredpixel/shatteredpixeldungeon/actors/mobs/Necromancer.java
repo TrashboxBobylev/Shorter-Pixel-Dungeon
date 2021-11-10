@@ -46,11 +46,11 @@ public class Necromancer extends Mob {
 	{
 		spriteClass = NecromancerSprite.class;
 		
-		HP = HT = 40;
-		defenseSkill = 14;
+		HP = HT = 22;
+		defenseSkill = 12;
 		
-		EXP = 7;
-		maxLvl = 14;
+		EXP = 5;
+		maxLvl = 11;
 		
 		loot = new PotionOfHealing();
 		lootChance = 0.2f; //see createloot
@@ -79,7 +79,7 @@ public class Necromancer extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
+		return Random.NormalIntRange(0, 3);
 	}
 	
 	@Override
@@ -161,7 +161,7 @@ public class Necromancer extends Mob {
 				sprite.parent.add(new Beam.HealthRay(sprite.center(), mySkeleton.sprite.center()));
 			}
 			
-			mySkeleton.HP = Math.min(mySkeleton.HP + 5, mySkeleton.HT);
+			mySkeleton.HP = Math.min(mySkeleton.HP + 4, mySkeleton.HT);
 			if (mySkeleton.sprite.visible) mySkeleton.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
 			
 		//otherwise give it adrenaline
@@ -346,8 +346,8 @@ public class Necromancer extends Mob {
 			//no loot or exp
 			maxLvl = -5;
 			
-			//20/25 health to start
-			HP = 20;
+			//11/16 health to start
+			HP = 11;
 		}
 
 		@Override

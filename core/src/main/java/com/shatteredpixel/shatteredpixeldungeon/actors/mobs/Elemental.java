@@ -51,28 +51,28 @@ import java.util.ArrayList;
 public abstract class Elemental extends Mob {
 
 	{
-		HP = HT = 60;
-		defenseSkill = 20;
+		HP = HT = 42;
+		defenseSkill = 14;
 		
-		EXP = 10;
-		maxLvl = 20;
+		EXP = 7;
+		maxLvl = 16;
 		
 		flying = true;
 	}
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 20, 25 );
+		return Random.NormalIntRange( 12, 19 );
 	}
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 25;
+		return 19;
 	}
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
+		return Random.NormalIntRange(0, 3);
 	}
 	
 	private int rangedCooldown = Random.NormalIntRange( 3, 5 );
@@ -207,12 +207,12 @@ public abstract class Elemental extends Mob {
 		{
 			spriteClass = ElementalSprite.NewbornFire.class;
 			
-			HT = 60;
+			HT = 42;
 			HP = HT/2; //30
 			
-			defenseSkill = 12;
+			defenseSkill = 8;
 			
-			EXP = 7;
+			EXP = 4;
 			
 			properties.add(Property.MINIBOSS);
 		}

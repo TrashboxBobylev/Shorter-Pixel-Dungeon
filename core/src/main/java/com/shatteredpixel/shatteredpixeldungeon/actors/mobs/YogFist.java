@@ -57,12 +57,12 @@ public abstract class YogFist extends Mob {
 
 	{
 		HP = HT = 300;
-		defenseSkill = 20;
+		defenseSkill = 15;
 
 		viewDistance = Light.DISTANCE;
 
 		//for doomed resistance
-		EXP = 25;
+		EXP = 16;
 		maxLvl = -2;
 
 		state = HUNTING;
@@ -145,17 +145,17 @@ public abstract class YogFist extends Mob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 36;
+		return 23;
 	}
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 18, 36 );
+		return Random.NormalIntRange( 13, 25 );
 	}
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 15);
+		return Random.NormalIntRange(0, 9);
 	}
 
 	{
@@ -415,7 +415,7 @@ public abstract class YogFist extends Mob {
 
 		@Override
 		public int damageRoll() {
-			return Random.NormalIntRange( 22, 44 );
+			return Random.NormalIntRange( 17, 32 );
 		}
 
 		@Override

@@ -31,11 +31,11 @@ public class Gnoll extends Mob {
 	{
 		spriteClass = GnollSprite.class;
 		
-		HP = HT = 12;
+		HP = HT = 9;
 		defenseSkill = 4;
 		
 		EXP = 2;
-		maxLvl = 8;
+		maxLvl = 5;
 		
 		loot = Gold.class;
 		lootChance = 0.5f;
@@ -43,7 +43,7 @@ public class Gnoll extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1, 6 );
+		return Random.NormalIntRange( 1, 5 );
 	}
 	
 	@Override

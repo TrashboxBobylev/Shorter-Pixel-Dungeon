@@ -45,11 +45,11 @@ public class Warlock extends Mob implements Callback {
 	{
 		spriteClass = WarlockSprite.class;
 		
-		HP = HT = 70;
-		defenseSkill = 18;
+		HP = HT = 55;
+		defenseSkill = 14;
 		
-		EXP = 11;
-		maxLvl = 21;
+		EXP = 7;
+		maxLvl = 16;
 		
 		loot = Generator.Category.POTION;
 		lootChance = 0.5f;
@@ -59,17 +59,17 @@ public class Warlock extends Mob implements Callback {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 12, 18 );
+		return Random.NormalIntRange( 10, 16 );
 	}
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 25;
+		return 17;
 	}
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 8);
+		return Random.NormalIntRange(0, 5);
 	}
 	
 	@Override
@@ -108,7 +108,7 @@ public class Warlock extends Mob implements Callback {
 				Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
 			}
 			
-			int dmg = Random.NormalIntRange( 12, 18 );
+			int dmg = Random.NormalIntRange( 9, 15 );
 			enemy.damage( dmg, new DarkBolt() );
 			
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {

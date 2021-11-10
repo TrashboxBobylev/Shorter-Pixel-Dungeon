@@ -38,11 +38,11 @@ public class DM200 extends Mob {
 	{
 		spriteClass = DM200Sprite.class;
 
-		HP = HT = 80;
-		defenseSkill = 12;
+		HP = HT = 50;
+		defenseSkill = 8;
 
-		EXP = 9;
-		maxLvl = 17;
+		EXP = 6;
+		maxLvl = 14;
 
 		loot = Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR);
 		lootChance = 0.125f; //initially, see rollToDropLoot
@@ -55,17 +55,17 @@ public class DM200 extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 10, 25 );
+		return Random.NormalIntRange( 6, 18 );
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 20;
+		return 14;
 	}
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 8);
+		return Random.NormalIntRange(0, 6);
 	}
 
 	@Override

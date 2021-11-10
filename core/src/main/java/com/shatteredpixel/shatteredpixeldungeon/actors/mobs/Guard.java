@@ -47,11 +47,11 @@ public class Guard extends Mob {
 	{
 		spriteClass = GuardSprite.class;
 
-		HP = HT = 40;
-		defenseSkill = 10;
+		HP = HT = 22;
+		defenseSkill = 9;
 
-		EXP = 7;
-		maxLvl = 14;
+		EXP = 5;
+		maxLvl = 11;
 
 		loot = Generator.Category.ARMOR;
 		lootChance = 0.2f; //by default, see rollToDropLoot()
@@ -63,7 +63,7 @@ public class Guard extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange(4, 12);
+		return Random.NormalIntRange(2, 10);
 	}
 
 	private boolean chain(int target){
@@ -128,12 +128,12 @@ public class Guard extends Mob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 12;
+		return 11;
 	}
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 7);
+		return Random.NormalIntRange(0, 4);
 	}
 
 	@Override

@@ -53,12 +53,12 @@ public class Succubus extends Mob {
 	{
 		spriteClass = SuccubusSprite.class;
 		
-		HP = HT = 80;
-		defenseSkill = 25;
+		HP = HT = 64;
+		defenseSkill = 16;
 		viewDistance = Light.DISTANCE;
 		
-		EXP = 12;
-		maxLvl = 25;
+		EXP = 7;
+		maxLvl = 20;
 		
 		loot = Generator.Category.SCROLL;
 		lootChance = 0.33f;
@@ -68,7 +68,7 @@ public class Succubus extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 25, 30 );
+		return Random.NormalIntRange( 15, 23 );
 	}
 	
 	@Override
@@ -150,12 +150,12 @@ public class Succubus extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 40;
+		return 21;
 	}
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 10);
+		return Random.NormalIntRange(0, 6);
 	}
 
 	@Override

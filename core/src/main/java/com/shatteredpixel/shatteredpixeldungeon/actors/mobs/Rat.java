@@ -33,10 +33,10 @@ public class Rat extends Mob {
 	{
 		spriteClass = RatSprite.class;
 		
-		HP = HT = 8;
+		HP = HT = 6;
 		defenseSkill = 2;
 		
-		maxLvl = 5;
+		maxLvl = 3;
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class Rat extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
+		return Random.NormalIntRange( 0, 4 );
 	}
 	
 	@Override

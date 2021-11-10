@@ -33,7 +33,7 @@ public class Albino extends Rat {
 	{
 		spriteClass = AlbinoSprite.class;
 		
-		HP = HT = 15;
+		HP = HT = 9;
 		EXP = 2;
 		
 		loot = new MysteryMeat();
