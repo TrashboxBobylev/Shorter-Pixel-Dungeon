@@ -119,14 +119,14 @@ public class DesktopLauncher {
 		String basePath = "";
 		if (SharedLibraryLoader.isWindows) {
 			if (System.getProperties().getProperty("os.name").equals("Windows XP")) {
-				basePath = "Application Data/.shatteredpixel/Shattered Pixel Dungeon/";
+				basePath = "Application Data/.shatteredpixel/Shorter Pixel Dungeon/";
 			} else {
-				basePath = "AppData/Roaming/.shatteredpixel/Shattered Pixel Dungeon/";
+				basePath = "AppData/Roaming/.shatteredpixel/Shorter Pixel Dungeon/";
 			}
 		} else if (SharedLibraryLoader.isMac) {
-			basePath = "Library/Application Support/Shattered Pixel Dungeon/";
+			basePath = "Library/Application Support/Shorter Pixel Dungeon/";
 		} else if (SharedLibraryLoader.isLinux) {
-			basePath = ".shatteredpixel/shattered-pixel-dungeon/";
+			basePath = ".shatteredpixel/shorter-pixel-dungeon/";
 		}
 
 		//copy over prefs from old file location from legacy desktop codebase
@@ -154,8 +154,7 @@ public class DesktopLauncher {
 		DesktopWindowListener listener = new DesktopWindowListener();
 		config.setWindowListener( listener );
 		
-		config.setWindowIcon("icons/icon_16.png", "icons/icon_32.png", "icons/icon_64.png",
-				"icons/icon_128.png", "icons/icon_256.png");
+		config.setWindowIcon("icons/icon_256.png");
 
 		new Lwjgl3Application(new ShatteredPixelDungeon(new DesktopPlatformSupport()), config);
 	}
