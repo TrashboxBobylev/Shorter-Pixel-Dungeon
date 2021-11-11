@@ -54,7 +54,7 @@ public class ArmoryRoom extends SpecialRoom {
 			Painter.set( level, statue, Terrain.STATUE );
 		}
 		
-		int n = Random.IntRange( 2, 3 );
+		int n = Random.IntRange( 2, 4 );
 		for (int i=0; i < n; i++) {
 			int pos;
 			do {

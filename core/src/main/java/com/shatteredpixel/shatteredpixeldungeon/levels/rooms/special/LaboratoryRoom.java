@@ -64,7 +64,7 @@ public class LaboratoryRoom extends SpecialRoom {
 		int chapter = 1 + Dungeon.depth/4;
 		Blob.seed( pot.x + level.width() * pot.y, 1 + chapter*8 + Random.NormalIntRange(0, 8), Alchemy.class, level );
 		
-		int n = Random.NormalIntRange( 1, 2 );
+		int n = Random.NormalIntRange( 2, 4 );
 		for (int i=0; i < n; i++) {
 			int pos;
 			do {
