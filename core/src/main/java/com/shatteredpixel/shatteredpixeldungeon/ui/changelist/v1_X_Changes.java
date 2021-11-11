@@ -28,20 +28,6 @@ public class v1_X_Changes {
 						"\n" +
 						"This was an idea even back in February, but I just got enough bored to implement that."));
 
-		changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), "Talent Buffs",
-				"I'm making changes to a bunch of talents that were underperforming in v0.9.2:\n\n" +
-						"_- Strongman_ redesigned. Now grants 8/13/18% bonus str, rounded down.\n" +
-						"_- Berserking Stamina_ bonus shield increased to 25/50/75%, from 16/33/50%.\n" +
-						"_- Cleave_ turns of combo increased to 15/30/45 from 10/20/30.\n\n" +
-						"_- Energizing Upgrade_ charge granted up to 3/5 from 2/3.\n" +
-						"_- Empowering Scrolls_ no longer has a timer.\n" +
-						"_- Empowered Strike_ damage bonus up to 25/50/75% from 20/40/60%.\n" +
-						"_- Necromancer's Minions_ proc chance up to 13/27/40% from 10/20/30%.\n\n" +
-						"_- Light Cloak_ charge speed up to 13/27/40% from 10/20/30%.\n" +
-						"_- Enhanced Lethality_ boosted at high levels of preparation.\n\n" +
-						"_- Nature's Bounty_ is now more consistent in how it drops berries.\n" +
-						"_- Shared Upgrades_ damage boost increased to 10/20/30% from 7/12/20%." ));
-
 		changes.addButton(new ChangeButton(Icons.get(Icons.DEPTH), "Shorter Dungeon",
 				"_-_ The amount of floors have been reduced from 26 to 21.\n\n" +
 						"_-_ All rooms are normally sized.\n\n" +
