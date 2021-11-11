@@ -76,21 +76,21 @@ public class RatKing extends NPC {
 	@Override
 	protected void onAdd() {
 		super.onAdd();
-		if (Dungeon.depth != 5){
+		if (Dungeon.depth != 4){
 			yell(Messages.get(this, "confused"));
 		}
 	}
 
 	@Override
 	protected boolean act() {
-		if (Dungeon.depth < 5){
+		if (Dungeon.depth < 4){
 			if (pos == Dungeon.level.exit){
 				destroy();
 				sprite.killAndErase();
 			} else {
 				target = Dungeon.level.exit;
 			}
-		} else if (Dungeon.depth > 5){
+		} else if (Dungeon.depth > 4){
 			if (pos == Dungeon.level.entrance){
 				destroy();
 				sprite.killAndErase();
