@@ -307,8 +307,8 @@ public abstract class RegularLevel extends Level {
 	@Override
 	protected void createItems() {
 		
-		// drops 1/2/3 items 50%/40%/10% of the time
-		int nItems = 1 + Random.chances(new float[]{5, 4, 1});
+		// drops 3/4/5 items 50%/40%/10% of the time
+		int nItems = 3 + Random.chances(new float[]{5, 4, 1});
 
 		if (feeling == Feeling.LARGE){
 			nItems += 2;
