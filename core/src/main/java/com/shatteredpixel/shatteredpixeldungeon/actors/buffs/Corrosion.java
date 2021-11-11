@@ -90,10 +90,10 @@ public class Corrosion extends Buff implements Hero.Doom {
 	public boolean act() {
 		if (target.isAlive()) {
 			target.damage((int)damage, this);
-			if (damage < (Dungeon.depth/2)+2) {
-				damage++;
+			if (damage < (Dungeon.depth/3)+2) {
+				damage += 0.45f;
 			} else {
-				damage += 0.5f;
+				damage += 0.2f;
 			}
 			
 			spend( TICK );
