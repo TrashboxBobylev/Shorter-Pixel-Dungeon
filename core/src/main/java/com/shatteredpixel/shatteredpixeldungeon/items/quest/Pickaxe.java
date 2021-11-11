@@ -95,7 +95,7 @@ public class Pickaxe extends Weapon {
 		
 		if (action.equals(AC_MINE)) {
 			
-			if (Dungeon.depth < 11 || Dungeon.depth > 15) {
+			if (Dungeon.depth < 9 || Dungeon.depth > 12) {
 				GLog.w( Messages.get(this, "no_vein") );
 				return;
 			}
