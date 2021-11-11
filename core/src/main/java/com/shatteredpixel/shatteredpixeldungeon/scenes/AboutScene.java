@@ -71,6 +71,19 @@ public class AboutScene extends PixelScene {
 		shpxLink += "&utm_medium=about_page";
 		shpxLink += "&utm_campaign=ingame_link";
 
+		CreditsBlock boby = new CreditsBlock(true, 0x3c9efa,
+				"Shorter Pixel Dungeon",
+				Icons.BOBY.get(),
+				"Developed by: _Trashbox Bobylev_\nBased on Shattered Pixel Dungeon's open source",
+				"reddit.com/u/TrashboxBobylev",
+				"https://reddit.com/u/TrashboxBobylev");
+		if (landscape()){
+			boby.setRect((w - fullWidth)/2f - 6, 10, 120, 0);
+		} else {
+			boby.setRect((w - fullWidth)/2f, 6, 120, 0);
+		}
+		content.add(boby);
+
 		CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
 				"Shattered Pixel Dungeon",
 				Icons.SHPX.get(),
@@ -78,11 +91,12 @@ public class AboutScene extends PixelScene {
 				"ShatteredPixel.com",
 				shpxLink);
 		if (landscape()){
-			shpx.setRect((w - fullWidth)/2f - 6, 10, 120, 0);
+			shpx.setRect(boby.left(), boby.bottom() + 8, colWidth, 0);
 		} else {
-			shpx.setRect((w - fullWidth)/2f, 6, 120, 0);
+			shpx.setRect(boby.left(), boby.bottom() + 8, colWidth, 0);
 		}
 		content.add(shpx);
+		addLine(shpx.top() - 4, content);
 
 		CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
 				"Hero Art & Design:",

@@ -164,7 +164,7 @@ public class TitleScene extends PixelScene {
 				ShatteredPixelDungeon.switchScene( AboutScene.class );
 			}
 		};
-		btnAbout.icon(Icons.get(Icons.SHPX));
+		btnAbout.icon(Icons.get(Icons.SHORTER_CHEST));
 		add(btnAbout);
 		
 		final int BTN_HEIGHT = 20;
