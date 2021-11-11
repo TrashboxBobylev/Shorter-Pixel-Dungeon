@@ -326,7 +326,7 @@ public class Dungeon {
 	}
 	
 	public static boolean shopOnLevel() {
-		return depth == 6 || depth == 11 || depth == 16;
+		return depth == 5 || depth == 9 || depth == 13;
 	}
 	
 	public static boolean bossLevel() {
@@ -334,7 +334,7 @@ public class Dungeon {
 	}
 	
 	public static boolean bossLevel( int depth ) {
-		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
+		return depth == 4 || depth == 8 || depth == 12 || depth == 16 || depth == 20;
 	}
 	
 	public static void switchLevel( final Level level, int pos ) {
