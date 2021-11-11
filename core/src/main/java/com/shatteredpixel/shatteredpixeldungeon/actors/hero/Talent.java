@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -385,7 +386,12 @@ public enum Talent {
 		if (hero.hasTalent(ENERGIZING_UPGRADE)){
 			MagesStaff staff = hero.belongings.getItem(MagesStaff.class);
 			if (staff != null){
-				staff.gainCharge(1 + 2*hero.pointsInTalent(ENERGIZING_UPGRADE), true);
+				staff.gainCharge(2 + 2*hero.pointsInTalent(ENERGIZING_UPGRADE), true);
+				for (Item item: hero.belongings){
+					if (item instanceof Wand){
+						((Wand) item).gainCharge(hero.pointsInTalent(ENERGIZING_UPGRADE));
+					}
+				}
 				ScrollOfRecharging.charge( Dungeon.hero );
 				SpellSprite.show( hero, SpellSprite.CHARGE );
 			}
@@ -393,7 +399,12 @@ public enum Talent {
 		if (hero.hasTalent(MYSTICAL_UPGRADE)){
 			CloakOfShadows cloak = hero.belongings.getItem(CloakOfShadows.class);
 			if (cloak != null){
-				cloak.overCharge(1 + hero.pointsInTalent(MYSTICAL_UPGRADE));
+				cloak.overCharge(2 + hero.pointsInTalent(MYSTICAL_UPGRADE));
+				for (Item item: hero.belongings){
+					if (item instanceof Artifact && item != cloak){
+						((Artifact) item).charge(hero, hero.pointsInTalent(MYSTICAL_UPGRADE)*2);
+					}
+				}
 				ScrollOfRecharging.charge( Dungeon.hero );
 				SpellSprite.show( hero, SpellSprite.CHARGE );
 			}
