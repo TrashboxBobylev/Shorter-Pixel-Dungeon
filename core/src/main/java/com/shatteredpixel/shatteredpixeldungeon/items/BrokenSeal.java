@@ -182,11 +182,12 @@ public class BrokenSeal extends Item {
 
 		private Armor armor;
 		private float partialShield;
+		private final float RECHARGE_RATE = 30f;
 
 		@Override
 		public synchronized boolean act() {
 			if (shielding() < maxShield()) {
-				partialShield += 1/30f;
+				partialShield += 1/(RECHARGE_RATE * (1 - ((Hero)target).pointsInTalent(Talent.RESTORED_WILLPOWER)/(float)maxShield()));
 			}
 			
 			while (partialShield >= 1){
