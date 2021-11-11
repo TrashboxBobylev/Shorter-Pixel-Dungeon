@@ -134,7 +134,7 @@ public class WndSettings extends WndTabbed {
 		langs = new LangsTab();
 		langs.setSize(width, 0);
 		height = Math.max(height, langs.height());
-		add( langs );
+//		add( langs );
 
 
 		IconTab langsTab = new IconTab(Icons.get(Icons.LANGS)){
