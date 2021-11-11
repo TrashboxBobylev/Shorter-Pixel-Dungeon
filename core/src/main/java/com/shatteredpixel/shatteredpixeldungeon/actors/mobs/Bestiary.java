@@ -66,14 +66,12 @@ public class Bestiary {
 				//2x skeleton, 1x thief, 1x DM-100, 1x guard
 				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class,
 						Thief.class,
-						DM100.class,
-						Guard.class));
+						DM100.class));
 			case 7: case 8:
 				//1x skeleton, 1x thief, 1x DM-100, 1x guard, 1x necromancer
 				return new ArrayList<>(Arrays.asList(Skeleton.class,
 						Thief.class,
 						DM100.class,
-						Guard.class,
 						Necromancer.class));
 				
 			// Caves
