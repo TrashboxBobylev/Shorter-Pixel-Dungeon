@@ -77,7 +77,7 @@ public class Bleeding extends Buff {
 	public boolean act() {
 		if (target.isAlive()) {
 			
-			level = NormalFloat(level / 2f, level);
+			level = NormalFloat(level / 3f, level / 1.5f);
 			int dmg = Math.round(level);
 			
 			if (dmg > 0) {
