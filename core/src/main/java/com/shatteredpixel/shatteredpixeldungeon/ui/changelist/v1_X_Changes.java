@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.changelist;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -22,6 +23,52 @@ public class v1_X_Changes {
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 
+		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
+				"_-_ Released November 11th, 2021\n" +
+						"\n" +
+						"This was an idea even back in February, but I just got enough bored to implement that."));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), "Talent Buffs",
+				"I'm making changes to a bunch of talents that were underperforming in v0.9.2:\n\n" +
+						"_- Strongman_ redesigned. Now grants 8/13/18% bonus str, rounded down.\n" +
+						"_- Berserking Stamina_ bonus shield increased to 25/50/75%, from 16/33/50%.\n" +
+						"_- Cleave_ turns of combo increased to 15/30/45 from 10/20/30.\n\n" +
+						"_- Energizing Upgrade_ charge granted up to 3/5 from 2/3.\n" +
+						"_- Empowering Scrolls_ no longer has a timer.\n" +
+						"_- Empowered Strike_ damage bonus up to 25/50/75% from 20/40/60%.\n" +
+						"_- Necromancer's Minions_ proc chance up to 13/27/40% from 10/20/30%.\n\n" +
+						"_- Light Cloak_ charge speed up to 13/27/40% from 10/20/30%.\n" +
+						"_- Enhanced Lethality_ boosted at high levels of preparation.\n\n" +
+						"_- Nature's Bounty_ is now more consistent in how it drops berries.\n" +
+						"_- Shared Upgrades_ damage boost increased to 10/20/30% from 7/12/20%." ));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.DEPTH), "Shorter Dungeon",
+				"_-_ The amount of floors have been reduced from 26 to 21.\n\n" +
+						"_-_ All rooms are normally sized.\n\n" +
+						"_-_ Level sizes are smaller.\n\n" +
+						"_-_ Reduced amount of traps and enemies on each stage."));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), "Levelling and Talents",
+				"_-_ Hero's max level with enemies is reduced to 21 from 28 and cap has been decreased to 24.\n\n" +
+						"_-_ Talent points have been reduced to 3/4/6/7 from 5/6/8/10.\n\n" +
+						"_-_ Bunch of early-game talents have been buffed.\n\n" +
+						"_-_ Reduced EXP requirements by 20%." ));
+
+		changes.addButton(new ChangeButton(new ItemSprite(new Sword()), "Equipment",
+				"_-_ Max strength is 15 instead of 20, all equipment have been adjusted for that.\n\n" +
+						"_-_ Nerfed melee, ranged and magical weapons by 20%-40%.\n\n" +
+						"_-_ Nerfed armor blocking power by ~25%.\n\n" +
+						"_-_ Only 5 strength pots and 8 upgrade scrolls spawn in the dungeon.\n\n" +
+						"_-_ Cloak of Shadows upgrades faster to account for reduced level cap." ));
+
+		changes.addButton(new ChangeButton(new Image(Assets.Sprites.RAT, 0, 0, 16, 16), "Enemy changes",
+				"_-_ Most of monsters have reduced stats to fit new progression.\n\n" +
+						"_-_ Slimes, Prison Guards, Cave Spinners and Golems have been effectively removed from the game.\n\n" +
+						"_-_ Reduced amount of EXP rewarded from each monster."));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
+				"_-_ Buffed armor ability recharge time by 2x.\n\n" +
+						"_-_ Nerfed certain debuffs."));
 
 		changes = new ChangeInfo("\n\n\n\n", true, "");
 		changes.hardlight(0xCCCCCC);
