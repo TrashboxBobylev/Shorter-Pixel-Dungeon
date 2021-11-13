@@ -76,7 +76,7 @@ public class Dart extends MissileWeapon {
 	@Override
 	public int min(int lvl) {
 		if (bow != null){
-			return  2 +                    //2 base
+			return  3 +                    //3 base
 					bow.buffedLvl() + lvl; //+1 per level or bow level
 		} else {
 			return  0 +     //0 base, down from 1

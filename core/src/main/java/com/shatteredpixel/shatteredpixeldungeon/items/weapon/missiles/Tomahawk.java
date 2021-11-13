@@ -40,19 +40,19 @@ public class Tomahawk extends MissileWeapon {
 
 	@Override
 	public int min(int lvl) {
-		return  Math.round(0.5f*tier) +                      //base
-				(tier == 1 ? Math.round(0.75f*lvl) : lvl);      //level scaling
+		return  2 +                      //base
+				lvl;      //level scaling
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return  Math.round(4f * (tier-1)) +  //12 base, down from 21
+		return 12 +  //13 base, down from 16
 				(tier-1)*lvl;                 //scaling unchanged
 	}
 	
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.affect( defender, Bleeding.class ).set( Math.round(damage*0.6f) );
+		Buff.affect( defender, Bleeding.class ).set( Math.round(damage*0.75f) );
 		return super.proc( attacker, defender, damage );
 	}
 }
