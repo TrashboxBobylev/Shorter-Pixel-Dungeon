@@ -100,7 +100,7 @@ public class Shopkeeper extends NPC {
 
 	//shopkeepers are greedy!
 	public static int sellPrice(Item item){
-		return item.value() * 4 * (Dungeon.depth / 4 + 1);
+		return item.value() * 3 * (Dungeon.depth / 4 + 1);
 	}
 	
 	public static WndBag sell() {
