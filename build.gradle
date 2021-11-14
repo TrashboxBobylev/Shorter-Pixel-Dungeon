@@ -15,8 +15,8 @@ allprojects {
         appName = 'Shorter Pixel Dungeon'
         appPackageName = 'com.trashboxbobylev.shorterpd'
 
-        appVersionCode = 574
-        appVersionName = 'Short-1.0.0'
+        appVersionCode = 575
+        appVersionName = 'Short-1.0.1'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

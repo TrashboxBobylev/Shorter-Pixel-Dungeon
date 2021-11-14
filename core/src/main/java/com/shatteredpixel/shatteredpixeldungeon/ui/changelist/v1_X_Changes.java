@@ -19,7 +19,20 @@ import java.util.ArrayList;
 public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
-		ChangeInfo changes = new ChangeInfo("Short-1.0.0", true, "");
+		ChangeInfo changes = new ChangeInfo("Short-1.0.1", true, "");
+		changes.hardlight(0xCCCCCC);
+		changeInfos.add(changes);
+
+		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
+				"_-_ Released November 13th, 2021\n" +
+						"\n" +
+						"Looks like not everything was very balanced."));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), "Levelling and Talents",
+				"_-_ Added 1 talent point at each tier. Some levels can give you two points now.\n\n" +
+						"_-_ Dwarf Warlock and Demon Halls mobs give 1 extra EXP." ));
+
+		changes = new ChangeInfo("Short-1.0.0", true, "");
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 
@@ -33,6 +46,17 @@ public class v1_X_Changes {
 						"_-_ All rooms are normally sized.\n\n" +
 						"_-_ Level sizes are smaller.\n\n" +
 						"_-_ Reduced amount of traps and enemies on each stage."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(new Sword()), "Equipment",
+				"_-_ Nerfed missile weapons and Ring of Force to be more in line with existing melee weapons.\n\n" +
+						"_-_ Rebalanced armors: +1 min scaling, but base scaling down to 2*tier-1." ));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
+				"_-_ Increased hunger rate."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), Messages.get(ChangesScene.class, "bugfixes"),
+				"_-_ Fixed chapter story windows displaying at wrong depths.\n\n" +
+						"_-_ Fixed too high shop prices."));
 
 		changes.addButton(new ChangeButton(Icons.get(Icons.TALENT), "Levelling and Talents",
 				"_-_ Hero's max level with enemies is reduced to 21 from 28 and cap has been decreased to 24.\n\n" +
