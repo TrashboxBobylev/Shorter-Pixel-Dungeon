@@ -47,8 +47,8 @@ public class RingOfForce extends Ring {
 	// *** Weapon-like properties ***
 
 	private static float tier(int str){
-		float tier = Math.max(1, (str - 8)/2f);
-		//each str point after 18 is half as effective
+		float tier = Math.max(1, (str - 8));
+		//each str point after 14 is half as effective
 		if (tier > 5){
 			tier = 5 + (tier - 5) / 2f;
 		}
@@ -69,7 +69,7 @@ public class RingOfForce extends Ring {
 	//same as equivalent tier weapon
 	private static int min(int lvl, float tier){
 		return Math.max( 0, Math.round(
-				tier +  //base
+				tier-1 +  //base
 				lvl     //level scaling
 		));
 	}
@@ -77,8 +77,8 @@ public class RingOfForce extends Ring {
 	//same as equivalent tier weapon
 	private static int max(int lvl, float tier){
 		return Math.max( 0, Math.round(
-				5*(tier+1) +    //base
-				lvl*(tier+1)    //level scaling
+				4*(tier+1) +    //base
+				lvl*(tier)    //level scaling
 		));
 	}
 
