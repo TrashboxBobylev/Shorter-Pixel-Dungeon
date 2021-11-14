@@ -40,8 +40,8 @@ public class Hunger extends Buff implements Hero.Doom {
 
 	private static final float STEP	= 10f;
 
-	public static final float HUNGRY	= 300f;
-	public static final float STARVING	= 450f;
+	public static final float HUNGRY	= 200f;
+	public static final float STARVING	= 300f;
 
 	private float level;
 	private float partialDamage;
@@ -85,7 +85,7 @@ public class Hunger extends Buff implements Hero.Doom {
 
 			if (isStarving()) {
 
-				partialDamage += STEP * target.HT/1000f;
+				partialDamage += STEP * target.HT/750f;
 
 				if (partialDamage > 1){
 					target.damage( (int)partialDamage, this);
