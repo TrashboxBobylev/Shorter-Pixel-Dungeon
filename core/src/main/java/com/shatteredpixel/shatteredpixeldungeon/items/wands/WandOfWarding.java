@@ -299,7 +299,7 @@ public class WandOfWarding extends Wand {
 			spend( 1f );
 
 			//always hits
-			int dmg = Random.NormalIntRange( 1 + wandLevel, 5 + 2*wandLevel );
+			int dmg = Random.NormalIntRange( 2 + wandLevel, 6 + 3*wandLevel );
 			enemy.damage( dmg, this );
 			if (enemy.isAlive()){
 				Wand.wandProc(enemy, wandLevel, 1);
@@ -396,7 +396,7 @@ public class WandOfWarding extends Wand {
 
 		@Override
 		public String description() {
-			return Messages.get(this, "desc_" + tier, 1+wandLevel, 5 + 2*wandLevel, tier );
+			return Messages.get(this, "desc_" + tier, 2+wandLevel, 6 + 3*wandLevel, tier );
 		}
 		
 		{

@@ -57,11 +57,11 @@ public class WandOfPrismaticLight extends DamageWand {
 	}
 
 	public int min(int lvl){
-		return 1+lvl;
+		return 2+lvl;
 	}
 
 	public int max(int lvl){
-		return 4+2*lvl;
+		return 5+3*lvl;
 	}
 
 	@Override
