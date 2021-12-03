@@ -41,7 +41,7 @@ import com.watabou.utils.Random;
 public abstract class Shaman extends Mob {
 	
 	{
-		HP = HT = 25;
+		HP = HT = 22;
 		defenseSkill = 10;
 		
 		EXP = 6;
@@ -53,7 +53,7 @@ public abstract class Shaman extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 3, 8 );
+		return Random.NormalIntRange( 2, 8 );
 	}
 	
 	@Override
@@ -116,7 +116,7 @@ public abstract class Shaman extends Mob {
 				if (enemy == Dungeon.hero) Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
 			}
 			
-			int dmg = Random.NormalIntRange( 5, 11 );
+			int dmg = Random.NormalIntRange( 3, 11 );
 			enemy.damage( dmg, new EarthenBolt() );
 			
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {

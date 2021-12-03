@@ -51,7 +51,7 @@ import java.util.ArrayList;
 public abstract class Elemental extends Mob {
 
 	{
-		HP = HT = 42;
+		HP = HT = 36;
 		defenseSkill = 14;
 		
 		EXP = 7;
@@ -62,7 +62,7 @@ public abstract class Elemental extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 12, 19 );
+		return Random.NormalIntRange( 8, 16 );
 	}
 	
 	@Override

@@ -46,7 +46,7 @@ public class Warlock extends Mob implements Callback {
 	{
 		spriteClass = WarlockSprite.class;
 		
-		HP = HT = 55;
+		HP = HT = 42;
 		defenseSkill = 14;
 		
 		EXP = 8;
@@ -60,7 +60,7 @@ public class Warlock extends Mob implements Callback {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 10, 16 );
+		return Random.NormalIntRange( 8, 14 );
 	}
 	
 	@Override
@@ -109,7 +109,7 @@ public class Warlock extends Mob implements Callback {
 				Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
 			}
 			
-			int dmg = Random.NormalIntRange( 9, 15 );
+			int dmg = Random.NormalIntRange( 6, 12 );
 			enemy.damage( dmg, new DarkBolt() );
 			
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {

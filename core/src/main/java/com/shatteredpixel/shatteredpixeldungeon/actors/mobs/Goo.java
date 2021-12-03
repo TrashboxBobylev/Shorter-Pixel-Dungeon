@@ -48,7 +48,7 @@ import com.watabou.utils.Random;
 public class Goo extends Mob {
 
 	{
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 96 : 80;
+		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 84 : 70;
 		EXP = 6;
 		defenseSkill = 6;
 		spriteClass = GooSprite.class;
@@ -64,7 +64,7 @@ public class Goo extends Mob {
 	@Override
 	public int damageRoll() {
 		int min = 0;
-		int max = (HP*2 <= HT) ? 9 : 7;
+		int max = (HP*2 <= HT) ? 8 : 6;
 		if (pumpedUp > 0) {
 			pumpedUp = 0;
 			return Random.NormalIntRange( min*3, max*3 );

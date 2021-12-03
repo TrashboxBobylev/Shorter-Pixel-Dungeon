@@ -80,7 +80,7 @@ public class DM300 extends Mob {
 	{
 		spriteClass = DM300Sprite.class;
 
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 320 : 240;
+		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 240 : 180;
 		EXP = 24;
 		defenseSkill = 13;
 
@@ -91,7 +91,7 @@ public class DM300 extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 10, 18 );
+		return Random.NormalIntRange( 6, 15 );
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class RipperDemon extends Mob {
 	{
 		spriteClass = RipperSprite.class;
 
-		HP = HT = 44;
+		HP = HT = 35;
 		defenseSkill = 15;
 		viewDistance = Light.DISTANCE;
 
@@ -68,7 +68,7 @@ public class RipperDemon extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 12, 19 );
+		return Random.NormalIntRange( 9, 16 );
 	}
 
 	@Override

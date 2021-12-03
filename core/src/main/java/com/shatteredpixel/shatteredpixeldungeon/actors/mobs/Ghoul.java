@@ -43,7 +43,7 @@ public class Ghoul extends Mob {
 	{
 		spriteClass = GhoulSprite.class;
 		
-		HP = HT = 30;
+		HP = HT = 24;
 		defenseSkill = 12;
 		
 		EXP = 3;
@@ -61,7 +61,7 @@ public class Ghoul extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 10, 17 );
+		return Random.NormalIntRange( 6, 15 );
 	}
 
 	@Override

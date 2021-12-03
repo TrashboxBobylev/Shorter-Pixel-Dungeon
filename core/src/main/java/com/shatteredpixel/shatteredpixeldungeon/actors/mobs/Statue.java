@@ -58,7 +58,7 @@ public class Statue extends Mob {
 		
 		weapon.enchant( Enchantment.random() );
 		
-		HP = HT = 10 + Dungeon.depth * 3;
+		HP = HT = 7 + Dungeon.depth * 2;
 		defenseSkill = 2 + Dungeon.depth;
 	}
 	

@@ -6,10 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.SpectralNecromancerSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.*;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Image;
@@ -19,7 +16,44 @@ import java.util.ArrayList;
 public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
-		ChangeInfo changes = new ChangeInfo("Short-1.0.1", true, "");
+		ChangeInfo changes = new ChangeInfo("Short-1.0.2", true, "");
+		changes.hardlight(0xCCCCCC);
+		changeInfos.add(changes);
+		changes.addButton(new ChangeButton(new RatSprite(), "Sewer enemy adjustments",
+				"_-_ Rat's HP is reduced from 6 to 5.\n" +
+						"_-_ Gnoll's HP is reduced from 9 to 8.\n" +
+						"_-_ Crab's HP is reduced from 11 to 10.\n" +
+						"_-_ Goo's HP is reduced from 80/96 to 70/84 and its damage is reduced from 0-7 to 0-6."));
+		changes.addButton(new ChangeButton(new SkeletonSprite(), "Prison enemy adjustments",
+				"_-_ Skeleton's HP is reduced from 16 to 14.\n" +
+						"_-_ Thief's HP is reduced from 13 to 12.\n" +
+						"_-_ DM-100's HP is reduced from 15 to 12.\n" +
+						"_-_ Necromancer's HP is reduced from 22 to 18.\n" +
+						"_-_ Tengu's HP is reduced from 120/140 to 100/116."));
+		changes.addButton(new ChangeButton(new SpinnerSprite(), "Caves enemy adjustments",
+				"_-_ Bat's HP is reduced from 24 to 21 and its damage is reduced from 3-13 to 2-10.\n" +
+						"_-_ Brute's HP is reduced from 32 to 27 and its damage is reduced from 3-18/6-27 to 2-15/4-23.\n" +
+						"_-_ Shaman's HP is reduced from 25 to 22 and its damage is reduced from 3-8/5-11 to 2-8/3-11.\n" +
+						"_-_ DM-200's HP is reduced from 50 to 36 and its damage is reduced from 6-18 to 4-14.\n" +
+						"_-_ DM-300's HP is reduced from 240/320 to 180/240 and its damage is reduced from 10-18 to 6-15."));
+		changes.addButton(new ChangeButton(new GhoulSprite(), "City enemy adjustments",
+				"_-_ Ghoul's HP is reduced from 30 to 24 and its damage is reduced from 10-17 to 6-15.\n" +
+						"_-_ Elemental's HP is reduced from 42 to 36 and its damage is reduced from 12-19 to 8-16.\n" +
+						"_-_ Monk's HP is reduced from 50 to 38 and its damage is reduced from 10-18 to 7-15.\n" +
+						"_-_ Warlock's HP is reduced from 55 to 42 and its damage is reduced from 10-16/9-15 to 8-14/6-12.\n" +
+						"_-_ DK's HP is reduced from 240/360 to 180/270 and its damage is reduced from 12-20 to 9-17."));
+		changes.addButton(new ChangeButton(new EyeSprite(), "Halls enemy adjustments",
+				"_-_ Ripper's HP is reduced from 44 to 35 and its damage is reduced from 12-19 to 9-16.\n" +
+						"_-_ Succubus's HP is reduced from 64 to 50 and its damage is reduced from 15-23 to 11-18.\n" +
+						"_-_ Eye's HP is reduced from 72 to 58 and its damage is reduced from 14-22/21-34 to 10-19/17-28.\n" +
+						"_-_ Scorpio's HP is reduced from 78 to 60 and its damage is reduced from 16-24 to 12-19.\n" +
+						"_-_ Yog's HP is reduced from 1000 to 500.\n" +
+						"_-_ Yog fist's HP is reduced from 300 to 150 and its damage is reduced from 13-25 to 9-19.\n"+
+						"_-_ Rusted fist's damage is reduced from 17-32 to 14-26.\n" +
+						"_-_ Bright and dark fist's damage is reduced from 10-20 to 8-16.\n" +
+						"_-_ God larva's HP is reduced from 15 to 12 and its damage is reduced from 12-17 to 9-15."));
+
+		changes = new ChangeInfo("Short-1.0.1", true, "");
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 

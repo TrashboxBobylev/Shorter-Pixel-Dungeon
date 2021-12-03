@@ -40,7 +40,7 @@ public class Brute extends Mob {
 	{
 		spriteClass = BruteSprite.class;
 		
-		HP = HT = 32;
+		HP = HT = 27;
 		defenseSkill = 12;
 		
 		EXP = 6;
@@ -55,8 +55,8 @@ public class Brute extends Mob {
 	@Override
 	public int damageRoll() {
 		return buff(BruteRage.class) != null ?
-			Random.NormalIntRange( 6, 27 ) :
-			Random.NormalIntRange( 3, 18 );
+			Random.NormalIntRange( 4, 23 ) :
+			Random.NormalIntRange( 2, 15 );
 	}
 	
 	@Override
