@@ -67,12 +67,12 @@ public class ShopRoom extends SpecialRoom {
 	
 	@Override
 	public int minWidth() {
-		return Math.max(7, (int)(Math.sqrt(itemCount())+3));
+		return Math.max(5, (int)(Math.sqrt(itemCount())+3));
 	}
 	
 	@Override
 	public int minHeight() {
-		return Math.max(7, (int)(Math.sqrt(itemCount())+3));
+		return Math.max(5, (int)(Math.sqrt(itemCount())+3));
 	}
 
 	public int itemCount(){
@@ -177,7 +177,6 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add( new PlateArmor().identify() );
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
-			itemsToSpawn.add( new Torch() );
 			break;
 		}
 		w.enchant(null);
@@ -196,7 +195,6 @@ public class ShopRoom extends SpecialRoom {
 
 		itemsToSpawn.add( new PotionOfHealing() );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
-		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
 
 		itemsToSpawn.add( new ScrollOfIdentify() );
 		itemsToSpawn.add( new ScrollOfRemoveCurse() );
@@ -208,7 +206,6 @@ public class ShopRoom extends SpecialRoom {
 					Generator.randomUsingDefaults( Generator.Category.SCROLL ) );
 
 
-		itemsToSpawn.add( new SmallRation() );
 		itemsToSpawn.add( new SmallRation() );
 		
 		switch (Random.Int(4)){
@@ -269,9 +266,9 @@ public class ShopRoom extends SpecialRoom {
 		rare.cursedKnown = true;
 		itemsToSpawn.add( rare );
 
-		//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
-		if (itemsToSpawn.size() > 63)
-			throw new RuntimeException("Shop attempted to carry more than 63 items!");
+		//hard limit is 24 items + 1 shopkeeper, as shops can't be bigger than 6x6 internally
+		if (itemsToSpawn.size() > 24)
+			throw new RuntimeException("Shop attempted to carry more than 24 items!");
 
 		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
 		Random.pushGenerator(Random.Long());
