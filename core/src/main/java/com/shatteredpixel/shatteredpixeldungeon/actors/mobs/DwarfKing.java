@@ -415,6 +415,7 @@ public class DwarfKing extends Mob {
 
 	@Override
 	public boolean isInvulnerable(Class effect) {
+		GLog.p(String.valueOf(shielding()));
 		return phase == 2 && effect != KingDamager.class;
 	}
 
@@ -697,7 +698,6 @@ public class DwarfKing extends Mob {
 
 		@Override
 		public boolean act() {
-			incShield();
 			return super.act();
 		}
 

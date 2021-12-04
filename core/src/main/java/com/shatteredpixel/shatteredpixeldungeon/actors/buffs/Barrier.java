@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -49,16 +50,17 @@ public class Barrier extends ShieldBuff {
 
 	@Override
 	public boolean act() {
+		if (!(target instanceof DwarfKing)) {
+			partialLostShield += Math.min(1f, shielding() / 20f);
 
-		partialLostShield += Math.min(1f, shielding()/20f);
+			if (partialLostShield >= 1f) {
+				absorbDamage(1);
+				partialLostShield = 0;
+			}
 
-		if (partialLostShield >= 1f) {
-			absorbDamage(1);
-			partialLostShield = 0;
-		}
-		
-		if (shielding() <= 0){
-			detach();
+			if (shielding() <= 0) {
+				detach();
+			}
 		}
 		
 		spend( TICK );
