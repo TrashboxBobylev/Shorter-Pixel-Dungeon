@@ -567,16 +567,16 @@ public class Badges {
 	public static void validateBossSlain() {
 		Badge badge = null;
 		switch (Dungeon.depth) {
-		case 5:
+		case 4:
 			badge = Badge.BOSS_SLAIN_1;
 			break;
-		case 10:
+		case 8:
 			badge = Badge.BOSS_SLAIN_2;
 			break;
-		case 15:
+		case 12:
 			badge = Badge.BOSS_SLAIN_3;
 			break;
-		case 20:
+		case 16:
 			badge = Badge.BOSS_SLAIN_4;
 			break;
 		}
