@@ -46,8 +46,8 @@ public class HeavyBoomerang extends MissileWeapon {
 	
 	@Override
 	public int max(int lvl) {
-		return  3 * tier +                  //12 base, down from 16
-				(tier-1) * lvl;               //scaling unchanged
+		return (int) (3 * tier +                  //12 base, down from 16
+						(tier-1) * lvl*0.75f);               //scaling unchanged
 	}
 	
 	@Override

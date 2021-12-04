@@ -87,8 +87,8 @@ public class Dart extends MissileWeapon {
 	@Override
 	public int max(int lvl) {
 		if (bow != null){
-			return  9 +                       //9 base
-					2*bow.buffedLvl() + lvl; //+2 per bow level, +1 per level (default scaling +1)
+			return (int) (9 +                       //9 base
+								(2*bow.buffedLvl() + lvl)*0.75f); //+2 per bow level, +1 per level (default scaling +1)
 		} else {
 			return  1 +     //1 base, down from 3
 					lvl;  //scaling unchanged

@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
@@ -16,7 +17,17 @@ import java.util.ArrayList;
 public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
-		ChangeInfo changes = new ChangeInfo("Short-1.0.2", true, "");
+		ChangeInfo changes = new ChangeInfo("Short-1.0.3", true, "");
+		changes.hardlight(0xCCCCCC);
+		changeInfos.add(changes);
+		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
+				"_-_ Released December 4th, 2021"));
+		changes.addButton(new ChangeButton(new ItemSprite(new Sword()), "Equipment",
+				"_-_ Armors and weapons (except spirit bow) have 25% less max scaling."));
+		changes.addButton(new ChangeButton(new KingSprite(), "DK",
+				"Fixed impossible phase 2."));
+
+		changes = new ChangeInfo("Short-1.0.2", true, "");
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 		changes.addButton(new ChangeButton(new RatSprite(), "Sewer enemy adjustments",

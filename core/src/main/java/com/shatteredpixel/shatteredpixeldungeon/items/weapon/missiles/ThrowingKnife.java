@@ -43,8 +43,8 @@ public class ThrowingKnife extends MissileWeapon {
 	
 	@Override
 	public int max(int lvl) {
-		return  5 * tier +                      //5 base, up from 4
-				(tier == 1 ? lvl : (tier-1)*lvl); //scaling unchanged
+		return (int) (5 * tier +                      //5 base, up from 4
+						(tier == 1 ? lvl : (tier-1)*lvl)*0.75f); //scaling unchanged
 	}
 	
 	@Override

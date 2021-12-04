@@ -42,8 +42,8 @@ public class Dagger extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  7*(tier) +    //7 base, down from 8
-				lvl*(tier);   //scaling unchanged
+		return (int) (7*(tier) +    //7 base, down from 8
+						lvl*(tier)*0.75f);   //scaling unchanged
 	}
 	
 	@Override

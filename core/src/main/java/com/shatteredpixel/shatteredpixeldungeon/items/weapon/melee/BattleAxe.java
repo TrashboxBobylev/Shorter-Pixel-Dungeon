@@ -37,8 +37,8 @@ public class BattleAxe extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier) +    //16 base, down from 20
-				lvl*(tier);   //scaling unchanged
+		return (int) (4*(tier) +    //16 base, down from 20
+						lvl*(tier)*0.75f);   //scaling unchanged
 	}
 
 }
