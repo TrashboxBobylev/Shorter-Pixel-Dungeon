@@ -52,6 +52,14 @@ public class v1_X_Changes {
 						"_-_ Rusted fist's damage is reduced from 17-32 to 14-26.\n" +
 						"_-_ Bright and dark fist's damage is reduced from 10-20 to 8-16.\n" +
 						"_-_ God larva's HP is reduced from 15 to 12 and its damage is reduced from 12-17 to 9-15."));
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
+				"_-_ Fixed Ring of Force's excess power.\n" +
+						"_-_ All chapters are same size.\n" +
+						"_-_ Decreased shop's prices by 2x.\n" +
+						"_-_ Reduced level requirements and amount of mobs.\n" +
+						"_-_ Reverted Bleeding change.\n" +
+						"_-_ Buffed many wands by 20%-40%.\n" +
+						"_-_ Ghost quest enemies have 2x less HP."));
 
 		changes = new ChangeInfo("Short-1.0.1", true, "");
 		changes.hardlight(0xCCCCCC);

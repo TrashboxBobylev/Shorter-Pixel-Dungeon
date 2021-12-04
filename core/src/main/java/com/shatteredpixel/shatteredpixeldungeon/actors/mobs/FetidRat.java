@@ -36,7 +36,7 @@ public class FetidRat extends Rat {
 	{
 		spriteClass = FetidRatSprite.class;
 
-		HP = HT = 20;
+		HP = HT = 10;
 		defenseSkill = 5;
 
 		EXP = 4;
