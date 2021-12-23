@@ -358,16 +358,17 @@ public class Hero extends Char {
 	}
 
 	public int bonusTalentPoints(int tier){
+		int points = 0;
 		if (lvl < (Talent.tierLevelThresholds[tier]-1)
 				|| (tier == 3 && subClass == HeroSubClass.NONE)
 				|| (tier == 4 && armorAbility == null)) {
-			return 0;
+			return points;
 		} else if (buff(PotionOfDivineInspiration.DivineInspirationTracker.class) != null
 					&& buff(PotionOfDivineInspiration.DivineInspirationTracker.class).isBoosted(tier)) {
-			return 2;
-		} else {
-			return 0;
+			points += 2;
 		}
+		points += 2;
+		return points;
 	}
 	
 	public String className() {
