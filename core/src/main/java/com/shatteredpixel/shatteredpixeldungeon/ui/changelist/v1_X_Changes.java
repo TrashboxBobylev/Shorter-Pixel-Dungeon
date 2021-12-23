@@ -17,7 +17,15 @@ import java.util.ArrayList;
 public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
-		ChangeInfo changes = new ChangeInfo("Short-1.0.3", true, "");
+		ChangeInfo changes = new ChangeInfo("Short-1.0.4", true, "");
+		changes.hardlight(0xCCCCCC);
+		changeInfos.add(changes);
+		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
+				"_-_ Released December 23th, 2021"));
+		changes.addButton(new ChangeButton(Icons.get(Icons.SHPX), "ShatteredPD",
+				"_-_ Ported everything from Shattered 1.1."));
+
+		changes = new ChangeInfo("Short-1.0.3", true, "");
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
