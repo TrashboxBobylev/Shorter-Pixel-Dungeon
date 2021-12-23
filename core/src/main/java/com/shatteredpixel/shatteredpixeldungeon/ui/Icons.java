@@ -152,7 +152,7 @@ public enum Icons {
 			icon.frame( icon.texture.uvRect( 96, 16, 110, 30 ) );
 			break;
 		case BOBY:
-			icon.frame( icon.texture.uvRect( 112, 12, 126, 32 ) );
+			icon.frame( icon.texture.uvRect( 83, 47, 97, 64 ) );
 			break;
 		case BUFFS:
 			icon.frame( icon.texture.uvRect( 110, 16, 128, 31 ) );
@@ -262,7 +262,7 @@ public enum Icons {
 			icon.frame( icon.texture.uvRect( 48, 80, 64, 96 ) );
 			break;
 		case SHORTER_CHEST:
-			icon.frame( icon.texture.uvRect( 64, 80, 80, 94 ) );
+			icon.frame( icon.texture.uvRect( 0, 128, 16, 143 ) );
 			break;
 		//32*32 icons are scaled down to match game's size
 		case CELESTI:
