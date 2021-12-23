@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Alchemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.AlchemyPage;
@@ -61,12 +62,19 @@ public class LaboratoryRoom extends SpecialRoom {
 		}
 		Painter.set( level, pot, Terrain.ALCHEMY );
 		
-		int chapter = 1 + Dungeon.depth/4;
-		Blob.seed( pot.x + level.width() * pot.y, 1 + chapter*8 + Random.NormalIntRange(0, 8), Alchemy.class, level );
-		
-		int n = Random.NormalIntRange( 2, 4 );
+		int chapter = 1 + Dungeon.depth/5;
+		Blob.seed( pot.x + level.width() * pot.y, 1, Alchemy.class, level );
+
+		int pos;
+		do {
+			pos = level.pointToCell(random());
+		} while (
+				level.map[pos] != Terrain.EMPTY_SP ||
+						level.heaps.get( pos ) != null);
+		level.drop( new EnergyCrystal().random(), pos );
+
+		int n = Random.NormalIntRange( 1, 2 );
 		for (int i=0; i < n; i++) {
-			int pos;
 			do {
 				pos = level.pointToCell(random());
 			} while (
@@ -100,7 +108,6 @@ public class LaboratoryRoom extends SpecialRoom {
 			for (int i = 0; i < pagesToDrop; i++) {
 				AlchemyPage p = new AlchemyPage();
 				p.page(missingPages.remove(0));
-				int pos;
 				do {
 					pos = level.pointToCell(random());
 				} while (
