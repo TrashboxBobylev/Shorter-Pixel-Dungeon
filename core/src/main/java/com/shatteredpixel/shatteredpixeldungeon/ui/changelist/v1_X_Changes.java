@@ -17,7 +17,17 @@ import java.util.ArrayList;
 public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
-		ChangeInfo changes = new ChangeInfo("Short-1.0.4", true, "");
+		ChangeInfo changes = new ChangeInfo("Short-1.0.5", true, "");
+		changes.hardlight(0xCCCCCC);
+		changeInfos.add(changes);
+		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
+				"_-_ Released January 21th, 2021"));
+		changes.addButton(new ChangeButton(Icons.get(Icons.SHPX), "ShatteredPD",
+				"_-_ Fixed laboratory rooms not appearing.\n\n" +
+						"_-_ Fixed debug thing on Dwarf King.\n\n" +
+						"_-_ Fixed wrong music playing on levels."));
+
+		changes = new ChangeInfo("Short-1.0.4", true, "");
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
