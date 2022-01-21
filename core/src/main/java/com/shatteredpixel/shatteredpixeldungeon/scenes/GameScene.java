@@ -185,22 +185,22 @@ public class GameScene extends PixelScene {
 			return;
 		}
 
-		if (Dungeon.depth <= 5) {
+		if (Dungeon.depth <= 4) {
 			Music.INSTANCE.playTracks(
 					new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2, Assets.Music.SEWERS_2},
 					new float[]{1, 1, 0.5f},
 					false);
-		} else if (Dungeon.depth <= 10) {
+		} else if (Dungeon.depth <= 8) {
 			Music.INSTANCE.playTracks(
 					new String[]{Assets.Music.PRISON_1, Assets.Music.PRISON_2, Assets.Music.PRISON_2},
 					new float[]{1, 1, 0.5f},
 					false);
-		} else if (Dungeon.depth <= 15) {
+		} else if (Dungeon.depth <= 12) {
 			Music.INSTANCE.playTracks(
 					new String[]{Assets.Music.CAVES_1, Assets.Music.CAVES_2, Assets.Music.CAVES_2},
 					new float[]{1, 1, 0.5f},
 					false);
-		} else if (Dungeon.depth <= 20) {
+		} else if (Dungeon.depth <= 16) {
 			Music.INSTANCE.playTracks(
 					new String[]{Assets.Music.CITY_1, Assets.Music.CITY_2, Assets.Music.CITY_2},
 					new float[]{1, 1, 0.5f},
