@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,26 +156,26 @@ public class ShopRoom extends SpecialRoom {
 		switch (Dungeon.depth) {
 		case 4: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify() );
-			itemsToSpawn.add( new LeatherArmor().identify() );
+			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
+			itemsToSpawn.add( new LeatherArmor().identify(false) );
 			break;
 			
 		case 9:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify() );
-			itemsToSpawn.add( new MailArmor().identify() );
+			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
+			itemsToSpawn.add( new MailArmor().identify(false) );
 			break;
 			
 		case 13:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify() );
-			itemsToSpawn.add( new ScaleArmor().identify() );
+			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
+			itemsToSpawn.add( new ScaleArmor().identify(false) );
 			break;
 
 		case 16: case 17:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
-			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify() );
-			itemsToSpawn.add( new PlateArmor().identify() );
+			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
+			itemsToSpawn.add( new PlateArmor().identify(false) );
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 			break;
@@ -183,12 +183,12 @@ public class ShopRoom extends SpecialRoom {
 		w.enchant(null);
 		w.cursed = false;
 		w.level(0);
-		w.identify();
+		w.identify(false);
 		itemsToSpawn.add(w);
 		
 		itemsToSpawn.add( TippedDart.randomTipped(2) );
 
-		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(3, 4)));
+		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
 
 		itemsToSpawn.add(ChooseBag(Dungeon.hero.belongings));
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -269,12 +269,17 @@ public class WndSettings extends WndTabbed {
 			}
 
 			if (DeviceCompat.isAndroid()) {
-				btnOrientation = new RedButton(PixelScene.landscape() ?
+				Boolean landscape = SPDSettings.landscape();
+				if (landscape == null){
+					landscape = Game.width > Game.height;
+				}
+				Boolean finalLandscape = landscape;
+				btnOrientation = new RedButton(finalLandscape ?
 						Messages.get(this, "portrait")
 						: Messages.get(this, "landscape")) {
 					@Override
 					protected void onClick() {
-						SPDSettings.landscape(!PixelScene.landscape());
+						SPDSettings.landscape(!finalLandscape);
 					}
 				};
 				add(btnOrientation);
@@ -360,7 +365,9 @@ public class WndSettings extends WndTabbed {
 	private static class UITab extends Component {
 
 		RenderedTextBlock title;
+
 		ColorBlock sep1;
+		OptionSlider optUISize;
 		RenderedTextBlock barDesc;
 		RedButton btnSplit; RedButton btnGrouped; RedButton btnCentered;
 		CheckBox chkFlipToolbar;
@@ -379,58 +386,84 @@ public class WndSettings extends WndTabbed {
 			sep1 = new ColorBlock(1, 1, 0xFF000000);
 			add(sep1);
 
-			barDesc = PixelScene.renderTextBlock(Messages.get(this, "mode"), 9);
-			add(barDesc);
+			//add slider for UI size only if device has enough space to support it
+			float wMin = Game.width / PixelScene.MIN_WIDTH_FULL;
+			float hMin = Game.height / PixelScene.MIN_HEIGHT_FULL;
+			if (Math.min(wMin, hMin) >= 2*Game.density){
+				optUISize = new OptionSlider(
+						Messages.get(this, "size"),
+						Messages.get(this, "mobile"),
+						Messages.get(this, "full"),
+						0,
+						2
+				) {
+					@Override
+					protected void onChange() {
+						SPDSettings.interfaceSize(getSelectedValue());
+						ShatteredPixelDungeon.seamlessResetScene();
+					}
+				};
+				optUISize.setSelectedValue(SPDSettings.interfaceSize());
+				add(optUISize);
+			}
 
-			btnSplit = new RedButton(Messages.get(this, "split")){
-				@Override
-				protected void onClick() {
-					textColor(TITLE_COLOR);
-					btnGrouped.textColor(WHITE);
-					btnCentered.textColor(WHITE);
-					SPDSettings.toolbarMode(Toolbar.Mode.SPLIT.name());
-					Toolbar.updateLayout();
-				}
-			};
-			if (SPDSettings.toolbarMode().equals(Toolbar.Mode.SPLIT.name())) btnSplit.textColor(TITLE_COLOR);
-			add(btnSplit);
+			if (SPDSettings.interfaceSize() == 0) {
+				barDesc = PixelScene.renderTextBlock(Messages.get(this, "mode"), 9);
+				add(barDesc);
 
-			btnGrouped = new RedButton(Messages.get(this, "group")){
-				@Override
-				protected void onClick() {
-					btnSplit.textColor(WHITE);
-					textColor(TITLE_COLOR);
-					btnCentered.textColor(WHITE);
-					SPDSettings.toolbarMode(Toolbar.Mode.GROUP.name());
-					Toolbar.updateLayout();
-				}
-			};
-			if (SPDSettings.toolbarMode().equals(Toolbar.Mode.GROUP.name())) btnGrouped.textColor(TITLE_COLOR);
-			add(btnGrouped);
+				btnSplit = new RedButton(Messages.get(this, "split")) {
+					@Override
+					protected void onClick() {
+						textColor(TITLE_COLOR);
+						btnGrouped.textColor(WHITE);
+						btnCentered.textColor(WHITE);
+						SPDSettings.toolbarMode(Toolbar.Mode.SPLIT.name());
+						Toolbar.updateLayout();
+					}
+				};
+				if (SPDSettings.toolbarMode().equals(Toolbar.Mode.SPLIT.name()))
+					btnSplit.textColor(TITLE_COLOR);
+				add(btnSplit);
 
-			btnCentered = new RedButton(Messages.get(this, "center")){
-				@Override
-				protected void onClick() {
-					btnSplit.textColor(WHITE);
-					btnGrouped.textColor(WHITE);
-					textColor(TITLE_COLOR);
-					SPDSettings.toolbarMode(Toolbar.Mode.CENTER.name());
-					Toolbar.updateLayout();
-				}
-			};
-			if (SPDSettings.toolbarMode().equals(Toolbar.Mode.CENTER.name())) btnCentered.textColor(TITLE_COLOR);
-			add(btnCentered);
+				btnGrouped = new RedButton(Messages.get(this, "group")) {
+					@Override
+					protected void onClick() {
+						btnSplit.textColor(WHITE);
+						textColor(TITLE_COLOR);
+						btnCentered.textColor(WHITE);
+						SPDSettings.toolbarMode(Toolbar.Mode.GROUP.name());
+						Toolbar.updateLayout();
+					}
+				};
+				if (SPDSettings.toolbarMode().equals(Toolbar.Mode.GROUP.name()))
+					btnGrouped.textColor(TITLE_COLOR);
+				add(btnGrouped);
 
-			chkFlipToolbar = new CheckBox(Messages.get(this, "flip_toolbar")){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					SPDSettings.flipToolbar(checked());
-					Toolbar.updateLayout();
-				}
-			};
-			chkFlipToolbar.checked(SPDSettings.flipToolbar());
-			add(chkFlipToolbar);
+				btnCentered = new RedButton(Messages.get(this, "center")) {
+					@Override
+					protected void onClick() {
+						btnSplit.textColor(WHITE);
+						btnGrouped.textColor(WHITE);
+						textColor(TITLE_COLOR);
+						SPDSettings.toolbarMode(Toolbar.Mode.CENTER.name());
+						Toolbar.updateLayout();
+					}
+				};
+				if (SPDSettings.toolbarMode().equals(Toolbar.Mode.CENTER.name()))
+					btnCentered.textColor(TITLE_COLOR);
+				add(btnCentered);
+
+				chkFlipToolbar = new CheckBox(Messages.get(this, "flip_toolbar")) {
+					@Override
+					protected void onClick() {
+						super.onClick();
+						SPDSettings.flipToolbar(checked());
+						Toolbar.updateLayout();
+					}
+				};
+				chkFlipToolbar.checked(SPDSettings.flipToolbar());
+				add(chkFlipToolbar);
+			}
 
 			chkFlipTags = new CheckBox(Messages.get(this, "flip_indicators")){
 				@Override
@@ -489,20 +522,31 @@ public class WndSettings extends WndTabbed {
 			sep1.size(width, 1);
 			sep1.y = title.bottom() + 2*GAP;
 
-			barDesc.setPos((width-barDesc.width())/2f, sep1.y + 1 + GAP);
-			PixelScene.align(barDesc);
+			height = sep1.y + 1;
 
-			int btnWidth = (int)(width - 2* GAP)/3;
-			btnSplit.setRect(0, barDesc.bottom() + GAP, btnWidth, 16);
-			btnGrouped.setRect(btnSplit.right()+ GAP, btnSplit.top(), btnWidth, 16);
-			btnCentered.setRect(btnGrouped.right()+ GAP, btnSplit.top(), btnWidth, 16);
+			if (optUISize != null){
+				optUISize.setRect(0, height + GAP, width, SLIDER_HEIGHT);
+				height = optUISize.bottom();
+			}
 
-			if (width > 200) {
-				chkFlipToolbar.setRect(0, btnGrouped.bottom() + GAP, width/2 - 1, BTN_HEIGHT);
-				chkFlipTags.setRect(chkFlipToolbar.right() + GAP, chkFlipToolbar.top(), width/2 -1, BTN_HEIGHT);
+			if (barDesc != null) {
+				barDesc.setPos((width - barDesc.width()) / 2f, height + GAP);
+				PixelScene.align(barDesc);
+
+				int btnWidth = (int) (width - 2 * GAP) / 3;
+				btnSplit.setRect(0, barDesc.bottom() + GAP, btnWidth, 16);
+				btnGrouped.setRect(btnSplit.right() + GAP, btnSplit.top(), btnWidth, 16);
+				btnCentered.setRect(btnGrouped.right() + GAP, btnSplit.top(), btnWidth, 16);
+
+				if (width > 200) {
+					chkFlipToolbar.setRect(0, btnGrouped.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
+					chkFlipTags.setRect(chkFlipToolbar.right() + GAP, chkFlipToolbar.top(), width / 2 - 1, BTN_HEIGHT);
+				} else {
+					chkFlipToolbar.setRect(0, btnGrouped.bottom() + GAP, width, BTN_HEIGHT);
+					chkFlipTags.setRect(0, chkFlipToolbar.bottom() + GAP, width, BTN_HEIGHT);
+				}
 			} else {
-				chkFlipToolbar.setRect(0, btnGrouped.bottom() + GAP, width, BTN_HEIGHT);
-				chkFlipTags.setRect(0, chkFlipToolbar.bottom() + GAP, width, BTN_HEIGHT);
+				chkFlipTags.setRect(0, height + GAP, width, BTN_HEIGHT);
 			}
 
 			sep2.size(width, 1);
@@ -511,9 +555,18 @@ public class WndSettings extends WndTabbed {
 			chkFont.setRect(0, sep2.y + 1 + GAP, width, BTN_HEIGHT);
 
 			if (btnKeyBindings != null){
-				sep3.size(width, 1);
-				sep3.y = chkFont.bottom() + 2;
-				btnKeyBindings.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
+				if (width > 200){
+					chkFont.setSize(width/2-1, BTN_HEIGHT);
+					sep3.size(1, BTN_HEIGHT + 2*GAP);
+					sep3.x = chkFont.right() + 0.5f;
+					sep3.y = sep2.y+1;
+					PixelScene.align(sep3);
+					btnKeyBindings.setRect(chkFont.right()+2, chkFont.top(), width/2 - 1, BTN_HEIGHT);
+				} else {
+					sep3.size(width, 1);
+					sep3.y = chkFont.bottom() + 2;
+					btnKeyBindings.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
+				}
 				height = btnKeyBindings.bottom();
 			} else {
 				height = chkFont.bottom();
@@ -634,6 +687,8 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep2;
 		OptionSlider optSFX;
 		CheckBox chkMuteSFX;
+		ColorBlock sep3;
+		CheckBox chkIgnoreSilent;
 
 		@Override
 		protected void createChildren() {
@@ -695,6 +750,22 @@ public class WndSettings extends WndTabbed {
 			};
 			chkMuteSFX.checked(!SPDSettings.soundFx());
 			add( chkMuteSFX );
+
+			if (DeviceCompat.isiOS() && Messages.lang() == Languages.ENGLISH){
+
+				sep3 = new ColorBlock(1, 1, 0xFF000000);
+				add(sep3);
+
+				chkIgnoreSilent = new CheckBox( Messages.get(this, "ignore_silent") ){
+					@Override
+					protected void onClick() {
+						super.onClick();
+						SPDSettings.ignoreSilentMode(checked());
+					}
+				};
+				chkIgnoreSilent.checked(SPDSettings.ignoreSilentMode());
+				add(chkIgnoreSilent);
+			}
 		}
 
 		@Override
@@ -703,16 +774,36 @@ public class WndSettings extends WndTabbed {
 			sep1.size(width, 1);
 			sep1.y = title.bottom() + 2*GAP;
 
-			optMusic.setRect(0, sep1.y + 1 + GAP, width, SLIDER_HEIGHT);
-			chkMusicMute.setRect(0, optMusic.bottom() + GAP, width, BTN_HEIGHT);
+			if (width > 200) {
+				optMusic.setRect(0, sep1.y + 1 + GAP, width/2-1, SLIDER_HEIGHT);
+				chkMusicMute.setRect(0, optMusic.bottom() + GAP, width/2-1, BTN_HEIGHT);
 
-			sep2.size(width, 1);
-			sep2.y = chkMusicMute.bottom() + GAP;
+				sep2.size(width, 1);
+				sep2.y = sep1.y; //just have them overlap
 
-			optSFX.setRect(0, sep2.y + 1 + GAP, width, SLIDER_HEIGHT);
-			chkMuteSFX.setRect(0, optSFX.bottom() + GAP, width, BTN_HEIGHT);
+				optSFX.setRect(optMusic.right()+2, sep2.y + 1 + GAP, width/2-1, SLIDER_HEIGHT);
+				chkMuteSFX.setRect(chkMusicMute.right()+2, optSFX.bottom() + GAP, width/2-1, BTN_HEIGHT);
+
+			} else {
+				optMusic.setRect(0, sep1.y + 1 + GAP, width, SLIDER_HEIGHT);
+				chkMusicMute.setRect(0, optMusic.bottom() + GAP, width, BTN_HEIGHT);
+
+				sep2.size(width, 1);
+				sep2.y = chkMusicMute.bottom() + GAP;
+
+				optSFX.setRect(0, sep2.y + 1 + GAP, width, SLIDER_HEIGHT);
+				chkMuteSFX.setRect(0, optSFX.bottom() + GAP, width, BTN_HEIGHT);
+			}
 
 			height = chkMuteSFX.bottom();
+
+			if (chkIgnoreSilent != null){
+				sep3.size(width, 1);
+				sep3.y = chkMuteSFX.bottom() + GAP;
+
+				chkIgnoreSilent.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
+				height = chkIgnoreSilent.bottom();
+			}
 		}
 
 	}
@@ -871,7 +962,7 @@ public class WndSettings extends WndTabbed {
 							index += 2;
 						}
 
-						Window credits = new Window(0, 0, 0, Chrome.get(Chrome.Type.TOAST));
+						Window credits = new Window(0, 0, Chrome.get(Chrome.Type.TOAST));
 
 						int w = PixelScene.landscape() ? 120 : 80;
 						if (totalCredits >= 25) w *= 1.5f;
