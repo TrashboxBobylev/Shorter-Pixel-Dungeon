@@ -38,6 +38,8 @@ public enum Icons {
 	CHANGES,
 	PREFS,
 	SHPX,
+	BOBY,
+	SHORTER_CHEST,
 
 	//rankings and hero select icons, spacing for 16x16
 	STAIRS,
@@ -143,6 +145,12 @@ public enum Icons {
 				break;
 			case SHPX:
 				icon.frame( icon.texture.uvRectBySize( 119, 0, 16, 16 ) );
+				break;
+			case BOBY:
+				icon.frame( icon.texture.uvRectBySize( 136, 0, 15, 18 ) );
+				break;
+			case SHORTER_CHEST:
+				icon.frame( icon.texture.uvRectBySize( 0, 80, 16, 16 ) );
 				break;
 
 			case STAIRS:
