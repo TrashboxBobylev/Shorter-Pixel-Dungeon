@@ -1603,7 +1603,7 @@ public class Hero extends Char {
 	}
 	
 	public static int maxExp( int lvl ){
-		return 3 + lvl * 3;
+		return Math.round((3 + lvl * 3) * 0.75f);
 	}
 	
 	public boolean isStarving() {

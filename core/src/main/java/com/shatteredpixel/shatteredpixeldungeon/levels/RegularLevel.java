@@ -178,7 +178,7 @@ public abstract class RegularLevel extends Level {
 	public int mobLimit() {
 		if (Dungeon.depth <= 1) return 0;
 
-		int mobs = 1 + Dungeon.depth % 4 + Random.Int(1);
+		int mobs = 1 + Dungeon.depth % 4;
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
@@ -312,7 +312,7 @@ public abstract class RegularLevel extends Level {
 	protected void createItems() {
 		
 		// drops 3/4/5 items 50%/40%/10% of the time
-		int nItems = 3 + Random.chances(new float[]{5, 4, 1});
+		int nItems = 2 + Random.chances(new float[]{5, 4, 1});
 
 		if (feeling == Feeling.LARGE){
 			nItems += 2;

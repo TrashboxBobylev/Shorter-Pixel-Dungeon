@@ -17,11 +17,26 @@ import java.util.ArrayList;
 public class v1_X_Changes {
 
 	public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
-		ChangeInfo changes = new ChangeInfo("Short-1.0.5", true, "");
+		ChangeInfo changes = new ChangeInfo("Short-1.0.6", true, "");
 		changes.hardlight(0xCCCCCC);
 		changeInfos.add(changes);
 		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
-				"_-_ Released January 21th, 2021"));
+				"_-_ Released April 12th, 2022"));
+		changes.addButton(new ChangeButton(Icons.get(Icons.SHPX), "ShatteredPD",
+				"_-_ Ported everything from Shattered 1.2.2."));
+		changes.addButton(new ChangeButton(new ItemSprite(new Sword()), "Equipment",
+				"_-_ Reduced weapon damage again.\n" +
+						"_-_ Reduced amount of XP required to level up.\n" +
+						"_-_ Reduced amount of items spawning on level."));
+		changes.addButton(new ChangeButton(new RatSprite(), "Mobs",
+				"_-_ Reduced HP numbers.\n" +
+						"_-_ Increased respawning cooldown from 50 to 80."));
+
+		changes = new ChangeInfo("Short-1.0.5", true, "");
+		changes.hardlight(0xCCCCCC);
+		changeInfos.add(changes);
+		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
+				"_-_ Released January 21th, 2022"));
 		changes.addButton(new ChangeButton(Icons.get(Icons.SHPX), "ShatteredPD",
 				"_-_ Fixed laboratory rooms not appearing.\n\n" +
 						"_-_ Fixed debug thing on Dwarf King.\n\n" +
