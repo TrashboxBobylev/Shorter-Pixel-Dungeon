@@ -39,8 +39,8 @@ public class Gloves extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(2*(tier+1)) +     //4 base, down from 8
-				lvl*Math.round(0.5f*(tier+1)*0.75f);  //+0.5 per level, down from +1
+		return  Math.round(1*(tier+1)) +     //4 base, down from 8
+				lvl*Math.round(0.5f*(tier+1)*0.66f);  //+0.5 per level, down from +1
 	}
 
 }

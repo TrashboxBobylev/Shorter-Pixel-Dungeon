@@ -37,8 +37,8 @@ public class WarHammer extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return (int) (4*(tier) +    //20 base, down from 24
-						lvl*(tier)*0.75f);   //scaling unchanged
+		return (int) (3*(tier) +    //20 base, down from 24
+						lvl*(tier)*0.66f);   //scaling unchanged
 	}
 
 }

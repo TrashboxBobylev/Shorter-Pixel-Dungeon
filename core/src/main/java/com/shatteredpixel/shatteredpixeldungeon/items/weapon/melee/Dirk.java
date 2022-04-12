@@ -40,8 +40,8 @@ public class Dirk extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return (int) (5*(tier) +    //10 base, down from 12
-						lvl*(tier)*0.75f);   //scaling unchanged
+		return (int) (4*(tier) +    //10 base, down from 12
+						lvl*(tier)*0.66f);   //scaling unchanged
 	}
 	
 	@Override

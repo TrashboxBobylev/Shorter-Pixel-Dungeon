@@ -72,7 +72,7 @@ public class YogDzewa extends Mob {
 	{
 		spriteClass = YogSprite.class;
 
-		HP = HT = 500;
+		HP = HT = 300;
 
 		EXP = 50;
 
@@ -346,9 +346,9 @@ public class YogDzewa extends Mob {
 		if (phase == 0 || findFist() != null) return;
 
 		if (phase < 4) {
-			HP = Math.max(HP, HT - 150 * phase);
+			HP = Math.max(HP, HT - 90 * phase);
 		} else if (phase == 4) {
-			HP = Math.max(HP, 50);
+			HP = Math.max(HP, 30);
 		}
 		int dmgTaken = preHP - HP;
 
@@ -357,7 +357,7 @@ public class YogDzewa extends Mob {
 			summonCooldown -= dmgTaken / 10f;
 		}
 
-		if (phase < 4 && HP <= HT - 150*phase){
+		if (phase < 4 && HP <= HT - 90*phase){
 
 			phase++;
 
@@ -574,7 +574,7 @@ public class YogDzewa extends Mob {
 		{
 			spriteClass = LarvaSprite.class;
 
-			HP = HT = 12;
+			HP = HT = 8;
 			defenseSkill = 9;
 			viewDistance = Light.DISTANCE;
 

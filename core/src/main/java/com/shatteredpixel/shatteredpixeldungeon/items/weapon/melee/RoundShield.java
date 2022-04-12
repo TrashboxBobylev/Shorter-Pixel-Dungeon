@@ -38,8 +38,8 @@ public class RoundShield extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(4f*(tier-1)) +     //8 base, down from 16
-				Math.round(1.5f*0.75f*lvl);                   //+1.5 per level, down from +3
+		return  Math.round(3f*(tier-1)) +     //8 base, down from 16
+				Math.round(1.5f*0.66f*lvl);                   //+1.5 per level, down from +3
 	}
 
 

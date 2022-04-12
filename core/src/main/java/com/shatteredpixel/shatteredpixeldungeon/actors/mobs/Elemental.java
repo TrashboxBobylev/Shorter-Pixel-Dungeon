@@ -51,7 +51,7 @@ import java.util.ArrayList;
 public abstract class Elemental extends Mob {
 
 	{
-		HP = HT = 36;
+		HP = HT = 29;
 		defenseSkill = 14;
 		
 		EXP = 7;

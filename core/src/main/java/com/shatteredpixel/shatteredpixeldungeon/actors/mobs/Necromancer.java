@@ -46,7 +46,7 @@ public class Necromancer extends Mob {
 	{
 		spriteClass = NecromancerSprite.class;
 		
-		HP = HT = 18;
+		HP = HT = 14;
 		defenseSkill = 12;
 		
 		EXP = 5;
@@ -160,7 +160,7 @@ public class Necromancer extends Mob {
 				sprite.parent.add(new Beam.HealthRay(sprite.center(), mySkeleton.sprite.center()));
 			}
 			
-			mySkeleton.HP = Math.min(mySkeleton.HP + 4, mySkeleton.HT);
+			mySkeleton.HP = Math.min(mySkeleton.HP + 3, mySkeleton.HT);
 			if (mySkeleton.sprite.visible) mySkeleton.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
 			
 		//otherwise give it adrenaline
@@ -346,7 +346,7 @@ public class Necromancer extends Mob {
 			maxLvl = -5;
 			
 			//11/16 health to start
-			HP = 11;
+			HP = 7;
 		}
 
 		@Override

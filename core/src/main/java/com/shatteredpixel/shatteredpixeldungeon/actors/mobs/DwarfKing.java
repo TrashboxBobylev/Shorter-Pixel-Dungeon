@@ -71,7 +71,7 @@ public class DwarfKing extends Mob {
 	{
 		spriteClass = KingSprite.class;
 
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 270 : 180;
+		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 180 : 120;
 		EXP = 30;
 		defenseSkill = 16;
 
@@ -446,8 +446,8 @@ public class DwarfKing extends Mob {
 			int dmgTaken = preHP - HP;
 			abilityCooldown -= dmgTaken/8f;
 			summonCooldown -= dmgTaken/8f;
-			if (HP <= (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 45 : 30)) {
-				HP = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 45 : 30);
+			if (HP <= (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 30 : 20)) {
+				HP = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 30 : 20);
 				sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
 				ScrollOfTeleportation.appear(this, CityBossLevel.throne);
 				properties.add(Property.IMMOVABLE);

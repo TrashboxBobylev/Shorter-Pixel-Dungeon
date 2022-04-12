@@ -46,7 +46,7 @@ public class Eye extends Mob {
 	{
 		spriteClass = EyeSprite.class;
 		
-		HP = HT = 50;
+		HP = HT = 40;
 		defenseSkill = 14;
 		viewDistance = Light.DISTANCE;
 		

@@ -43,7 +43,7 @@ public class Ghoul extends Mob {
 	{
 		spriteClass = GhoulSprite.class;
 		
-		HP = HT = 24;
+		HP = HT = 19;
 		defenseSkill = 12;
 		
 		EXP = 3;

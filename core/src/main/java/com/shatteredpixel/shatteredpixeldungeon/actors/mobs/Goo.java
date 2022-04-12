@@ -48,7 +48,7 @@ import com.watabou.utils.Random;
 public class Goo extends Mob {
 
 	{
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 84 : 70;
+		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 60 : 50;
 		EXP = 6;
 		defenseSkill = 6;
 		spriteClass = GooSprite.class;
