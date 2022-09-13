@@ -15,7 +15,7 @@ allprojects {
         appPackageName = 'com.trashboxbobylev.shorterpd'
 
         appVersionCode = 622
-        appVersionName = 'Short-1.0.6'
+        appVersionName = 'Short-1.0.7'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
