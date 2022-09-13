@@ -135,7 +135,7 @@ public class v1_X_Changes {
 		changeInfos.add(changes);
 
 		changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
-				"_-_ v1.2.0 Released November 11th, 2021\n" +
+				"_-_ Released November 11th, 2021\n" +
 						"\n" +
 						"This was an idea even back in February, but I just got enough bored to implement that."));
 
