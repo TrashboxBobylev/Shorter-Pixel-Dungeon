@@ -94,10 +94,10 @@ public class Bestiary {
 				
 			// City
 			case 13:
-				//2x ghoul, 2x elemental
+				//3x ghoul, 1x elemental
 				return new ArrayList<>(Arrays.asList(
-						Ghoul.class, Ghoul.class,
-						Elemental.random(), Elemental.random()));
+						Ghoul.class, Ghoul.class, Ghoul.class,
+						Elemental.random()));
 			case 14:
 				//1x ghoul, 2x elemental, 1x monk
 				return new ArrayList<>(Arrays.asList(

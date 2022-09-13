@@ -22,8 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
@@ -99,7 +101,7 @@ public class Warlock extends Mob implements Callback {
 	//used so resistances can differentiate between melee and magical attacks
 	public static class DarkBolt{}
 	
-	private void zap() {
+	protected void zap() {
 		spend( TIME_TO_ZAP );
 		
 		if (hit( this, enemy, true )) {
@@ -110,9 +112,11 @@ public class Warlock extends Mob implements Callback {
 			}
 			
 			int dmg = Random.NormalIntRange( 6, 12 );
+			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 			enemy.damage( dmg, new DarkBolt() );
 			
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {
+				Badges.validateDeathFromEnemyMagic();
 				Dungeon.fail( getClass() );
 				GLog.n( Messages.get(this, "bolt_kill") );
 			}
@@ -145,11 +149,11 @@ public class Warlock extends Mob implements Callback {
 			Dungeon.LimitedDrops.WARLOCK_HP.count++;
 			return new PotionOfHealing();
 		} else {
-			Item i = Generator.random(Generator.Category.POTION);
+			Item i = Generator.randomUsingDefaults(Generator.Category.POTION);
 			int healingTried = 0;
 			while (i instanceof PotionOfHealing){
 				healingTried++;
-				i = Generator.random(Generator.Category.POTION);
+				i = Generator.randomUsingDefaults(Generator.Category.POTION);
 			}
 
 			//return the attempted healing potion drops to the pool

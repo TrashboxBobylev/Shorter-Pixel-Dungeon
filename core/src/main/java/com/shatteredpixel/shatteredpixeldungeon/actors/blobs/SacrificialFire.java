@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -33,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -130,7 +132,7 @@ public class SacrificialFire extends Blob {
 		SacrificialFire fire = (SacrificialFire)Dungeon.level.blobs.get( SacrificialFire.class );
 		int firePos = -1;
 		for (int i : PathFinder.NEIGHBOURS9){
-			if (fire != null && fire.cur[ch.pos+i] > 0){
+			if (fire != null && fire.volume > 0 && fire.cur[ch.pos+i] > 0){
 				firePos = ch.pos+i;
 				break;
 			}
@@ -140,19 +142,23 @@ public class SacrificialFire extends Blob {
 
 			int exp = 0;
 			if (ch instanceof Mob) {
-				//same rates as used in wand of corruption
+				//same rates as used in wand of corruption, except for swarms
 				if (ch instanceof Statue || ch instanceof Mimic){
 					exp = 1 + Dungeon.depth;
 				} else if (ch instanceof Piranha || ch instanceof Bee) {
 					exp = 1 + Dungeon.depth/2;
 				} else if (ch instanceof Wraith) {
 					exp = 1 + Dungeon.depth/3;
+				} else if (ch instanceof Swarm && ((Swarm) ch).EXP == 0){
+					//give 1 exp for child swarms, instead of 0
+					exp = 1;
 				} else {
 					exp = ((Mob)ch).EXP;
 				}
 				exp *= Random.IntRange( 2, 3 );
 			} else if (ch instanceof Hero) {
 				exp = 1_000_000; //always enough to activate the reward, if you can somehow get it
+				Badges.validateDeathFromSacrifice();
 			}
 
 			if (exp > 0) {
