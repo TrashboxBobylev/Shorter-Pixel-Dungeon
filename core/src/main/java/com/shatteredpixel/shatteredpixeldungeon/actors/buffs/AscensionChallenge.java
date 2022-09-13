@@ -223,7 +223,7 @@ public class AscensionChallenge extends Buff {
 			} else if (stacks >= 2.5f){
 				GLog.n(Messages.get(this, "beckon"));
 			}
-			if (stacks > 10 || stacks > 5 && Dungeon.depth > 20){
+			if (stacks > 10 || stacks > 5 && Dungeon.depth > 16){
 				//english only until the next update
 				if (Messages.lang() == Languages.ENGLISH) {
 					GLog.h(Messages.get(this, "weaken_info"));

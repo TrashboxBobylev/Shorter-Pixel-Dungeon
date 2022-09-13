@@ -384,7 +384,7 @@ public class Dungeon {
 	//is usually the dungeon depth, but can be set to 26 when ascending
 	public static int scalingDepth(){
 		if (Dungeon.hero != null && Dungeon.hero.buff(AscensionChallenge.class) != null){
-			return 26;
+			return 21;
 		} else {
 			return depth;
 		}
