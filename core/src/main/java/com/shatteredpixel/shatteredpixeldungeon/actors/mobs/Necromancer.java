@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -80,7 +81,7 @@ public class Necromancer extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 3);
+		return super.drRoll() + Random.NormalIntRange(0, 3);
 	}
 	
 	@Override
@@ -211,6 +212,10 @@ public class Necromancer extends Mob {
 				Char blocker = Actor.findChar(summoningPos);
 				if (blocker.alignment != alignment){
 					blocker.damage( Random.NormalIntRange(2, 10), this );
+					if (blocker == Dungeon.hero && !blocker.isAlive()){
+						Badges.validateDeathFromEnemyMagic();
+						Dungeon.fail(getClass());
+					}
 				}
 
 				spend(TICK);

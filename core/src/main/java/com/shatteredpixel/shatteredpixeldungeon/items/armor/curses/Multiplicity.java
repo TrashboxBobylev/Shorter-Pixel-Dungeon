@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -71,7 +72,7 @@ public class Multiplicity extends Armor.Glyph {
 					//FIXME should probably have a mob property for this
 					if (!(attacker instanceof Mob)
 							|| attacker.properties().contains(Char.Property.BOSS) || attacker.properties().contains(Char.Property.MINIBOSS)
-							|| attacker instanceof Mimic || attacker instanceof Statue){
+							|| attacker instanceof Mimic || attacker instanceof Statue || attacker instanceof NPC){
 						m = Dungeon.level.createMob();
 					} else {
 						Actor.fixTime();
@@ -109,8 +110,9 @@ public class Multiplicity extends Armor.Glyph {
 					}
 
 					if (!spawnPoints.isEmpty()) {
+						m.pos = Random.element(spawnPoints);
 						GameScene.add(m);
-						ScrollOfTeleportation.appear(m, Random.element(spawnPoints));
+						ScrollOfTeleportation.appear(m, m.pos);
 					}
 				}
 

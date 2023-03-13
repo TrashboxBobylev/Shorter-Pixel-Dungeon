@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,14 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class RoundShield extends MeleeWeapon {
 
@@ -42,7 +47,6 @@ public class RoundShield extends MeleeWeapon {
 				Math.round(1.5f*0.66f*lvl);                   //+1.5 per level, down from +3
 	}
 
-
 	@Override
 	public int defenseFactor( Char owner ) {
 		return 2+buffedLvl();     //2 extra defence, plus 1 per level;
@@ -53,6 +57,37 @@ public class RoundShield extends MeleeWeapon {
 			return Messages.get(this, "stats_desc", 2+buffedLvl());
 		} else {
 			return Messages.get(this, "typical_stats_desc", 2);
+		}
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		RoundShield.guardAbility(hero, 5, this);
+	}
+
+	public static void guardAbility(Hero hero, int duration, MeleeWeapon wep){
+		wep.beforeAbilityUsed(hero);
+		Buff.prolong(hero, GuardTracker.class, duration);
+		hero.sprite.operate(hero.pos);
+		hero.spendAndNext(Actor.TICK);
+		wep.afterAbilityUsed(hero);
+	}
+
+	public static class GuardTracker extends FlavourBuff {
+
+		{
+			announced = true;
+			type = buffType.POSITIVE;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.DUEL_GUARD;
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (5 - visualcooldown()) / 5);
 		}
 	}
 }

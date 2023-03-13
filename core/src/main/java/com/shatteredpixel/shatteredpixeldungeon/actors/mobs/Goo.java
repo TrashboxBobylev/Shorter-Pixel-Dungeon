@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,15 +95,19 @@ public class Goo extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 2);
+		return super.drRoll() + Random.NormalIntRange(0, 2);
 	}
 
 	@Override
 	public boolean act() {
 
+		if (state != HUNTING && pumpedUp > 0){
+			pumpedUp = 0;
+			sprite.idle();
+		}
+
 		if (Dungeon.level.water[pos] && HP < HT) {
 			HP += healInc;
-			Statistics.bossScores[0] -= 10;
 			Statistics.qualifiedForBossChallengeBadge = false;
 
 			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
@@ -293,8 +297,7 @@ public class Goo extends Mob {
 		if (Statistics.qualifiedForBossChallengeBadge){
 			Badges.validateBossChallengeCompleted();
 		}
-		Statistics.bossScores[0] += 1050; //Goo has a 50 point gimme
-		Statistics.bossScores[0] = Math.min(1000, Statistics.bossScores[0]);
+		Statistics.bossScores[0] += 1000;
 		
 		yell( Messages.get(this, "defeated") );
 	}

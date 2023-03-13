@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,17 +97,7 @@ public class Tengu extends Mob {
 		
 		viewDistance = 12;
 	}
-	
-	@Override
-	protected void onAdd() {
-		//when he's removed and re-added to the fight, his time is always set to now.
-		if (cooldown() > TICK) {
-			timeToNow();
-			spendToWhole();
-		}
-		super.onAdd();
-	}
-	
+
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 3, 9 );
@@ -124,7 +114,7 @@ public class Tengu extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 4);
+		return super.drRoll() + Random.NormalIntRange(0, 4);
 	}
 
 	boolean loading = false;
@@ -188,9 +178,23 @@ public class Tengu extends Mob {
 			((PrisonBossLevel)Dungeon.level).progress();
 			BossHealthBar.bleed(true);
 			
-			//if tengu has lost a certain amount of hp, jump
+		//if tengu has lost a certain amount of hp, jump
 		} else if (beforeHitHP / hpBracket != HP / hpBracket) {
-			jump();
+			//let full attack action complete first
+			Actor.add(new Actor() {
+
+				{
+					actPriority = VFX_PRIO;
+				}
+
+				@Override
+				protected boolean act() {
+					Actor.remove(this);
+					jump();
+					return true;
+				}
+			});
+			return;
 		}
 	}
 	
@@ -554,8 +558,8 @@ public class Tengu extends Mob {
 		//Targets closest cell which is adjacent to target
 		for (int i : PathFinder.NEIGHBOURS8){
 			int cell = target.pos + i;
-			if (targetCell == -1 ||
-					Dungeon.level.trueDistance(cell, thrower.pos) < Dungeon.level.trueDistance(targetCell, thrower.pos)){
+			if (!Dungeon.level.solid[cell] &&
+					(targetCell == -1 || Dungeon.level.trueDistance(cell, thrower.pos) < Dungeon.level.trueDistance(targetCell, thrower.pos))){
 				targetCell = cell;
 			}
 		}

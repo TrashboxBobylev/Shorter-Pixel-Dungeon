@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -53,6 +54,7 @@ public class Badges {
 		MASTERY_MAGE,
 		MASTERY_ROGUE,
 		MASTERY_HUNTRESS,
+		MASTERY_DUELIST,
 		FOUND_RATMOGRIFY,
 
 		//bronze
@@ -101,6 +103,7 @@ public class Badges {
 		BOSS_SLAIN_1_MAGE,
 		BOSS_SLAIN_1_ROGUE,
 		BOSS_SLAIN_1_HUNTRESS,
+		BOSS_SLAIN_1_DUELIST,
 		BOSS_SLAIN_1_ALL_CLASSES    ( 54, true ),
 		GAMES_PLAYED_2              ( 55, true ),
 		HIGH_SCORE_2                ( 56 ),
@@ -127,7 +130,7 @@ public class Badges {
 		BOSS_SLAIN_4                ( 78 ),
 		ALL_RINGS_IDENTIFIED        ( 79 ),
 		ALL_ARTIFACTS_IDENTIFIED    ( 80 ),
-		DEATH_FROM_GRIM_TRAP        ( 81 ),
+		DEATH_FROM_GRIM_TRAP        ( 81 ), //also disintegration traps
 		VICTORY                     ( 82 ),
 		BOSS_CHALLENGE_1            ( 83 ),
 		BOSS_CHALLENGE_2            ( 84 ),
@@ -146,6 +149,7 @@ public class Badges {
 		VICTORY_MAGE,
 		VICTORY_ROGUE,
 		VICTORY_HUNTRESS,
+		VICTORY_DUELIST,
 		VICTORY_ALL_CLASSES         ( 103, true ),
 		DEATH_FROM_ALL              ( 104, true ),
 		BOSS_SLAIN_3_GLADIATOR,
@@ -156,6 +160,8 @@ public class Badges {
 		BOSS_SLAIN_3_ASSASSIN,
 		BOSS_SLAIN_3_SNIPER,
 		BOSS_SLAIN_3_WARDEN,
+		BOSS_SLAIN_3_CHAMPION,
+		BOSS_SLAIN_3_MONK,
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 105, true ),
 		BOSS_CHALLENGE_3            ( 106 ),
 		BOSS_CHALLENGE_4            ( 107 ),
@@ -233,6 +239,8 @@ public class Badges {
 		if (bundle == null) return badges;
 		
 		String[] names = bundle.getStringArray( BADGES );
+		if (names == null) return badges;
+
 		for (int i=0; i < names.length; i++) {
 			try {
 				if (renamedBadges.containsKey(names[i])){
@@ -662,7 +670,7 @@ public class Badges {
 		validateDeathFromAll();
 	}
 
-	public static void validateDeathFromGrimTrap() {
+	public static void validateDeathFromGrimOrDisintTrap() {
 		Badge badge = Badge.DEATH_FROM_GRIM_TRAP;
 		local.add( badge );
 		displayBadge( badge );
@@ -694,6 +702,7 @@ public class Badges {
 		firstBossClassBadges.put(HeroClass.MAGE, Badge.BOSS_SLAIN_1_MAGE);
 		firstBossClassBadges.put(HeroClass.ROGUE, Badge.BOSS_SLAIN_1_ROGUE);
 		firstBossClassBadges.put(HeroClass.HUNTRESS, Badge.BOSS_SLAIN_1_HUNTRESS);
+		firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
 	}
 
 	private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
@@ -702,6 +711,7 @@ public class Badges {
 		victoryClassBadges.put(HeroClass.MAGE, Badge.VICTORY_MAGE);
 		victoryClassBadges.put(HeroClass.ROGUE, Badge.VICTORY_ROGUE);
 		victoryClassBadges.put(HeroClass.HUNTRESS, Badge.VICTORY_HUNTRESS);
+		victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
 	}
 
 	private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
@@ -714,6 +724,8 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.FREERUNNER, Badge.BOSS_SLAIN_3_FREERUNNER);
 		thirdBossSubclassBadges.put(HeroSubClass.SNIPER, Badge.BOSS_SLAIN_3_SNIPER);
 		thirdBossSubclassBadges.put(HeroSubClass.WARDEN, Badge.BOSS_SLAIN_3_WARDEN);
+		thirdBossSubclassBadges.put(HeroSubClass.CHAMPION, Badge.BOSS_SLAIN_3_CHAMPION);
+		thirdBossSubclassBadges.put(HeroSubClass.MONK, Badge.BOSS_SLAIN_3_MONK);
 	}
 
 	public static void validateBossSlain() {
@@ -811,18 +823,21 @@ public class Badges {
 		
 		Badge badge = null;
 		switch (Dungeon.hero.heroClass) {
-		case WARRIOR:
-			badge = Badge.MASTERY_WARRIOR;
-			break;
-		case MAGE:
-			badge = Badge.MASTERY_MAGE;
-			break;
-		case ROGUE:
-			badge = Badge.MASTERY_ROGUE;
-			break;
-		case HUNTRESS:
-			badge = Badge.MASTERY_HUNTRESS;
-			break;
+			case WARRIOR:
+				badge = Badge.MASTERY_WARRIOR;
+				break;
+			case MAGE:
+				badge = Badge.MASTERY_MAGE;
+				break;
+			case ROGUE:
+				badge = Badge.MASTERY_ROGUE;
+				break;
+			case HUNTRESS:
+				badge = Badge.MASTERY_HUNTRESS;
+				break;
+			case DUELIST:
+				badge = Badge.MASTERY_DUELIST;
+				break;
 		}
 		
 		unlock(badge);
@@ -840,7 +855,24 @@ public class Badges {
 	
 	public static void validateHuntressUnlock(){
 	}
-	
+
+	public static void validateDuelistUnlock(){
+		if (!isUnlocked(Badge.UNLOCK_DUELIST) && Dungeon.hero != null
+				&& Dungeon.hero.belongings.weapon instanceof MeleeWeapon
+				&& ((MeleeWeapon) Dungeon.hero.belongings.weapon).tier >= 2
+				&& ((MeleeWeapon) Dungeon.hero.belongings.weapon).STRReq() <= Dungeon.hero.STR()){
+
+			if (Dungeon.hero.belongings.weapon.isIdentified() &&
+					((MeleeWeapon) Dungeon.hero.belongings.weapon).STRReq() <= Dungeon.hero.STR()) {
+				displayBadge(Badge.UNLOCK_DUELIST);
+
+			} else if (!Dungeon.hero.belongings.weapon.isIdentified() &&
+					((MeleeWeapon) Dungeon.hero.belongings.weapon).STRReq(0) <= Dungeon.hero.STR()){
+				displayBadge(Badge.UNLOCK_DUELIST);
+			}
+		}
+	}
+
 	public static void validateMasteryCombo( int n ) {
 		if (!local.contains( Badge.MASTERY_COMBO ) && n == 10) {
 			Badge badge = Badge.MASTERY_COMBO;

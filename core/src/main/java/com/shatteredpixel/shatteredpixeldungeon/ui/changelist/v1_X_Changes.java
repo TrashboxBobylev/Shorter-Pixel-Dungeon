@@ -1,3 +1,24 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2023 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -265,8 +286,7 @@ public class v1_X_Changes {
 				"_-_ 316 days after Shattered v0.9.0\n" +
 				"_-_ A bit more than 7 years after v0.1.0!\n" +
 				"\n" +
-				"_That's right, we've hit v1.0.0!_ This update was previously called v0.9.4 while in beta.\n\n" +
-				"Shattered will also now use the _major.minor.patch_ version naming scheme moving forward. So, the next patch will be v1.0.1, and the next update will be v1.1.0. _This change does not affect my plans for future updates!_\n\n" +
+				"_That's right, the big v1.0.0!_ In this update Shattered switched to the industry standard _major.minor.patch_ version naming scheme. Prior to this update Shattered's updates were versioned with _0.major.minor[patch]_, where patch was a letter. Rather than jumping all the way from v0.9.3 to v10.0.0, I opted to reset Shattered back to v1.0.0 for this update.\n\n" +
 				"Expect more dev commentary here in the future."));
 
 		changes.addButton( new ChangeButton(Icons.get(Icons.DISPLAY), "iOS Release!",

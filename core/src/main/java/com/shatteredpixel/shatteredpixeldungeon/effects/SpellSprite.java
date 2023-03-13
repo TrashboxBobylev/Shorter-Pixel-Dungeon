@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,13 +83,13 @@ public class SpellSprite extends Image {
 	@Override
 	public void update() {
 		super.update();
-		
-		if (target.sprite != null) {
+
+		if (target != null && target.sprite != null) {
 			x = target.sprite.center().x - SIZE / 2;
 			y = target.sprite.y - SIZE;
 		}
 
-		if (phase == null){
+		if (phase == null || target == null){
 			return;
 		}
 		

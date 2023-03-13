@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,35 +245,33 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	}
 	
 	public void attack( int cell ) {
-		turnTo( ch.pos, cell );
-		play( attack );
+		attack( cell, null );
 	}
 	
-	public void attack( int cell, Callback callback ) {
+	public synchronized void attack( int cell, Callback callback ) {
 		animCallback = callback;
 		turnTo( ch.pos, cell );
 		play( attack );
 	}
 	
 	public void operate( int cell ) {
-		turnTo( ch.pos, cell );
-		play( operate );
+		operate( cell, null );
 	}
 	
-	public void operate( int cell, Callback callback ) {
+	public synchronized void operate( int cell, Callback callback ) {
 		animCallback = callback;
 		turnTo( ch.pos, cell );
 		play( operate );
 	}
 	
 	public void zap( int cell ) {
-		turnTo( ch.pos, cell );
-		play( zap );
+		zap( cell, null );
 	}
 	
-	public void zap( int cell, Callback callback ) {
+	public synchronized void zap( int cell, Callback callback ) {
 		animCallback = callback;
-		zap( cell );
+		turnTo( ch.pos, cell );
+		play( zap );
 	}
 	
 	public void turnTo( int from, int to ) {
@@ -288,10 +286,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public void jump( int from, int to, Callback callback ) {
 		float distance = Math.max( 1f, Dungeon.level.trueDistance( from, to ));
-		jump( from, to, callback, distance * 2, distance * 0.1f );
+		jump( from, to, distance * 2, distance * 0.1f, callback );
 	}
 
-	public void jump( int from, int to, Callback callback, float height, float duration ) {
+	public void jump( int from, int to, float height, float duration,  Callback callback ) {
 		jumpCallback = callback;
 
 		jumpTweener = new JumpTweener( this, worldToCamera( to ), height, duration );
@@ -495,6 +493,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		aura = new Flare(5, size);
 		aura.angularSpeed = 90;
 		aura.color(color, true);
+		aura.visible = visible;
 
 		if (parent != null) {
 			aura.show(this, 0);
@@ -732,7 +731,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	}
 
 	@Override
-	public void onComplete( Animation anim ) {
+	public synchronized void onComplete( Animation anim ) {
 		
 		if (animCallback != null) {
 			Callback executing = animCallback;

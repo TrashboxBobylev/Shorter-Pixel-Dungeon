@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Gloves extends MeleeWeapon {
@@ -41,6 +43,16 @@ public class Gloves extends MeleeWeapon {
 	public int max(int lvl) {
 		return  Math.round(1*(tier+1)) +     //4 base, down from 8
 				lvl*Math.round(0.5f*(tier+1)*0.66f);  //+0.5 per level, down from +1
+	}
+
+	@Override
+	public String targetingPrompt() {
+		return Messages.get(this, "prompt");
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+		Sai.comboStrikeAbility(hero, target, 0.30f, this);
 	}
 
 }

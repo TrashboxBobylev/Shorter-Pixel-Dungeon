@@ -21,11 +21,11 @@ allprojects {
 
         appAndroidCompileSDK = 30 //TODO update to 31 once it is out of preview
         appAndroidMinSDK = 14
-        appAndroidTargetSDK = 31
+        appAndroidTargetSDK = 33
 
         gdxVersion = '1.11.0'
         gdxControllersVersion = '2.2.3-SNAPSHOT'
-        robovmVersion = '2.3.16'
+        robovmVersion = '2.3.18'
     }
     version = appVersionName
 

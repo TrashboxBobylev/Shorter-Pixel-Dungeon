@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ import com.watabou.utils.FileUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -91,7 +92,7 @@ public enum Rankings {
 			rec.version = "";
 		}
 
-		DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ROOT);
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 		rec.date = format.format(new Date(Game.realTime));
 
 		rec.cause = cause;
