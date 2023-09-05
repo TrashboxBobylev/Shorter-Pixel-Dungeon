@@ -49,15 +49,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.HallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HallsBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -179,8 +180,11 @@ public class Dungeon {
 	public static int depth;
 	//determines path the hero is on. Current uses:
 	// 0 is the default path
-	// Other numbers are currently unused
+	// 1 is for quest sub-floors
 	public static int branch;
+
+	//keeps track of what levels the game should try to load instead of creating fresh
+	public static ArrayList<Integer> generatedLevels = new ArrayList<>();
 
 	public static int gold;
 	public static int energy;
@@ -188,7 +192,6 @@ public class Dungeon {
 	public static HashSet<Integer> chapters;
 
 	public static SparseArray<ArrayList<Item>> droppedItems;
-	public static SparseArray<ArrayList<Item>> portedItems;
 
 	//first variable is only assigned when game is started, second is updated every time game is saved
 	public static int initialVersion;
@@ -245,12 +248,12 @@ public class Dungeon {
 
 		depth = 1;
 		branch = 0;
+		generatedLevels.clear();
 
 		gold = 0;
 		energy = 0;
 
 		droppedItems = new SparseArray<>();
-		portedItems = new SparseArray<>();
 
 		LimitedDrops.reset();
 		
@@ -272,21 +275,15 @@ public class Dungeon {
 	public static boolean isChallenged( int mask ) {
 		return (challenges & mask) != 0;
 	}
+
+	public static boolean levelHasBeenGenerated(int depth, int branch){
+		return generatedLevels.contains(depth + 1000*branch);
+	}
 	
 	public static Level newLevel() {
 		
 		Dungeon.level = null;
 		Actor.clear();
-
-		if (depth > Statistics.deepestFloor) {
-			Statistics.deepestFloor = depth;
-			
-			if (Statistics.qualifiedForNoKilling) {
-				Statistics.completedWithNoKilling = true;
-			} else {
-				Statistics.completedWithNoKilling = false;
-			}
-		}
 		
 		Level level;
 		if (branch == 0) {
@@ -336,16 +333,44 @@ public class Dungeon {
 					break;
 				default:
 					level = new DeadEndLevel();
-					Statistics.deepestFloor--;
+			}
+		} else if (branch == 1) {
+			switch (depth) {
+				case 11:
+				case 12:
+				case 13:
+				case 14:
+					level = new MiningLevel();
+					break;
+				default:
+					level = new DeadEndLevel();
 			}
 		} else {
 			level = new DeadEndLevel();
-			Statistics.deepestFloor--;
+		}
+
+		//dead end levels get cleared, don't count as generated
+		if (!(level instanceof DeadEndLevel)){
+			//this assumes that we will never have a depth value outside the range 0 to 999
+			// or -500 to 499, etc.
+			if (!generatedLevels.contains(depth + 1000*branch)) {
+				generatedLevels.add(depth + 1000 * branch);
+			}
+
+			if (depth > Statistics.deepestFloor && branch == 0) {
+				Statistics.deepestFloor = depth;
+
+				if (Statistics.qualifiedForNoKilling) {
+					Statistics.completedWithNoKilling = true;
+				} else {
+					Statistics.completedWithNoKilling = false;
+				}
+			}
 		}
 		
 		level.create();
 		
-		Statistics.qualifiedForNoKilling = !bossLevel();
+		if (branch == 0) Statistics.qualifiedForNoKilling = !bossLevel();
 		Statistics.qualifiedForBossChallengeBadge = false;
 
 		return level;
@@ -515,6 +540,7 @@ public class Dungeon {
 	private static final String HERO		= "hero";
 	private static final String DEPTH		= "depth";
 	private static final String BRANCH		= "branch";
+	private static final String GENERATED_LEVELS    = "generated_levels";
 	private static final String GOLD		= "gold";
 	private static final String ENERGY		= "energy";
 	private static final String DROPPED     = "dropped%d";
@@ -547,10 +573,6 @@ public class Dungeon {
 			for (int d : droppedItems.keyArray()) {
 				bundle.put(Messages.format(DROPPED, d), droppedItems.get(d));
 			}
-			
-			for (int p : portedItems.keyArray()){
-				bundle.put(Messages.format(PORTED, p), portedItems.get(p));
-			}
 
 			quickslot.storePlaceholders( bundle );
 
@@ -578,6 +600,12 @@ public class Dungeon {
 			Statistics.storeInBundle( bundle );
 			Notes.storeInBundle( bundle );
 			Generator.storeInBundle( bundle );
+
+			int[] bundleArr = new int[generatedLevels.size()];
+			for (int i = 0; i < generatedLevels.size(); i++){
+				bundleArr[i] = generatedLevels.get(i);
+			}
+			bundle.put( GENERATED_LEVELS, bundleArr);
 			
 			Scroll.save( bundle );
 			Potion.save( bundle );
@@ -708,8 +736,19 @@ public class Dungeon {
 		Statistics.restoreFromBundle( bundle );
 		Generator.restoreFromBundle( bundle );
 
+		generatedLevels.clear();
+		if (bundle.contains(GENERATED_LEVELS)){
+			for (int i : bundle.getIntArray(GENERATED_LEVELS)){
+				generatedLevels.add(i);
+			}
+		//pre-v2.1.1 saves
+		} else  {
+			for (int i = 1; i <= Statistics.deepestFloor; i++){
+				generatedLevels.add(i);
+			}
+		}
+
 		droppedItems = new SparseArray<>();
-		portedItems = new SparseArray<>();
 		for (int i=1; i <= 26; i++) {
 			
 			//dropped items
@@ -721,16 +760,7 @@ public class Dungeon {
 			if (!items.isEmpty()) {
 				droppedItems.put( i, items );
 			}
-			
-			//ported items
-			items = new ArrayList<>();
-			if (bundle.contains(Messages.format( PORTED, i )))
-				for (Bundlable b : bundle.getCollection( Messages.format( PORTED, i ) ) ) {
-					items.add( (Item)b );
-				}
-			if (!items.isEmpty()) {
-				portedItems.put( i, items );
-			}
+
 		}
 	}
 	
@@ -779,7 +809,7 @@ public class Dungeon {
 		Statistics.preview( info, bundle );
 	}
 	
-	public static void fail( Class cause ) {
+	public static void fail( Object cause ) {
 		if (WndResurrect.instance == null) {
 			updateLevelExplored();
 			Statistics.gameWon = false;
@@ -787,7 +817,7 @@ public class Dungeon {
 		}
 	}
 	
-	public static void win( Class cause ) {
+	public static void win( Object cause ) {
 
 		updateLevelExplored();
 		Statistics.gameWon = true;
@@ -873,7 +903,7 @@ public class Dungeon {
 		}
 
 		for (TalismanOfForesight.HeapAwareness h : hero.buffs(TalismanOfForesight.HeapAwareness.class)){
-			if (Dungeon.depth != h.depth) continue;
+			if (Dungeon.depth != h.depth || Dungeon.branch != h.branch) continue;
 			BArray.or( level.visited, level.heroFOV, h.pos - 1 - level.width(), 3, level.visited );
 			BArray.or( level.visited, level.heroFOV, h.pos - 1, 3, level.visited );
 			BArray.or( level.visited, level.heroFOV, h.pos - 1 + level.width(), 3, level.visited );
@@ -881,7 +911,7 @@ public class Dungeon {
 		}
 
 		for (RevealedArea a : hero.buffs(RevealedArea.class)){
-			if (Dungeon.depth != a.depth) continue;
+			if (Dungeon.depth != a.depth || Dungeon.branch != a.branch) continue;
 			BArray.or( level.visited, level.heroFOV, a.pos - 1 - level.width(), 3, level.visited );
 			BArray.or( level.visited, level.heroFOV, a.pos - 1, 3, level.visited );
 			BArray.or( level.visited, level.heroFOV, a.pos - 1 + level.width(), 3, level.visited );
@@ -928,8 +958,11 @@ public class Dungeon {
 			BArray.setFalse(passable);
 	}
 
-	public static PathFinder.Path findPath(Char ch, int to, boolean[] pass, boolean[] vis, boolean chars) {
+	public static boolean[] findPassable(Char ch, boolean[] pass, boolean[] vis, boolean chars){
+		return findPassable(ch, pass, vis, chars, chars);
+	}
 
+	public static boolean[] findPassable(Char ch, boolean[] pass, boolean[] vis, boolean chars, boolean considerLarge){
 		setupPassable();
 		if (ch.flying || ch.buff( Amok.class ) != null) {
 			BArray.or( pass, Dungeon.level.avoid, passable );
@@ -937,7 +970,7 @@ public class Dungeon {
 			System.arraycopy( pass, 0, passable, 0, Dungeon.level.length() );
 		}
 
-		if (chars && Char.hasProp(ch, Char.Property.LARGE)){
+		if (considerLarge && Char.hasProp(ch, Char.Property.LARGE)){
 			BArray.and( passable, Dungeon.level.openSpace, passable );
 		}
 
@@ -949,7 +982,12 @@ public class Dungeon {
 			}
 		}
 
-		return PathFinder.find( ch.pos, to, passable );
+		return passable;
+	}
+
+	public static PathFinder.Path findPath(Char ch, int to, boolean[] pass, boolean[] vis, boolean chars) {
+
+		return PathFinder.find( ch.pos, to, findPassable(ch, pass, vis, chars) );
 
 	}
 	
@@ -959,47 +997,17 @@ public class Dungeon {
 			return Actor.findChar( to ) == null && (pass[to] || Dungeon.level.avoid[to]) ? to : -1;
 		}
 
-		setupPassable();
-		if (ch.flying || ch.buff( Amok.class ) != null) {
-			BArray.or( pass, Dungeon.level.avoid, passable );
-		} else {
-			System.arraycopy( pass, 0, passable, 0, Dungeon.level.length() );
-		}
-
-		if (Char.hasProp(ch, Char.Property.LARGE)){
-			BArray.and( passable, Dungeon.level.openSpace, passable );
-		}
-
-		if (chars){
-			for (Char c : Actor.chars()) {
-				if (visible[c.pos]) {
-					passable[c.pos] = false;
-				}
-			}
-		}
-		
-		return PathFinder.getStep( ch.pos, to, passable );
+		return PathFinder.getStep( ch.pos, to, findPassable(ch, pass, visible, chars) );
 
 	}
 	
 	public static int flee( Char ch, int from, boolean[] pass, boolean[] visible, boolean chars ) {
-
-		setupPassable();
-		if (ch.flying) {
-			BArray.or( pass, Dungeon.level.avoid, passable );
-		} else {
-			System.arraycopy( pass, 0, passable, 0, Dungeon.level.length() );
-		}
-
-		if (Char.hasProp(ch, Char.Property.LARGE)){
-			BArray.and( passable, Dungeon.level.openSpace, passable );
-		}
-
+		//only consider chars impassable if our retreat path runs into them
+		boolean[] passable = findPassable(ch, pass, visible, false, true);
 		passable[ch.pos] = true;
 
-		//only consider chars impassable if our retreat path runs into them
 		int step = PathFinder.getStepBack( ch.pos, from, passable );
-		while (step != -1 && Actor.findChar(step) != null){
+		while (step != -1 && Actor.findChar(step) != null && chars){
 			passable[step] = false;
 			step = PathFinder.getStepBack( ch.pos, from, passable );
 		}

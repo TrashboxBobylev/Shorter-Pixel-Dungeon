@@ -60,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -462,7 +461,10 @@ public class DwarfKing extends Mob {
 		super.damage(dmg, src);
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg/3);
+		if (lock != null && !isImmune(src.getClass())){
+			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg/5f);
+			else                                                    lock.addTime(dmg/3f);
+		}
 
 		if (phase == 1) {
 			int dmgTaken = preHP - HP;
@@ -679,7 +681,7 @@ public class DwarfKing extends Mob {
 
 		@Override
 		public void fx(boolean on) {
-			if (on && particles == null) {
+			if (on && (particles == null || particles.parent == null)) {
 				particles = CellEmitter.get(pos);
 
 				if (summon == DKGolem.class){

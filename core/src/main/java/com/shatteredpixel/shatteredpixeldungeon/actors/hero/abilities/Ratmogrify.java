@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -52,7 +51,6 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class Ratmogrify extends ArmorAbility {
@@ -143,8 +141,9 @@ public class Ratmogrify extends ArmorAbility {
 			//preserve champion enemy buffs
 			HashSet<ChampionEnemy> champBuffs = ch.buffs(ChampionEnemy.class);
 			for (ChampionEnemy champ : champBuffs){
-				ch.remove(champ);
-				ch.sprite.clearAura();
+				if (ch.remove(champ)) {
+					ch.sprite.clearAura();
+				}
 			}
 
 			Actor.remove( ch );
@@ -185,6 +184,9 @@ public class Ratmogrify extends ArmorAbility {
 
 		{
 			spriteClass = RatSprite.class;
+
+			//always false, as we derive stats from what we are transmogging from (which was already added)
+			firstAdded = false;
 		}
 
 		private Mob original;
@@ -212,6 +214,10 @@ public class Ratmogrify extends ArmorAbility {
 		}
 
 		public Mob getOriginal(){
+			if (original != null) {
+				original.HP = HP;
+				original.pos = pos;
+			}
 			return original;
 		}
 
@@ -220,8 +226,8 @@ public class Ratmogrify extends ArmorAbility {
 		@Override
 		protected boolean act() {
 			if (timeLeft <= 0){
-				original.HP = HP;
-				original.pos = pos;
+				Mob original = getOriginal();
+				this.original = null;
 				original.clearTime();
 				GameScene.add(original);
 

@@ -36,7 +36,6 @@ import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
-import com.watabou.utils.DeviceCompat;
 
 public class AboutScene extends PixelScene {
 
@@ -137,8 +136,8 @@ public class AboutScene extends PixelScene {
 				"Pixel Dungeon",
 				Icons.WATA.get(),
 				"Developed by: _Watabou_\nInspired by Brian Walker's Brogue",
-				"watabou.itch.io",
-				"https://watabou.itch.io/");
+				"pixeldungeon.watabou.ru",
+				"http://pixeldungeon.watabou.ru");
 		if (landscape()){
 			wata.setRect(shpx.left(), kristjan.bottom() + 8, colWidth, 0);
 		} else {
@@ -211,8 +210,8 @@ public class AboutScene extends PixelScene {
 				null,
 				null,
 				"ShatteredPD is community-translated via _Transifex_! Thank you so much to all of Shattered's volunteer translators!",
-				"www.transifex.com/shattered-pixel/",
-				"https://www.transifex.com/shattered-pixel/shattered-pixel-dungeon/");
+				"transifex.com/shattered-pixel/...",
+				"https://explore.transifex.com/shattered-pixel/shattered-pixel-dungeon/");
 		transifex.setRect((Camera.main.width - colWidth)/2f, purigro.bottom() + 12, colWidth, 0);
 		content.add(transifex);
 

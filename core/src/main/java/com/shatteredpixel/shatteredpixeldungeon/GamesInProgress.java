@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -108,8 +107,8 @@ public class GamesInProgress {
 				info.slot = slot;
 				Dungeon.preview(info, bundle);
 				
-				//saves from before v1.0.3 are not supported
-				if (info.version < ShatteredPixelDungeon.v1_0_3) {
+				//saves from before v1.2.3 are not supported
+				if (info.version < ShatteredPixelDungeon.v1_2_3) {
 					info = null;
 				}
 

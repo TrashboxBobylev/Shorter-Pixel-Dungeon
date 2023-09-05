@@ -238,7 +238,9 @@ public class PixelScene extends Scene {
 				}
 
 				cameraShift.invScale(Camera.main.zoom);
-				if (cameraShift.length() > 0 && Camera.main.scrollable){
+				cameraShift.x *= Camera.main.edgeScroll.x;
+				cameraShift.y *= Camera.main.edgeScroll.y;
+				if (cameraShift.length() > 0){
 					Camera.main.shift(cameraShift);
 				}
 				ControllerHandler.updateControllerPointer(virtualCursorPos, true);
@@ -381,6 +383,11 @@ public class PixelScene extends Scene {
 				}
 			}
 		});
+	}
+	
+	public static void shake( float magnitude, float duration){
+		magnitude *= SPDSettings.screenShake();
+		Camera.main.shake(magnitude, duration);
 	}
 	
 	protected static class Fader extends ColorBlock {

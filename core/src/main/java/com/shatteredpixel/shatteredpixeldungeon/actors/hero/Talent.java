@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -69,7 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
@@ -79,6 +77,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 public enum Talent {
@@ -156,7 +155,7 @@ public enum Talent {
 	//Duelist T2
 	FOCUSED_MEAL(132), RESTORED_AGILITY(133), WEAPON_RECHARGING(134), LETHAL_HASTE(135), SWIFT_EQUIP(136),
 	//Duelist T3
-	LIGHTWEIGHT_CHARGE(137, 3), DEADLY_FOLLOWUP(138, 3),
+	PRECISE_ASSAULT(137, 3), DEADLY_FOLLOWUP(138, 3),
 	//Champion T3
 	SECONDARY_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3),
 	//Monk T3
@@ -232,12 +231,37 @@ public enum Talent {
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 20); }
 	};
 	public static class SpiritBladesTracker extends FlavourBuff{};
-	public static class PatientStrikeTracker extends FlavourBuff{};
+	public static class PatientStrikeTracker extends Buff {
+		public int pos;
+		{ type = Buff.buffType.POSITIVE; }
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0.5f, 0f, 1f); }
+		@Override
+		public boolean act() {
+			if (pos != target.pos) {
+				detach();
+			} else {
+				spend(TICK);
+			}
+			return true;
+		}
+		private static final String POS = "pos";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(POS, pos);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			pos = bundle.getInt(POS);
+		}
+	};
 	public static class AggressiveBarrierCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.35f, 0f, 0.7f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 50); }
-	};;
+	};
 	public static class RestoredAgilityTracker extends FlavourBuff{};
 	public static class LethalHasteCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
@@ -247,7 +271,7 @@ public enum Talent {
 	public static class SwiftEquipCooldown extends FlavourBuff{
 		public boolean secondUse;
 		public boolean hasSecondUse(){
-			return secondUse && cooldown() > 24f;
+			return secondUse && cooldown() > 14f;
 		}
 
 		public int icon() { return BuffIndicator.TIME; }
@@ -255,7 +279,7 @@ public enum Talent {
 			if (hasSecondUse()) icon.hardlight(0.85f, 0f, 1.0f);
 			else                icon.hardlight(0.35f, 0f, 0.7f);
 		}
-		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 30f, 1); }
+		public float iconFadePercent() { return GameMath.gate(0, visualcooldown() / 20f, 1); }
 
 		private static final String SECOND_USE = "second_use";
 		@Override
@@ -269,7 +293,30 @@ public enum Talent {
 			secondUse = bundle.getBoolean(SECOND_USE);
 		}
 	};
-	public static class DeadlyFollowupTracker extends FlavourBuff{};
+	public static class DeadlyFollowupTracker extends FlavourBuff{
+		public int object;
+		{ type = Buff.buffType.POSITIVE; }
+		public int icon() { return BuffIndicator.INVERT_MARK; }
+		public void tintIcon(Image icon) { icon.hardlight(0.5f, 0f, 1f); }
+		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
+		private static final String OBJECT    = "object";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(OBJECT, object);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			object = bundle.getInt(OBJECT);
+		}
+	}
+	public static class PreciseAssaultTracker extends FlavourBuff{
+		{ type = buffType.POSITIVE; }
+		public int icon() { return BuffIndicator.INVERT_MARK; }
+		public void tintIcon(Image icon) { icon.hardlight(1f, 1f, 0.0f); }
+		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
+	};
 	public static class CombinedLethalityAbilityTracker extends FlavourBuff{
 		public MeleeWeapon weapon;
 	};
@@ -277,6 +324,7 @@ public enum Talent {
 		{ type = buffType.POSITIVE; }
 		public int icon() { return BuffIndicator.CORRUPT; }
 		public void tintIcon(Image icon) { icon.hardlight(0.6f, 0.15f, 0.6f); }
+		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
 	};
 	public static class CombinedEnergyAbilityTracker extends FlavourBuff{
 		public int energySpent = -1;
@@ -379,6 +427,10 @@ public enum Talent {
 			if (hero.belongings.weapon() != null) hero.belongings.weapon().identify();
 		}
 
+		if (talent == PROTECTIVE_SHADOWS && hero.invisible > 0){
+			Buff.affect(hero, Talent.ProtectiveShadowsTracker.class);
+		}
+
 		if (talent == LIGHT_CLOAK && hero.heroClass == HeroClass.ROGUE){
 			for (Item item : Dungeon.hero.belongings.backpack){
 				if (item instanceof CloakOfShadows){
@@ -455,8 +507,8 @@ public enum Talent {
 			Buff.prolong( hero, Haste.class, 0.67f+hero.pointsInTalent(INVIGORATING_MEAL));
 		}
 		if (hero.hasTalent(STRENGTHENING_MEAL)){
-			//2 bonus physical damage for next 2/3 attacks
-			Buff.affect( hero, PhysicalEmpower.class).set(2, 1 + hero.pointsInTalent(STRENGTHENING_MEAL));
+			//3 bonus physical damage for next 2/3 attacks
+			Buff.affect( hero, PhysicalEmpower.class).set(3, 1 + hero.pointsInTalent(STRENGTHENING_MEAL));
 		}
 		if (hero.hasTalent(FOCUSED_MEAL)){
 			if (hero.heroClass == HeroClass.DUELIST){
@@ -642,15 +694,13 @@ public enum Talent {
 			Buff.affect(enemy, SuckerPunchTracker.class);
 		}
 
-		if (hero.hasTalent(Talent.FOLLOWUP_STRIKE)) {
+		if (hero.hasTalent(Talent.FOLLOWUP_STRIKE) && enemy.alignment == Char.Alignment.ENEMY) {
 			if (hero.belongings.attackingWeapon() instanceof MissileWeapon) {
-				Buff.affect(enemy, FollowupStrikeTracker.class);
-			} else if (enemy.buff(FollowupStrikeTracker.class) != null){
+				Buff.prolong(hero, FollowupStrikeTracker.class, 5f).object = enemy.id();
+			} else if (hero.buff(FollowupStrikeTracker.class) != null
+					&& hero.buff(FollowupStrikeTracker.class).object == enemy.id()){
 				dmg += 1 + hero.pointsInTalent(FOLLOWUP_STRIKE);
-				if (!(enemy instanceof Mob) || !((Mob) enemy).surprisedBy(hero)){
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
-				}
-				enemy.buff(FollowupStrikeTracker.class).detach();
+				hero.buff(FollowupStrikeTracker.class).detach();
 			}
 		}
 
@@ -666,20 +716,17 @@ public enum Talent {
 					&& !(hero.belongings.attackingWeapon() instanceof MissileWeapon)){
 				hero.buff(PatientStrikeTracker.class).detach();
 				dmg += Random.IntRange(hero.pointsInTalent(Talent.PATIENT_STRIKE), 2);
-				if (!(enemy instanceof Mob) || !((Mob) enemy).surprisedBy(hero)){
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
-				}
 			}
 		}
 
-		if (hero.hasTalent(DEADLY_FOLLOWUP)) {
+		if (hero.hasTalent(DEADLY_FOLLOWUP) && enemy.alignment == Char.Alignment.ENEMY) {
 			if (hero.belongings.attackingWeapon() instanceof MissileWeapon) {
-				Buff.prolong(enemy, DeadlyFollowupTracker.class, 5f);
-			} else if (enemy.buff(DeadlyFollowupTracker.class) != null){
-				dmg = Math.round(dmg * (1.0f + .08f*hero.pointsInTalent(DEADLY_FOLLOWUP)));
-				if (!(enemy instanceof Mob) || !((Mob) enemy).surprisedBy(hero)){
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
+				if (!(hero.belongings.attackingWeapon() instanceof SpiritBow.SpiritArrow)) {
+					Buff.prolong(hero, DeadlyFollowupTracker.class, 5f).object = enemy.id();
 				}
+			} else if (hero.buff(DeadlyFollowupTracker.class) != null
+					&& hero.buff(DeadlyFollowupTracker.class).object == enemy.id()){
+				dmg = Math.round(dmg * (1.0f + .08f*hero.pointsInTalent(DEADLY_FOLLOWUP)));
 			}
 		}
 
@@ -687,7 +734,24 @@ public enum Talent {
 	}
 
 	public static class SuckerPunchTracker extends Buff{};
-	public static class FollowupStrikeTracker extends Buff{};
+	public static class FollowupStrikeTracker extends FlavourBuff{
+		public int object;
+		{ type = Buff.buffType.POSITIVE; }
+		public int icon() { return BuffIndicator.INVERT_MARK; }
+		public void tintIcon(Image icon) { icon.hardlight(0f, 0.75f, 1f); }
+		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
+		private static final String OBJECT    = "object";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(OBJECT, object);
+		}
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			object = bundle.getInt(OBJECT);
+		}
+	};
 
 	public static final int MAX_TALENT_TIERS = 4;
 
@@ -773,7 +837,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, POINT_BLANK, SEER_SHOT);
 				break;
 			case DUELIST:
-				Collections.addAll(tierTalents, LIGHTWEIGHT_CHARGE, DEADLY_FOLLOWUP);
+				Collections.addAll(tierTalents, PRECISE_ASSAULT, DEADLY_FOLLOWUP);
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -882,12 +946,20 @@ public enum Talent {
 		bundle.put("replacements", replacementsBundle);
 	}
 
+	private static final HashSet<String> removedTalents = new HashSet<>();
+	static{
+		//v1.4.0
+		removedTalents.add("BERSERKING_STAMINA");
+	}
+
 	private static final HashMap<String, String> renamedTalents = new HashMap<>();
 	static{
 		//v2.0.0
 		renamedTalents.put("ARMSMASTERS_INTUITION",     "VETERANS_INTUITION");
 		//v2.0.0 BETA
 		renamedTalents.put("LIGHTLY_ARMED",             "UNENCUMBERED_SPIRIT");
+		//v2.1.0
+		renamedTalents.put("LIGHTWEIGHT_CHARGE",             "PRECISE_ASSAULT");
 	}
 
 	public static void restoreTalentsFromBundle( Bundle bundle, Hero hero ){
@@ -897,7 +969,13 @@ public enum Talent {
 				String value = replacements.getString(key);
 				if (renamedTalents.containsKey(key)) key = renamedTalents.get(key);
 				if (renamedTalents.containsKey(value)) value = renamedTalents.get(value);
-				hero.metamorphedTalents.put(Talent.valueOf(key), Talent.valueOf(value));
+				if (!removedTalents.contains(key) && !removedTalents.contains(value)){
+					try {
+						hero.metamorphedTalents.put(Talent.valueOf(key), Talent.valueOf(value));
+					} catch (Exception e) {
+						ShatteredPixelDungeon.reportException(e);
+					}
+				}
 			}
 		}
 
@@ -913,13 +991,15 @@ public enum Talent {
 				for (String tName : tierBundle.getKeys()){
 					int points = tierBundle.getInt(tName);
 					if (renamedTalents.containsKey(tName)) tName = renamedTalents.get(tName);
-					try {
-						Talent talent = Talent.valueOf(tName);
-						if (tier.containsKey(talent)) {
-							tier.put(talent, Math.min(points, talent.maxPoints()));
+					if (!removedTalents.contains(tName)) {
+						try {
+							Talent talent = Talent.valueOf(tName);
+							if (tier.containsKey(talent)) {
+								tier.put(talent, Math.min(points, talent.maxPoints()));
+							}
+						} catch (Exception e) {
+							ShatteredPixelDungeon.reportException(e);
 						}
-					} catch (Exception e){
-						ShatteredPixelDungeon.reportException(e);
 					}
 				}
 			}

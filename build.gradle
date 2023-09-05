@@ -19,13 +19,13 @@ allprojects {
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
-        appAndroidCompileSDK = 30 //TODO update to 31 once it is out of preview
+        appAndroidCompileSDK = 33
         appAndroidMinSDK = 14
         appAndroidTargetSDK = 33
 
         gdxVersion = '1.11.0'
-        gdxControllersVersion = '2.2.3-SNAPSHOT'
-        robovmVersion = '2.3.18'
+        gdxControllersVersion = '2.2.4-SNAPSHOT'
+        robovmVersion = '2.3.19'
     }
     version = appVersionName
 

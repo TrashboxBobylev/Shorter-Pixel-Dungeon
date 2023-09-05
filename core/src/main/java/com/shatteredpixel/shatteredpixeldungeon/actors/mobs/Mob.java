@@ -58,18 +58,15 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
-import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -126,7 +123,18 @@ public abstract class Mob extends Char {
 	protected boolean alerted = false;
 
 	protected static final float TIME_TO_WAKE_UP = 1f;
-	
+
+	protected boolean firstAdded = true;
+	protected void onAdd(){
+		if (firstAdded) {
+			//modify health for ascension challenge if applicable, only on first add
+			float percent = HP / (float) HT;
+			HT = Math.round(HT * AscensionChallenge.statModifier(this));
+			HP = Math.round(HT * percent);
+			firstAdded = false;
+		}
+	}
+
 	private static final String STATE	= "state";
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
@@ -186,6 +194,9 @@ public abstract class Mob extends Char {
 		if (bundle.contains(ENEMY_ID)) {
 			enemyID = bundle.getInt(ENEMY_ID);
 		}
+
+		//no need to actually save this, must be false
+		firstAdded = false;
 	}
 
 	//mobs need to remember their targets after every actor is added
@@ -364,16 +375,20 @@ public abstract class Mob extends Char {
 			if (enemies.isEmpty()){
 				return null;
 			} else {
-				//go after the closest potential enemy, preferring enemies that can be attacked, and the hero if two are equidistant
+				//go after the closest potential enemy, preferring enemies that can be reached/attacked, and the hero if two are equidistant
+				PathFinder.buildDistanceMap(pos, Dungeon.findPassable(this, Dungeon.level.passable, fieldOfView, true));
 				Char closest = null;
+
 				for (Char curr : enemies){
 					if (closest == null){
 						closest = curr;
 					} else if (canAttack(closest) && !canAttack(curr)){
 						continue;
 					} else if ((canAttack(curr) && !canAttack(closest))
-							|| (Dungeon.level.distance(pos, curr.pos) < Dungeon.level.distance(pos, closest.pos))
-							|| (Dungeon.level.distance(pos, curr.pos) == Dungeon.level.distance(pos, closest.pos) && curr == Dungeon.hero)){
+							|| (PathFinder.distance[curr.pos] < PathFinder.distance[closest.pos])){
+						closest = curr;
+					} else if ( curr == Dungeon.hero &&
+							(PathFinder.distance[curr.pos] == PathFinder.distance[closest.pos]) || (canAttack(curr) && canAttack(closest))){
 						closest = curr;
 					}
 				}
@@ -395,30 +410,36 @@ public abstract class Mob extends Char {
 	}
 	
 	@Override
-	public void add( Buff buff ) {
-		super.add( buff );
-		if (buff instanceof Amok || buff instanceof AllyBuff) {
-			state = HUNTING;
-		} else if (buff instanceof Terror || buff instanceof Dread) {
-			state = FLEEING;
-		} else if (buff instanceof Sleep) {
-			state = SLEEPING;
-			postpone( Sleep.SWS );
+	public boolean add( Buff buff ) {
+		if (super.add( buff )) {
+			if (buff instanceof Amok || buff instanceof AllyBuff) {
+				state = HUNTING;
+			} else if (buff instanceof Terror || buff instanceof Dread) {
+				state = FLEEING;
+			} else if (buff instanceof Sleep) {
+				state = SLEEPING;
+				postpone(Sleep.SWS);
+			}
+			return true;
 		}
+		return false;
 	}
 	
 	@Override
-	public void remove( Buff buff ) {
-		super.remove( buff );
-		if ((buff instanceof Terror && buff(Dread.class) == null)
-				|| (buff instanceof Dread && buff(Terror.class) == null)) {
-			if (enemySeen) {
-				sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "rage"));
-				state = HUNTING;
-			} else {
-				state = WANDERING;
+	public boolean remove( Buff buff ) {
+		if (super.remove( buff )) {
+			if ((buff instanceof Terror && buff(Dread.class) == null)
+					|| (buff instanceof Dread && buff(Terror.class) == null)) {
+				if (enemySeen) {
+					sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "rage"));
+					state = HUNTING;
+				} else {
+					state = WANDERING;
+				}
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	protected boolean canAttack( Char enemy ) {
@@ -698,7 +719,7 @@ public abstract class Mob extends Char {
 
 	public boolean surprisedBy( Char enemy, boolean attacking ){
 		return enemy == Dungeon.hero
-				&& (enemy.invisible > 0 || !enemySeen || (fieldOfView != null && !fieldOfView[enemy.pos]))
+				&& (enemy.invisible > 0 || !enemySeen || (fieldOfView != null && fieldOfView.length == Dungeon.level.length() && !fieldOfView[enemy.pos]))
 				&& (!attacking || enemy.canSurpriseAttack());
 	}
 
@@ -755,6 +776,15 @@ public abstract class Mob extends Char {
 				AscensionChallenge.processEnemyKill(this);
 				
 				int exp = Dungeon.hero.lvl <= maxLvl ? EXP : 0;
+
+				//during ascent, under-levelled enemies grant 10 xp each until level 30
+				// after this enemy kills which reduce the amulet curse still grant 10 effective xp
+				// for the purposes of on-exp effects, see AscensionChallenge.processEnemyKill
+				if (Dungeon.hero.buff(AscensionChallenge.class) != null &&
+						exp == 0 && maxLvl > 0 && EXP > 0 && Dungeon.hero.lvl < Hero.MAX_LEVEL){
+					exp = Math.round(10 * spawningWeight());
+				}
+
 				if (exp > 0) {
 					Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
 				}
@@ -805,7 +835,7 @@ public abstract class Mob extends Char {
 		if (!(this instanceof Wraith)
 				&& soulMarked
 				&& Random.Float() < (0.4f*Dungeon.hero.pointsInTalent(Talent.NECROMANCERS_MINIONS)/3f)){
-			Wraith w = Wraith.spawnAt(pos);
+			Wraith w = Wraith.spawnAt(pos, false);
 			if (w != null) {
 				Buff.affect(w, Corruption.class);
 				if (Dungeon.level.heroFOV[pos]) {

@@ -57,13 +57,15 @@ public class RatKing extends NPC {
 	protected Char chooseEnemy() {
 		return null;
 	}
-	
+
 	@Override
 	public void damage( int dmg, Object src ) {
+		//do nothing
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
+	public boolean add( Buff buff ) {
+		return false;
 	}
 	
 	@Override
@@ -76,7 +78,7 @@ public class RatKing extends NPC {
 	@Override
 	protected void onAdd() {
 		super.onAdd();
-		if (Dungeon.depth != 4){
+		if (firstAdded && Dungeon.depth != 4){
 			yell(Messages.get(this, "confused"));
 		}
 	}
