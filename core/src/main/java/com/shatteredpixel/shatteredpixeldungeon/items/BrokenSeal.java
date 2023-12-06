@@ -204,7 +204,7 @@ public class BrokenSeal extends Item {
 		@Override
 		public synchronized boolean act() {
 			if (Regeneration.regenOn() && shielding() < maxShield()) {
-				partialShield += 1/(RECHARGE_RATE * (1 - ((Hero)target).pointsInTalent(Talent.RESTORED_WILLPOWER)/(float)maxShield()));
+				partialShield += 1/(RECHARGE_RATE);
 			}
 			
 			while (partialShield >= 1){
