@@ -346,10 +346,9 @@ public class Dungeon {
 			}
 		} else if (branch == 1) {
 			switch (depth) {
+				case 9:
+				case 10:
 				case 11:
-				case 12:
-				case 13:
-				case 14:
 					level = new MiningLevel();
 					break;
 				default:
@@ -521,7 +520,7 @@ public class Dungeon {
 	public static boolean souNeeded() {
 		int souLeftThisSet;
 		//3 SOU each floor set
-		souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 3);
+		souLeftThisSet = 2 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 4) * 2);
 		if (souLeftThisSet <= 0) return false;
 
 		int floorThisSet = (depth % 4);
