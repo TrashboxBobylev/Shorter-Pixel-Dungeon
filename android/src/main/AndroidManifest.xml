@@ -45,7 +45,6 @@
 		<activity
 			android:name=".AndroidMissingNativesHandler">
 		</activity>
-
 	</application>
 
 </manifest>
