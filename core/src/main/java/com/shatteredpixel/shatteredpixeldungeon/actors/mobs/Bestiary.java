@@ -141,22 +141,22 @@ public class Bestiary {
 			// Sewers
 			default:
 				return;
-			case 4:
+			case 3:
 				if (Random.Float() < 0.025f) rotation.add(Thief.class);
 				return;
 				
 			// Prison
-			case 9:
+			case 7:
 				if (Random.Float() < 0.025f) rotation.add(Bat.class);
 				return;
 				
 			// Caves
-			case 14:
+			case 11:
 				if (Random.Float() < 0.025f) rotation.add(Ghoul.class);
 				return;
 				
 			// City
-			case 19:
+			case 15:
 				if (Random.Float() < 0.025f) rotation.add(Succubus.class);
 				return;
 		}
