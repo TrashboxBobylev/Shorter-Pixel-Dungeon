@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,12 +43,12 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
-import com.watabou.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.Tweener;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -150,6 +150,8 @@ public class ShadowClone extends ArmorAbility {
 			HP = HT = 80;
 
 			immunities.add(AllyBuff.class);
+
+			properties.add(Property.INORGANIC);
 		}
 
 		public ShadowAlly(){
@@ -203,7 +205,7 @@ public class ShadowClone extends ArmorAbility {
 
 		@Override
 		public int damageRoll() {
-			int damage = Random.NormalIntRange(10, 20);
+			int damage = Char.combatRoll(10, 20);
 			int heroDamage = Dungeon.hero.damageRoll();
 			heroDamage /= Dungeon.hero.attackDelay(); //normalize hero damage based on atk speed
 			heroDamage = Math.round(0.08f * Dungeon.hero.pointsInTalent(Talent.SHADOW_BLADE) * heroDamage);
@@ -266,6 +268,7 @@ public class ShadowClone extends ArmorAbility {
 					&& Dungeon.hero.belongings.armor().hasGlyph(AntiMagic.class, this)
 					&& AntiMagic.RESISTS.contains(src.getClass())){
 				dmg -= AntiMagic.drRoll(Dungeon.hero, Dungeon.hero.belongings.armor().buffedLvl());
+				dmg = Math.max(dmg, 0);
 			}
 
 			super.damage(dmg, src);

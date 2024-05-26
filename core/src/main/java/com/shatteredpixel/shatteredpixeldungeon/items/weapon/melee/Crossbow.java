@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,15 @@ public class Crossbow extends MeleeWeapon {
 		hero.sprite.operate(hero.pos);
 		hero.next();
 		afterAbilityUsed(hero);
+	}
+
+	@Override
+	public String abilityInfo() {
+		if (levelKnown){
+			return Messages.get(this, "ability_desc", 3+buffedLvl());
+		} else {
+			return Messages.get(this, "typical_ability_desc", 3);
+		}
 	}
 
 	public static class ChargedShot extends Buff{

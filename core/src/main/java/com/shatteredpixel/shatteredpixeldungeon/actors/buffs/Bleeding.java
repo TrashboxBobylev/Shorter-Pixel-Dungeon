@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import static com.watabou.utils.Random.NormalFloat;
-
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
@@ -35,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 
 public class Bleeding extends Buff {
 
@@ -94,7 +93,7 @@ public class Bleeding extends Buff {
 	public boolean act() {
 		if (target.isAlive()) {
 			
-			level = NormalFloat(level / 2f, level);
+			level = Random.NormalFloat(level / 2f, level);
 			int dmg = Math.round(level);
 			
 			if (dmg > 0) {

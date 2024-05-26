@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -164,7 +164,19 @@ public class SandalsOfNature extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		target.buff(Naturalism.class).charge(amount);
+		if (cursed || target.buff(MagicImmune.class) != null) return;
+		if (charge < chargeCap) {
+			partialCharge += 2*amount;
+			while (partialCharge >= 1f){
+				charge++;
+				partialCharge--;
+			}
+			if (charge >= chargeCap) {
+				charge = chargeCap;
+				partialCharge = 0;
+			}
+			updateQuickslot();
+		}
 	}
 
 	@Override
@@ -248,12 +260,11 @@ public class SandalsOfNature extends Artifact {
 	}
 
 	public class Naturalism extends ArtifactBuff{
-		public void charge(float amount) {
+		public void charge() {
 			if (cursed || target.buff(MagicImmune.class) != null) return;
 			if (charge < chargeCap){
 				//0.5 charge per grass at +0, up to 1 at +10
 				float chargeGain = (3f + level())/6f;
-				chargeGain *= amount;
 				chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
 				partialCharge += Math.max(0, chargeGain);
 				while (partialCharge >= 1){

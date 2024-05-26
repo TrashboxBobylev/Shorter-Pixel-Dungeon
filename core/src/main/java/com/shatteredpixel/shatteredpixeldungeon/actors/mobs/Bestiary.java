@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -160,5 +161,32 @@ public class Bestiary {
 				return;
 		}
 	}
-
+	
+	//switches out regular mobs for their alt versions when appropriate
+	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation){
+		float altChance = 1/50f * RatSkull.exoticChanceMultiplier();
+		for (int i = 0; i < rotation.size(); i++){
+			if (Random.Float() < altChance) {
+				Class<? extends Mob> cl = rotation.get(i);
+				if (cl == Rat.class) {
+					cl = Albino.class;
+				} else if (cl == Slime.class) {
+					cl = CausticSlime.class;
+				} else if (cl == Thief.class) {
+					cl = Bandit.class;
+				} else if (cl == Necromancer.class){
+					cl = SpectralNecromancer.class;
+				} else if (cl == Brute.class) {
+					cl = ArmoredBrute.class;
+				} else if (cl == DM200.class) {
+					cl = DM201.class;
+				} else if (cl == Monk.class) {
+					cl = Senior.class;
+				} else if (cl == Scorpio.class) {
+					cl = Acidic.class;
+				}
+				rotation.set(i, cl);
+			}
+		}
+	}
 }

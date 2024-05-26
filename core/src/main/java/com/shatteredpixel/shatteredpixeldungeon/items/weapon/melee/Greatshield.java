@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,15 @@ public class Greatshield extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		RoundShield.guardAbility(hero, 6, this);
+		RoundShield.guardAbility(hero, 3+buffedLvl(), this);
+	}
+
+	@Override
+	public String abilityInfo() {
+		if (levelKnown){
+			return Messages.get(this, "ability_desc", 3+buffedLvl());
+		} else {
+			return Messages.get(this, "typical_ability_desc", 3);
+		}
 	}
 }

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,11 +47,7 @@ public abstract class StandardRoom extends Room {
 			maxDim = max;
 			roomValue = val;
 		}
-		
-		public int connectionWeight(){
-			return roomValue*roomValue;
-		}
-		
+
 	}
 	
 	public SizeCategory sizeCat;
@@ -101,8 +97,22 @@ public abstract class StandardRoom extends Room {
 	public int minHeight() { return sizeCat.minDim; }
 	public int maxHeight() { return sizeCat.maxDim; }
 
+	//larger standard rooms generally count as multiple rooms for various counting/weighting purposes
+	//but there can be exceptions
+	public int sizeFactor(){
+		return sizeCat.roomValue;
+	}
+
+	public int mobSpawnWeight(){
+		return sizeFactor();
+	}
+
+	public int connectionWeight(){
+		return sizeFactor() * sizeFactor();
+	}
+
 	@Override
-	public boolean canMerge(Level l, Point p, int mergeTerrain) {
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
 		int cell = l.pointToCell(pointInside(p, 1));
 		return (Terrain.flags[l.map[cell]] & Terrain.SOLID) == 0;
 	}
@@ -115,23 +125,28 @@ public abstract class StandardRoom extends Room {
 
 		rooms.add(SewerPipeRoom.class);
 		rooms.add(RingRoom.class);
+		rooms.add(WaterBridgeRoom.class);
 		rooms.add(CircleBasinRoom.class);
 
 		rooms.add(SegmentedRoom.class);
 		rooms.add(PillarsRoom.class);
+		rooms.add(ChasmBridgeRoom.class);
 		rooms.add(CellBlockRoom.class);
 
 		rooms.add(CaveRoom.class);
 		rooms.add(CavesFissureRoom.class);
 		rooms.add(CirclePitRoom.class);
+		rooms.add(CircleWallRoom.class);
 
 		rooms.add(HallwayRoom.class);
 		rooms.add(StatuesRoom.class);
+		rooms.add(LibraryRingRoom.class);
 		rooms.add(SegmentedLibraryRoom.class);
 
 		rooms.add(RuinsRoom.class);
 		rooms.add(ChasmRoom.class);
 		rooms.add(SkullsRoom.class);
+		rooms.add(RitualRoom.class);
 
 
 		rooms.add(PlantsRoom.class);
@@ -148,21 +163,21 @@ public abstract class StandardRoom extends Room {
 	
 	private static float[][] chances = new float[22][];
 	static {
-		chances[1] =  new float[]{10,  10,10,5, 0,0,0, 0,0,0, 0,0,0, 0,0,0,  1,0,1,0,1,0,1,1,0,0};
-		chances[2] =  new float[]{10,  10,10,5, 0,0,0, 0,0,0, 0,0,0, 0,0,0,  1,1,1,1,1,1,1,1,1,1};
+		chances[1] =  new float[]{5,  10,10,10,5, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,  1,0,1,0,1,0,1,1,0,0};
+		chances[2] =  new float[]{5,  10,10,10,5, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,  1,1,1,1,1,1,1,1,1,1};
 		chances[3] = chances[2];
-		chances[4] =  new float[]{10,  10,10,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0,  0,0,0,0,0,0,0,0,0,0};
+		chances[4] =  new float[]{5,  10,10,10,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,  0,0,0,0,0,0,0,0,0,0};
 
-		chances[5] =  new float[]{10,  0,0,0, 10,10,5, 0,0,0, 0,0,0, 0,0,0,  1,1,1,1,1,1,1,1,1,1};
+		chances[5] =  new float[]{5,  0,0,0,0, 10,10,10,5, 0,0,0,0, 0,0,0,0, 0,0,0,0,  1,1,1,1,1,1,1,1,1,1};
 		chances[8] = chances[7] = chances[6] = chances[5];
 
-		chances[9] = new float[]{10,  0,0,0, 0,0,0, 10,10,5, 0,0,0, 0,0,0,  1,1,1,1,1,1,1,1,1,1};
+		chances[9] = new float[]{5,  0,0,0,0, 0,0,0,0, 15,10,5,5,  0,0,0,0, 0,0,0,0,  1,1,1,1,1,1,1,1,1,1};
 		chances[12] = chances[11] = chances[10] = chances[9];
 
-		chances[13] = new float[]{10,  0,0,0, 0,0,0, 0,0,0, 10,10,5, 0,0,0,  1,1,1,1,1,1,1,1,1,1};
+		chances[13] = new float[]{5,  0,0,0,0, 0,0,0,0, 0,0,0,0, 10,10,10,5, 0,0,0,0,  1,1,1,1,1,1,1,1,1,1};
 		chances[16] = chances[15] = chances[14] = chances[13];
 
-		chances[17] = new float[]{10,  0,0,0, 0,0,0, 0,0,0, 0,0,0, 10,10,5,  1,1,1,1,1,1,1,1,1,1};
+		chances[17] = new float[]{5,  0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 15,10,5,5,   1,1,1,1,1,1,1,1,1,1};
 		chances[21] = chances[20] = chances[19] = chances[18] = chances[17];
 	}
 	

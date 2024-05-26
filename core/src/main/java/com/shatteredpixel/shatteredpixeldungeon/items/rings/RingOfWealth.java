@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -62,9 +65,9 @@ public class RingOfWealth extends Ring {
 		if (isIdentified()){
 			String info = Messages.get(this, "stats",
 					Messages.decimalFormat("#.##", 100f * (Math.pow(1.20f, soloBuffedBonus()) - 1f)));
-			if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero, Wealth.class)){
+			if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
 				info += "\n\n" + Messages.get(this, "combined_stats",
-						Messages.decimalFormat("#.##", 100f * (Math.pow(1.20f, combinedBuffedBonus(Dungeon.hero, Wealth.class)) - 1f)));
+						Messages.decimalFormat("#.##", 100f * (Math.pow(1.20f, combinedBuffedBonus(Dungeon.hero)) - 1f)));
 			}
 			return info;
 		} else {
@@ -230,12 +233,20 @@ public class RingOfWealth extends Ring {
 				return i.quantity(i.quantity()*2);
 			case 1:
 				i = Generator.randomUsingDefaults(Generator.Category.POTION);
-				return Reflection.newInstance(ExoticPotion.regToExo.get(i.getClass()));
+				if (!(i instanceof ExoticPotion)) {
+					return Reflection.newInstance(ExoticPotion.regToExo.get(i.getClass()));
+				} else {
+					return Reflection.newInstance(i.getClass());
+				}
 			case 2:
 				i = Generator.randomUsingDefaults(Generator.Category.SCROLL);
-				return Reflection.newInstance(ExoticScroll.regToExo.get(i.getClass()));
+				if (!(i instanceof ExoticScroll)){
+					return Reflection.newInstance(ExoticScroll.regToExo.get(i.getClass()));
+				} else {
+					return Reflection.newInstance(i.getClass());
+				}
 			case 3:
-				return Random.Int(2) == 0 ? new ArcaneCatalyst() : new AlchemicalCatalyst();
+				return Random.Int(2) == 0 ? new UnstableBrew() : new UnstableSpell();
 			case 4:
 				return new Bomb();
 			case 5:
@@ -255,9 +266,9 @@ public class RingOfWealth extends Ring {
 			case 1:
 				return new StoneOfEnchantment();
 			case 2:
-				return new PotionOfExperience();
+				return Random.Float() < ExoticCrystals.consumableExoticChance() ? new PotionOfDivineInspiration() : new PotionOfExperience();
 			case 3:
-				return new ScrollOfTransmutation();
+				return Random.Float() < ExoticCrystals.consumableExoticChance() ? new ScrollOfMetamorphosis() : new ScrollOfTransmutation();
 		}
 	}
 

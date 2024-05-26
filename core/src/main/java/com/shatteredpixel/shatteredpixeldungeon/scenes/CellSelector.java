@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -356,12 +356,16 @@ public class CellSelector extends ScrollArea {
 	public void update() {
 		super.update();
 
-		if (GameScene.interfaceBlockingHero()){
-			return;
-		}
-
 		GameAction newLeftStick = actionFromStick(ControllerHandler.leftStickPosition.x,
 				ControllerHandler.leftStickPosition.y);
+
+		//skip logic here if there's no input, or if input is blocked
+		if ((newLeftStick == leftStickAction
+				&& leftStickAction == GameAction.NONE
+					&& heldAction1 == SPDAction.NONE)
+					|| GameScene.interfaceBlockingHero()){
+			return;
+		}
 
 		if (newLeftStick != leftStickAction){
 			if (leftStickAction == SPDAction.NONE){

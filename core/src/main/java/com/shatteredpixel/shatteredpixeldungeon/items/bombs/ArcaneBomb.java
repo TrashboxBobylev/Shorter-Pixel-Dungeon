@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,10 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class ArcaneBomb extends Bomb.MagicalBomb {
+public class ArcaneBomb extends Bomb {
 	
 	{
 		image = ItemSpriteSheet.ARCANE_BOMB;
@@ -81,7 +80,7 @@ public class ArcaneBomb extends Bomb.MagicalBomb {
 		
 		for (Char ch : affected){
 			// 100%/83%/67% bomb damage based on distance, but pierces armor.
-			int damage = Math.round(Random.NormalIntRange( Dungeon.scalingDepth()+5, 10 + Dungeon.scalingDepth() * 2 ));
+			int damage = Math.round(Char.combatRoll( Dungeon.scalingDepth()+5, 10 + Dungeon.scalingDepth() * 2 ));
 			float multiplier = 1f - (.16667f*Dungeon.level.distance(cell, ch.pos));
 			ch.damage(Math.round(damage*multiplier), this);
 			if (ch == Dungeon.hero && !ch.isAlive()){

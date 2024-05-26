@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ public class Spinner extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange(10, 20);
+		return Char.combatRoll(10, 20);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class Spinner extends Mob {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 6);
+		return super.drRoll() + Char.combatRoll(0, 6);
 	}
 
 	private int webCoolDown = 0;
@@ -191,9 +191,9 @@ public class Spinner extends Mob {
 			int leftPos = enemy.pos + PathFinder.CIRCLE8[left(i)];
 			int rightPos = enemy.pos + PathFinder.CIRCLE8[right(i)];
 			
-			if (Dungeon.level.passable[leftPos]) GameScene.add(Blob.seed(leftPos, 20, Web.class));
-			if (Dungeon.level.passable[webPos])  GameScene.add(Blob.seed(webPos, 20, Web.class));
-			if (Dungeon.level.passable[rightPos])GameScene.add(Blob.seed(rightPos, 20, Web.class));
+			if (Dungeon.level.passable[leftPos]) applyWebToCell(leftPos);
+			if (Dungeon.level.passable[webPos])  applyWebToCell(webPos);
+			if (Dungeon.level.passable[rightPos])applyWebToCell(rightPos);
 			
 			webCoolDown = 10;
 
@@ -202,6 +202,10 @@ public class Spinner extends Mob {
 			}
 		}
 		next();
+	}
+
+	protected void applyWebToCell(int cell){
+		GameScene.add(Blob.seed(cell, 20, Web.class));
 	}
 	
 	private int left(int direction){

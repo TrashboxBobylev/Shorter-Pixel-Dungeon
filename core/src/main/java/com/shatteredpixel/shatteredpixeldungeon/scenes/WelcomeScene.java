@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ import java.util.Collections;
 
 public class WelcomeScene extends PixelScene {
 
-	private static final int LATEST_UPDATE = ShatteredPixelDungeon.v2_2_0;
+	private static final int LATEST_UPDATE = ShatteredPixelDungeon.v2_4_0;
 
 	//used so that the game does not keep showing the window forever if cleaning fails
 	private static boolean triedCleaningTemp = false;
@@ -201,6 +201,7 @@ public class WelcomeScene extends PixelScene {
 				message += "\n" + Messages.get(this, "patch_translations");
 
 			}
+
 		} else {
 			message = Messages.get(this, "what_msg");
 		}
@@ -268,6 +269,10 @@ public class WelcomeScene extends PixelScene {
 				Game.reportException( new RuntimeException("Rankings Updating Failed!",e));
 			}
 			Dungeon.daily = Dungeon.dailyReplay = false;
+
+			if (previousVersion <= ShatteredPixelDungeon.v2_3_2){
+				Document.ADVENTURERS_GUIDE.findPage(Document.GUIDE_ALCHEMY);
+			}
 
 			Badges.saveGlobal(true);
 			Journal.saveGlobal(true);

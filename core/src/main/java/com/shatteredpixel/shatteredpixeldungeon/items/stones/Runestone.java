@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.stones;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -33,16 +34,15 @@ public abstract class Runestone extends Item {
 		defaultAction = AC_THROW;
 	}
 
-	//runestones press the cell they're thrown to by default, but a couple stones override this
-	protected boolean pressesCell = true;
-
 	@Override
 	protected void onThrow(int cell) {
-		if (Dungeon.level.pit[cell] || !defaultAction().equals(AC_THROW)){
+		///inventory stones are thrown like normal items, other stones don't trigger when thrown into pits
+		if (this instanceof InventoryStone ||
+				(Dungeon.level.pit[cell] && Actor.findChar(cell) == null)){
 			super.onThrow( cell );
 		} else {
-			if (pressesCell) Dungeon.level.pressCell( cell );
 			activate(cell);
+			if (Actor.findChar(cell) == null) Dungeon.level.pressCell( cell );
 			Invisibility.dispel();
 		}
 	}

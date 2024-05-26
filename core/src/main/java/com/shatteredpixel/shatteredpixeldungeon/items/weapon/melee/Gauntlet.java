@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,19 @@ public class Gauntlet extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		Sai.comboStrikeAbility(hero, target, 0.35f, this);
+		//+(4+0.75*lvl) damage, roughly +40% base damage, +40% scaling
+		int dmgBoost = augment.damageFactor(4 + Math.round(0.75f*buffedLvl()));
+		Sai.comboStrikeAbility(hero, target, 0, dmgBoost, this);
+	}
+
+	@Override
+	public String abilityInfo() {
+		int dmgBoost = levelKnown ? 4 + Math.round(0.75f*buffedLvl()) : 4;
+		if (levelKnown){
+			return Messages.get(this, "ability_desc", augment.damageFactor(dmgBoost));
+		} else {
+			return Messages.get(this, "typical_ability_desc", augment.damageFactor(dmgBoost));
+		}
 	}
 
 }

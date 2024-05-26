@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,9 +48,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bestiary;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
@@ -65,6 +68,12 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
@@ -213,17 +222,19 @@ public abstract class Level implements Bundlable {
 				Dungeon.LimitedDrops.ARCANE_STYLI.count++;
 				addItemToSpawn( new Stylus() );
 			}
-			//one scroll of transmutation is guaranteed to spawn somewhere on chapter 2-4
-			int enchChapter = (int)((Dungeon.seed / 8) % 3) + 1;
-			if ( Dungeon.depth / 4 == enchChapter &&
-					Dungeon.seed % 3 + 1 == Dungeon.depth % 4){
+			if ( Dungeon.enchStoneNeeded() ){
+				Dungeon.LimitedDrops.ENCH_STONE.drop();
 				addItemToSpawn( new StoneOfEnchantment() );
 			}
-			
-			if ( Dungeon.depth == ((Dungeon.seed % 2) + 1)){
+			if ( Dungeon.intStoneNeeded() ){
+				Dungeon.LimitedDrops.INT_STONE.drop();
 				addItemToSpawn( new StoneOfIntuition() );
 			}
-			
+			if ( Dungeon.trinketCataNeeded() ){
+				Dungeon.LimitedDrops.TRINKET_CATA.drop();
+				addItemToSpawn( new TrinketCatalyst());
+			}
+
 			if (Dungeon.depth > 1) {
 				//50% chance of getting a level feeling
 				//~7.15% chance for each feeling
@@ -252,6 +263,15 @@ public abstract class Level implements Bundlable {
 					case 6:
 						feeling = Feeling.SECRETS;
 						break;
+					default:
+						//if-else statements are fine here as only one chance can be above 0 at a time
+						if (Random.Float() < MossyClump.overrideNormalLevelChance()){
+							feeling = MossyClump.getNextFeeling();
+						} else if (Random.Float() < TrapMechanism.overrideNormalLevelChance()) {
+							feeling = TrapMechanism.getNextFeeling();
+						} else {
+							feeling = Feeling.NONE;
+						}
 				}
 			}
 		}
@@ -327,8 +347,8 @@ public abstract class Level implements Bundlable {
 
 		version = bundle.getInt( VERSION );
 		
-		//saves from before v1.2.3 are not supported
-		if (version < ShatteredPixelDungeon.v1_2_3){
+		//saves from before v1.4.3 are not supported
+		if (version < ShatteredPixelDungeon.v1_4_3){
 			throw new RuntimeException("old save");
 		}
 
@@ -348,21 +368,8 @@ public abstract class Level implements Bundlable {
 		mapped	= bundle.getBooleanArray( MAPPED );
 
 		transitions = new ArrayList<>();
-		if (bundle.contains(TRANSITIONS)){
-			for (Bundlable b : bundle.getCollection( TRANSITIONS )){
-				transitions.add((LevelTransition) b);
-			}
-		//pre-1.3.0 saves, converts old entrance/exit to new transitions
-		} else {
-			if (bundle.contains("entrance")){
-				transitions.add(new LevelTransition(
-						this,
-						bundle.getInt("entrance"),
-						Dungeon.depth == 1 ? LevelTransition.Type.SURFACE : LevelTransition.Type.REGULAR_ENTRANCE));
-			}
-			if (bundle.contains("exit")){
-				transitions.add(new LevelTransition(this, bundle.getInt("exit"), LevelTransition.Type.REGULAR_EXIT));
-			}
+		for (Bundlable b : bundle.getCollection( TRANSITIONS )){
+			transitions.add((LevelTransition) b);
 		}
 
 		locked      = bundle.getBoolean( LOCKED );
@@ -518,7 +525,9 @@ public abstract class Level implements Bundlable {
 		for (LevelTransition transition : transitions){
 			//if we don't specify a type, prefer to return any entrance
 			if (type == null &&
-					(transition.type == LevelTransition.Type.REGULAR_ENTRANCE || transition.type == LevelTransition.Type.SURFACE)){
+					(transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+							|| transition.type == LevelTransition.Type.BRANCH_ENTRANCE
+							|| transition.type == LevelTransition.Type.SURFACE)){
 				return transition;
 			} else if (transition.type == type){
 				return transition;
@@ -569,10 +578,10 @@ public abstract class Level implements Bundlable {
 
 		//spend the hero's partial turns,  so the hero cannot take partial turns between floors
 		Dungeon.hero.spendToWhole();
-		for (Char ch : Actor.chars()){
-			//also adjust any mobs that are now ahead of the hero due to this
-			if (ch.cooldown() < Dungeon.hero.cooldown()){
-				ch.spendToWhole();
+		for (Actor a : Actor.all()){
+			//also adjust any other actors that are now ahead of the hero due to this
+			if (a.cooldown() < Dungeon.hero.cooldown()){
+				a.spendToWhole();
 			}
 		}
 	}
@@ -708,19 +717,21 @@ public abstract class Level implements Bundlable {
 	}
 
 	public float respawnCooldown(){
+		float cooldown;
 		if (Statistics.amuletObtained){
 			if (Dungeon.depth == 1){
 				//very fast spawns on floor 1! 0/2/4/6/8/10/12, etc.
-				return (Dungeon.level.mobCount()) * (TIME_TO_RESPAWN / 25f);
+				cooldown = (Dungeon.level.mobCount()) * (TIME_TO_RESPAWN / 25f);
 			} else {
 				//respawn time is 5/5/10/15/20/25/25, etc.
-				return Math.round(GameMath.gate( TIME_TO_RESPAWN/10f, Dungeon.level.mobCount() * (TIME_TO_RESPAWN / 10f), TIME_TO_RESPAWN / 2f));
+				cooldown = Math.round(GameMath.gate( TIME_TO_RESPAWN/10f, Dungeon.level.mobCount() * (TIME_TO_RESPAWN / 10f), TIME_TO_RESPAWN / 2f));
 			}
 		} else if (Dungeon.level.feeling == Feeling.DARK){
-			return 2*TIME_TO_RESPAWN/3f;
+			cooldown = 2*TIME_TO_RESPAWN/3f;
 		} else {
-			return TIME_TO_RESPAWN;
+			cooldown = TIME_TO_RESPAWN;
 		}
+		return cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime();
 	}
 
 	public boolean spawnMob(int disLimit){
@@ -785,6 +796,14 @@ public abstract class Level implements Bundlable {
 			return null;
 
 		if (match == null){
+			//if we have a trinket catalyst, always return that first
+			for (Item item : itemsToSpawn){
+				if (item instanceof TrinketCatalyst){
+					itemsToSpawn.remove(item);
+					return item;
+				}
+			}
+
 			Item item = Random.element(itemsToSpawn);
 			itemsToSpawn.remove(item);
 			return item;
@@ -1232,21 +1251,25 @@ public abstract class Level implements Bundlable {
 			if (modifiableBlocking == null || modifiableBlocking.length != Dungeon.level.losBlocking.length){
 				modifiableBlocking = new boolean[Dungeon.level.losBlocking.length];
 			}
-			
-			if ((c instanceof Hero && ((Hero) c).subClass == HeroSubClass.WARDEN)
-				|| c instanceof YogFist.SoiledFist) {
-				if (blocking == null) {
-					System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
-					blocking = modifiableBlocking;
-				}
-				for (int i = 0; i < blocking.length; i++){
-					if (blocking[i] && (Dungeon.level.map[i] == Terrain.HIGH_GRASS || Dungeon.level.map[i] == Terrain.FURROWED_GRASS)){
-						blocking[i] = false;
+
+			//grass is see-through by some specific entities, but not during the fungi quest
+			if (!(Dungeon.level instanceof  MiningLevel) || Blacksmith.Quest.Type() != Blacksmith.Quest.FUNGI){
+				if ((c instanceof Hero && ((Hero) c).subClass == HeroSubClass.WARDEN)
+						|| c instanceof YogFist.SoiledFist || c instanceof GnollGeomancer) {
+					if (blocking == null) {
+						System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
+						blocking = modifiableBlocking;
+					}
+					for (int i = 0; i < blocking.length; i++) {
+						if (blocking[i] && (Dungeon.level.map[i] == Terrain.HIGH_GRASS || Dungeon.level.map[i] == Terrain.FURROWED_GRASS)) {
+							blocking[i] = false;
+						}
 					}
 				}
 			}
 
-			if (c.alignment != Char.Alignment.ALLY
+			//allies and specific enemies can see through shrouding fog
+			if ((c.alignment != Char.Alignment.ALLY && !(c instanceof GnollGeomancer))
 					&& Dungeon.level.blobs.containsKey(SmokeScreen.class)
 					&& Dungeon.level.blobs.get(SmokeScreen.class).volume > 0) {
 				if (blocking == null) {
@@ -1264,13 +1287,14 @@ public abstract class Level implements Bundlable {
 			if (blocking == null){
 				blocking = Dungeon.level.losBlocking;
 			}
-			
-			int viewDist = c.viewDistance;
+
+			float viewDist = c.viewDistance;
 			if (c instanceof Hero){
 				viewDist *= 1f + 0.25f*((Hero) c).pointsInTalent(Talent.FARSIGHT);
+				viewDist *= EyeOfNewt.visionRangeMultiplier();
 			}
 			
-			ShadowCaster.castShadow( cx, cy, fieldOfView, blocking, viewDist );
+			ShadowCaster.castShadow( cx, cy, width(), fieldOfView, blocking, Math.round(viewDist) );
 		} else {
 			BArray.setFalse(fieldOfView);
 		}
@@ -1332,20 +1356,34 @@ public abstract class Level implements Bundlable {
 			}
 
 			Dungeon.hero.mindVisionEnemies.clear();
+			boolean stealthyMimics = MimicTooth.stealthyMimics();
 			if (c.buff( MindVision.class ) != null) {
 				for (Mob mob : mobs) {
+					if (stealthyMimics && mob instanceof Mimic && mob.alignment == Char.Alignment.NEUTRAL){
+						continue;
+					}
 					for (int i : PathFinder.NEIGHBOURS9) {
 						heroMindFov[mob.pos + i] = true;
 					}
 				}
-			} else if (((Hero) c).hasTalent(Talent.HEIGHTENED_SENSES)) {
-				Hero h = (Hero) c;
-				int range = 1+h.pointsInTalent(Talent.HEIGHTENED_SENSES);
-				for (Mob mob : mobs) {
-					int p = mob.pos;
-					if (!fieldOfView[p] && distance(c.pos, p) <= range) {
-						for (int i : PathFinder.NEIGHBOURS9) {
-							heroMindFov[mob.pos + i] = true;
+			} else {
+
+				int mindVisRange = 0;
+				if (((Hero) c).hasTalent(Talent.HEIGHTENED_SENSES)){
+					mindVisRange = 1+((Hero) c).pointsInTalent(Talent.HEIGHTENED_SENSES);
+				}
+				mindVisRange = Math.max(mindVisRange, EyeOfNewt.mindVisionRange());
+
+				if (mindVisRange >= 1) {
+					for (Mob mob : mobs) {
+						if (stealthyMimics && mob instanceof Mimic && mob.alignment == Char.Alignment.NEUTRAL) {
+							continue;
+						}
+						int p = mob.pos;
+						if (!fieldOfView[p] && distance(c.pos, p) <= mindVisRange) {
+							for (int i : PathFinder.NEIGHBOURS9) {
+								heroMindFov[mob.pos + i] = true;
+							}
 						}
 					}
 				}
@@ -1473,6 +1511,7 @@ public abstract class Level implements Bundlable {
 			case Terrain.OPEN_DOOR:
 				return Messages.get(Level.class, "open_door_name");
 			case Terrain.ENTRANCE:
+			case Terrain.ENTRANCE_SP:
 				return Messages.get(Level.class, "entrace_name");
 			case Terrain.EXIT:
 				return Messages.get(Level.class, "exit_name");
@@ -1520,6 +1559,7 @@ public abstract class Level implements Bundlable {
 			case Terrain.WATER:
 				return Messages.get(Level.class, "water_desc");
 			case Terrain.ENTRANCE:
+			case Terrain.ENTRANCE_SP:
 				return Messages.get(Level.class, "entrance_desc");
 			case Terrain.EXIT:
 			case Terrain.UNLOCKED_EXIT:

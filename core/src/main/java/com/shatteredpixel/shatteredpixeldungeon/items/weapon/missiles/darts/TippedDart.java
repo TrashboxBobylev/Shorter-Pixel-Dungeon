@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,7 +151,7 @@ public abstract class TippedDart extends Dart {
 
 	@Override
 	public float durabilityPerUse() {
-		float use = super.durabilityPerUse();
+		float use = super.durabilityPerUse(false);
 		
 		use /= (1 + Dungeon.hero.pointsInTalent(Talent.DURABLE_TIPS));
 
@@ -179,12 +179,18 @@ public abstract class TippedDart extends Dart {
 		}
 		use *= (1f - lotusPreserve);
 
-		//grants 4 extra uses with charged shot
-		if (Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
-			use = 100f/((100f/use) + 4f) + 0.001f;
+		float usages = Math.round(MAX_DURABILITY/use);
+
+		//grants 3+lvl extra uses with charged shot
+		if (bow != null && Dungeon.hero.buff(Crossbow.ChargedShot.class) != null){
+			usages += 3 + bow.buffedLvl();
 		}
-		
-		return use;
+
+		//at 100 uses, items just last forever.
+		if (usages >= 100f) return 0;
+
+		//add a tiny amount to account for rounding error for calculations like 1/3
+		return (MAX_DURABILITY/usages) + 0.001f;
 	}
 	
 	@Override

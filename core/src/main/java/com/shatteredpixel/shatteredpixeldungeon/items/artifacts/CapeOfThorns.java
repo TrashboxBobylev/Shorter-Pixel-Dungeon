@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.utils.Random;
 
 public class CapeOfThorns extends Artifact {
 
@@ -100,7 +99,7 @@ public class CapeOfThorns extends Artifact {
 			}
 
 			if (cooldown != 0){
-				int deflected = Random.NormalIntRange(0, damage);
+				int deflected = Char.combatRoll(0, damage);
 				damage -= deflected;
 
 				if (attacker != null && Dungeon.level.adjacent(attacker.pos, defender.pos)) {

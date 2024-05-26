@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -66,9 +67,13 @@ public class LibraryRoom extends SpecialRoom {
 	
 	private static Item prize( Level level ) {
 		
-		Item prize = level.findPrizeItem( Scroll.class );
-		if (prize == null)
-			prize = Generator.random( Generator.Category.SCROLL );
+		Item prize = level.findPrizeItem( TrinketCatalyst.class );
+		if (prize == null){
+			prize = level.findPrizeItem( Scroll.class );
+			if (prize == null) {
+				prize = Generator.random( Generator.Category.SCROLL );
+			}
+		}
 		
 		return prize;
 	}

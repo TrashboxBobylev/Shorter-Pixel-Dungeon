@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 public class ArmoredStatue extends Statue {
 
@@ -75,7 +74,7 @@ public class ArmoredStatue extends Statue {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange( armor.DRMin(), armor.DRMax());
+		return super.drRoll() + Char.combatRoll( armor.DRMin(), armor.DRMax());
 	}
 
 	//used in some glyph calculations
@@ -105,6 +104,7 @@ public class ArmoredStatue extends Statue {
 		if (armor != null && armor.hasGlyph(AntiMagic.class, this)
 				&& AntiMagic.RESISTS.contains(src.getClass())){
 			dmg -= AntiMagic.drRoll(this, armor.buffedLvl());
+			dmg = Math.max(dmg, 0);
 		}
 
 		super.damage( dmg, src );

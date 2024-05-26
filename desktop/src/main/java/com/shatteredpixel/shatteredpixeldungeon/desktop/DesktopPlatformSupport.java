@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.watabou.input.ControllerHandler;
 import com.watabou.noosa.Game;
 import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.Point;
@@ -44,16 +45,14 @@ public class DesktopPlatformSupport extends PlatformSupport {
 	public void updateDisplaySize() {
 		if (previousSizes == null){
 			previousSizes = new Point[2];
-			previousSizes[0] = previousSizes[1] = new Point(Game.width, Game.height);
+			previousSizes[1] = SPDSettings.windowResolution();
 		} else {
 			previousSizes[1] = previousSizes[0];
-			previousSizes[0] = new Point(Game.width, Game.height);
 		}
+		previousSizes[0] = new Point(Game.width, Game.height);
 		if (!SPDSettings.fullscreen()) {
 			SPDSettings.windowResolution( previousSizes[0] );
 		}
-		//TODO fixes an in libGDX v1.11.0 with macOS displays
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 	}
 	
 	@Override
@@ -74,6 +73,12 @@ public class DesktopPlatformSupport extends PlatformSupport {
 	@Override
 	public boolean connectedToUnmeteredNetwork() {
 		return true; //no easy way to check this in desktop, just assume user doesn't care
+	}
+
+	@Override
+	public boolean supportsVibration() {
+		//only supports vibration via controller
+		return ControllerHandler.vibrationSupported();
 	}
 
 	/* FONT SUPPORT */

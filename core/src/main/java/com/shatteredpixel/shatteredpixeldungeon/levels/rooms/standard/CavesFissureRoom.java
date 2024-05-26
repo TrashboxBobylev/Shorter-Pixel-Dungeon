@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
@@ -49,13 +50,23 @@ public class CavesFissureRoom extends StandardRoom {
 	}
 
 	@Override
-	public boolean canMerge(Level l, Point p, int mergeTerrain) {
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain) {
 		if (mergeTerrain == Terrain.CHASM) {
 			return true;
 		} else {
 			int cell = l.pointToCell(pointInside(p, 1));
 			return l.map[cell] != Terrain.CHASM;
 		}
+	}
+
+	@Override
+	public boolean canPlaceItem(Point p, Level l) {
+		return super.canPlaceItem(p, l) && l.map[l.pointToCell(p)] != Terrain.EMPTY_SP;
+	}
+
+	@Override
+	public boolean canPlaceCharacter(Point p, Level l) {
+		return super.canPlaceItem(p, l) && l.map[l.pointToCell(p)] != Terrain.EMPTY_SP;
 	}
 
 	@Override
@@ -87,7 +98,7 @@ public class CavesFissureRoom extends StandardRoom {
 
 			//generate angles for 2-4 fissure lines, they can't be too close to doors or eachother
 			ArrayList<Float> lineAngles = new ArrayList<>();
-			int numLines = 1 + sizeCat.roomValue;
+			int numLines = 1 + sizeFactor();
 			for (int i = 0; i < numLines; i++) {
 				int tries = 100;
 				boolean valid;
@@ -190,7 +201,7 @@ public class CavesFissureRoom extends StandardRoom {
 				buildBridge(level, Random.element(lineAngles), center, 1);
 			} else {
 				for (float angle : lineAngles) {
-					buildBridge(level, angle, center, sizeCat.roomValue);
+					buildBridge(level, angle, center, sizeFactor());
 				}
 			}
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,8 +69,10 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 	}
 
 	public static void onMetamorph( Talent oldTalent, Talent newTalent ){
-		((ScrollOfMetamorphosis) curItem).readAnimation();
-		Sample.INSTANCE.play( Assets.Sounds.READ );
+		if (curItem instanceof ScrollOfMetamorphosis) {
+			((ScrollOfMetamorphosis) curItem).readAnimation();
+			Sample.INSTANCE.play(Assets.Sounds.READ);
+		}
 		curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
 		Transmuting.show(curUser, oldTalent, newTalent);
 
@@ -195,7 +197,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 		public WndMetamorphReplace(Talent replacing, int tier){
 			super();
 
-			if (!identifiedByUse) {
+			if (!identifiedByUse && curItem instanceof ScrollOfMetamorphosis) {
 				curItem.detach(curUser.belongings.backpack);
 			}
 			identifiedByUse = false;
@@ -270,7 +272,11 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 
 		@Override
 		public void onBackPressed() {
-			((ScrollOfMetamorphosis)curItem).confirmCancelation(this);
+			if (curItem instanceof ScrollOfMetamorphosis) {
+				((ScrollOfMetamorphosis) curItem).confirmCancelation(this);
+			} else {
+				super.onBackPressed();
+			}
 		}
 	}
 }

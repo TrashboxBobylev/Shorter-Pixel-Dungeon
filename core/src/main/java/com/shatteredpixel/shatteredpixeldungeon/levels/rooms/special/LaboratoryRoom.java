@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.AlchemyPage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -70,7 +71,7 @@ public class LaboratoryRoom extends SpecialRoom {
 		} while (
 				level.map[pos] != Terrain.EMPTY_SP ||
 						level.heaps.get( pos ) != null);
-		level.drop( new EnergyCrystal().random(), pos );
+		level.drop( new EnergyCrystal().quantity(5), pos );
 
 		int n = Random.NormalIntRange( 1, 2 );
 		for (int i=0; i < n; i++) {
@@ -123,9 +124,13 @@ public class LaboratoryRoom extends SpecialRoom {
 	
 	private static Item prize( Level level ) {
 
-		Item prize = level.findPrizeItem( Potion.class );
-		if (prize == null)
-			prize = Generator.random( Random.oneOf( Generator.Category.POTION, Generator.Category.STONE ));
+		Item prize = level.findPrizeItem( TrinketCatalyst.class );
+		if (prize == null){
+			prize = level.findPrizeItem( Potion.class );
+			if (prize == null) {
+				prize = Generator.random(Random.oneOf(Generator.Category.POTION, Generator.Category.STONE));
+			}
+		}
 
 		return prize;
 	}

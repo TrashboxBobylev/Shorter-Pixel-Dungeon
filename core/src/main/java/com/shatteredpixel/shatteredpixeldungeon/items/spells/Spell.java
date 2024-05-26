@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,11 @@ import java.util.ArrayList;
 public abstract class Spell extends Item {
 	
 	public static final String AC_CAST = "CAST";
+
+	//affects how strongly on-scroll talents trigger from this scroll
+	protected float talentFactor = 1;
+	//the chance (0-1) of whether on-scroll talents trigger from this potion
+	protected float talentChance = 1;
 	
 	{
 		stackable = true;

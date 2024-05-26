@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ public class Eye extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange(10, 19);
+		return Char.combatRoll(10, 19);
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class Eye extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 6);
+		return super.drRoll() + Char.combatRoll(0, 6);
 	}
 	
 	private Ballistica beam;
@@ -184,7 +184,7 @@ public class Eye extends Mob {
 			}
 
 			if (hit( this, ch, true )) {
-				int dmg = Random.NormalIntRange( 17, 28 );
+				int dmg = Char.combatRoll( 17, 28 );
 				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 				ch.damage( dmg, new DeathGaze() );
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.DM100Sprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 public class DM100 extends Mob implements Callback {
 
@@ -59,7 +58,7 @@ public class DM100 extends Mob implements Callback {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1, 7 );
+		return Char.combatRoll( 1, 7 );
 	}
 	
 	@Override
@@ -69,7 +68,7 @@ public class DM100 extends Mob implements Callback {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 3);
+		return super.drRoll() + Char.combatRoll(0, 3);
 	}
 
 	@Override
@@ -95,7 +94,7 @@ public class DM100 extends Mob implements Callback {
 
 			Invisibility.dispel(this);
 			if (hit( this, enemy, true )) {
-				int dmg = Random.NormalIntRange(2, 8);
+				int dmg = Char.combatRoll(2, 8);
 				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 				enemy.damage( dmg, new LightningBolt() );
 

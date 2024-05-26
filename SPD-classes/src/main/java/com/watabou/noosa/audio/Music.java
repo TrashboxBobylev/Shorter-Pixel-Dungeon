@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,12 +94,19 @@ public enum Music {
 
 		if (isPlaying() && this.trackList != null && tracks.length == trackList.length){
 
-			boolean sameList = true;
-			for (int i = 0; i < tracks.length; i ++){
-				if (!tracks[i].equals(trackList[i]) || chances[i] != trackChances[i]){
-					sameList = false;
-					break;
+			//lists are considered the same if they are identical or merely shifted
+			// e.g. the regular title theme and the victory theme are considered equivalent
+			boolean sameList = false;
+			for (int ofs = 0; ofs < tracks.length; ofs++){
+				sameList = true;
+				for (int j = 0; j < tracks.length; j++){
+					int i = (j+ofs)%tracks.length;
+					if (!tracks[i].equals(trackList[j]) || chances[i] != trackChances[j]){
+						sameList = false;
+						break;
+					}
 				}
+				if (sameList) break;
 			}
 
 			if (sameList) {
@@ -143,7 +150,7 @@ public enum Music {
 	}
 
 	public synchronized void update(){
-		if (fadeTotal > 0f){
+		if (fadeTotal > 0f && !paused){
 			fadeTime += Game.elapsed;
 
 			if (player != null) {
@@ -162,17 +169,20 @@ public enum Music {
 	private com.badlogic.gdx.audio.Music.OnCompletionListener trackLooper = new com.badlogic.gdx.audio.Music.OnCompletionListener() {
 		@Override
 		public void onCompletion(com.badlogic.gdx.audio.Music music) {
-			//we do this in a separate thread to avoid graphics hitching while the music is prepared
-			if (!DeviceCompat.isDesktop()) {
-				new Thread() {
-					@Override
-					public void run() {
-						playNextTrack(music);
-					}
-				}.start();
-			} else {
-				//don't use a separate thread on desktop, causes errors and makes no performance difference
-				playNextTrack(music);
+			//don't play the next track if we're currently in the middle of a fade
+			if (fadeTotal == -1f) {
+				//we do this in a separate thread to avoid graphics hitching while the music is prepared
+				if (!DeviceCompat.isDesktop()) {
+					new Thread() {
+						@Override
+						public void run() {
+							playNextTrack(music);
+						}
+					}.start();
+				} else {
+					//don't use a separate thread on desktop, causes errors and makes no performance difference
+					playNextTrack(music);
+				}
 			}
 		}
 	};
@@ -207,7 +217,7 @@ public enum Music {
 			player = Gdx.audio.newMusic(Gdx.files.internal(track));
 			player.setLooping(looping);
 			player.setVolume(volumeWithFade());
-			player.play();
+			if (!paused) player.play();
 			if (listener != null) {
 				player.setOnCompletionListener(listener);
 			}
@@ -222,14 +232,18 @@ public enum Music {
 		trackList = null;
 		stop();
 	}
+
+	private boolean paused = false;
 	
 	public synchronized void pause() {
+		paused = true;
 		if (player != null) {
 			player.pause();
 		}
 	}
 	
 	public synchronized void resume() {
+		paused = false;
 		if (player != null) {
 			player.play();
 			player.setLooping(looping);

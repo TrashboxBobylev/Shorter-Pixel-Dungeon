@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -163,11 +164,14 @@ public class TimekeepersHourglass extends Artifact {
 	public void charge(Hero target, float amount) {
 		if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null){
 			partialCharge += 0.25f*amount;
-			if (partialCharge >= 1){
+			while (partialCharge >= 1){
 				partialCharge--;
 				charge++;
-				updateQuickslot();
 			}
+			if (charge >= chargeCap){
+				partialCharge = 0;
+			}
+			updateQuickslot();
 		}
 	}
 
@@ -241,7 +245,7 @@ public class TimekeepersHourglass extends Artifact {
 				chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
 				partialCharge += chargeGain;
 
-				if (partialCharge >= 1) {
+				while (partialCharge >= 1) {
 					partialCharge --;
 					charge ++;
 
@@ -359,13 +363,13 @@ public class TimekeepersHourglass extends Artifact {
 
 		public void triggerPresses(){
 			for (int cell : presses){
-				Trap t = Dungeon.level.traps.get(cell);
-				if (t != null){
-					t.trigger();
-				}
 				Plant p = Dungeon.level.plants.get(cell);
 				if (p != null){
 					p.trigger();
+				}
+				Trap t = Dungeon.level.traps.get(cell);
+				if (t != null){
+					t.trigger();
 				}
 			}
 
@@ -374,12 +378,14 @@ public class TimekeepersHourglass extends Artifact {
 
 		public void disarmPresses(){
 			for (int cell : presses){
+				Plant p = Dungeon.level.plants.get(cell);
+				if (p != null && !(p instanceof Rotberry)) {
+					Dungeon.level.uproot(cell);
+				}
 				Trap t = Dungeon.level.traps.get(cell);
 				if (t != null && t.disarmedByActivation) {
 					t.disarm();
 				}
-
-				Dungeon.level.uproot(cell);
 			}
 
 			presses = new ArrayList<>();
@@ -426,12 +432,12 @@ public class TimekeepersHourglass extends Artifact {
 
 		@Override
 		public String iconTextDisplay() {
-			return Integer.toString((int)turnsToCost);
+			return Integer.toString((int)(turnsToCost + 0.001f));
 		}
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", Messages.decimalFormat("#.##", turnsToCost));
+			return Messages.get(this, "desc", Messages.decimalFormat("#.##", Math.max(0, turnsToCost)));
 		}
 
 		private static final String PRESSES = "presses";

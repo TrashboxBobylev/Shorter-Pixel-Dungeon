@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,13 +23,13 @@ package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
 
 //for wands that directly damage a target
-//wands with AOE effects count here (e.g. fireblast), but wands with indrect damage do not (e.g. venom, transfusion)
+//wands with AOE or circumstantial direct damage count here (e.g. fireblast, transfusion), but wands with indirect damage do not (e.g. corrosion)
 public abstract class DamageWand extends Wand{
 
 	public int min(){
@@ -49,7 +49,7 @@ public abstract class DamageWand extends Wand{
 	}
 
 	public int damageRoll(int lvl){
-		int dmg = Random.NormalIntRange(min(lvl), max(lvl));
+		int dmg = Char.combatRoll(min(lvl), max(lvl));
 		WandEmpower emp = Dungeon.hero.buff(WandEmpower.class);
 		if (emp != null){
 			dmg += emp.dmgBoost;

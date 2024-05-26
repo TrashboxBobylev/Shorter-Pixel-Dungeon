@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDragonsBreath;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
@@ -44,24 +43,13 @@ public class ElixirOfDragonsBlood extends Elixir {
 		hero.sprite.emitter().burst(FlameParticle.FACTORY, 10);
 	}
 	
-	@Override
-	protected int splashColor() {
-		return 0xFFFF002A;
-	}
-	
-	@Override
-	public int value() {
-		//prices of ingredients
-		return quantity * (50 + 40);
-	}
-	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
-			inputs =  new Class[]{PotionOfDragonsBreath.class, AlchemicalCatalyst.class};
-			inQuantity = new int[]{1, 1};
+			inputs =  new Class[]{PotionOfDragonsBreath.class};
+			inQuantity = new int[]{1};
 			
-			cost = 6;
+			cost = 10;
 			
 			output = ElixirOfDragonsBlood.class;
 			outQuantity = 1;

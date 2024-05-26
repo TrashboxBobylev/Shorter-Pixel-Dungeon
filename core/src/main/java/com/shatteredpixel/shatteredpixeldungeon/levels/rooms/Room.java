@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -239,7 +239,7 @@ public abstract class Room extends Rect implements Graph.Node, Bundlable {
 			return false;
 	}
 
-	public boolean canMerge(Level l, Point p, int mergeTerrain){
+	public boolean canMerge(Level l, Room other, Point p, int mergeTerrain){
 		return false;
 	}
 
@@ -263,6 +263,11 @@ public abstract class Room extends Rect implements Graph.Node, Bundlable {
 	}
 	
 	public boolean connect( Room room ) {
+		if (isExit() && room.isEntrance() || isEntrance() && room.isExit()){
+			//entrance and exit rooms cannot directly connect
+			return false;
+		}
+
 		if ((neigbours.contains(room) || addNeigbour(room))
 				&& !connected.containsKey( room ) && canConnect(room)) {
 			connected.put( room, null );
@@ -281,6 +286,14 @@ public abstract class Room extends Rect implements Graph.Node, Bundlable {
 			r.connected.remove(this);
 		}
 		connected.clear();
+	}
+
+	public boolean isEntrance(){
+		return false;
+	}
+
+	public boolean isExit(){
+		return false;
 	}
 	
 	// **** Painter Logic ****

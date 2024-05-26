@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
@@ -74,9 +74,9 @@ public class Goo extends Mob {
 				Statistics.qualifiedForBossChallengeBadge = false;
 				Statistics.bossScores[0] -= 100;
 			}
-			return Random.NormalIntRange( min*3, max*3 );
+			return Char.combatRoll( min*3, max*3 );
 		} else {
-			return Random.NormalIntRange( min, max );
+			return Char.combatRoll( min, max );
 		}
 	}
 
@@ -95,7 +95,7 @@ public class Goo extends Mob {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 2);
+		return super.drRoll() + Char.combatRoll(0, 2);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class Goo extends Mob {
 			}
 
 			if (Dungeon.level.heroFOV[pos] ){
-				sprite.emitter().burst( Speck.factory( Speck.HEALING ), healInc );
+				sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(healInc), FloatingText.HEALING );
 			}
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) && healInc < 3) {
 				healInc++;
@@ -210,7 +210,7 @@ public class Goo extends Mob {
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 				pumpedUp += 2;
 				//don't want to overly punish players with slow move or attack speed
-				spend(GameMath.gate(attackDelay(), Dungeon.hero.cooldown(), 3*attackDelay()));
+				spend(GameMath.gate(attackDelay(), (int)Math.ceil(enemy.cooldown()), 3*attackDelay()));
 			} else {
 				pumpedUp++;
 				spend( attackDelay() );
@@ -219,7 +219,7 @@ public class Goo extends Mob {
 			((GooSprite)sprite).pumpUp( pumpedUp );
 
 			if (Dungeon.level.heroFOV[pos]) {
-				sprite.showStatus( CharSprite.NEGATIVE, Messages.get(this, "!!!") );
+				sprite.showStatus( CharSprite.WARNING, Messages.get(this, "!!!") );
 				GLog.n( Messages.get(this, "pumpup") );
 			}
 
@@ -268,12 +268,12 @@ public class Goo extends Mob {
 		super.damage(dmg, src);
 		if ((HP*2 <= HT) && !bleeding){
 			BossHealthBar.bleed(true);
-			sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "enraged"));
+			sprite.showStatus(CharSprite.WARNING, Messages.get(this, "enraged"));
 			((GooSprite)sprite).spray(true);
 			yell(Messages.get(this, "gluuurp"));
 		}
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null){
+		if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg);
 			else                                                    lock.addTime(dmg*1.5f);
 		}

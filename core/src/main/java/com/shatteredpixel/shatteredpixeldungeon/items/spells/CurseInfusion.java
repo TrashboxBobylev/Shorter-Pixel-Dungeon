@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ public class CurseInfusion extends InventorySpell {
 	
 	{
 		image = ItemSpriteSheet.CURSE_INFUSE;
+
+		talentChance = 1/(float)Recipe.OUT_QUANTITY;
 	}
 
 	@Override
@@ -61,7 +63,10 @@ public class CurseInfusion extends InventorySpell {
 		if (item instanceof MeleeWeapon || item instanceof SpiritBow) {
 			Weapon w = (Weapon) item;
 			if (w.enchantment != null) {
-				w.enchant(Weapon.Enchantment.randomCurse(w.enchantment.getClass()));
+				//if we are freshly applying curse infusion, don't replace an existing curse
+				if (w.hasGoodEnchant() || w.curseInfusionBonus) {
+					w.enchant(Weapon.Enchantment.randomCurse(w.enchantment.getClass()));
+				}
 			} else {
 				w.enchant(Weapon.Enchantment.randomCurse());
 			}
@@ -72,7 +77,10 @@ public class CurseInfusion extends InventorySpell {
 		} else if (item instanceof Armor){
 			Armor a = (Armor) item;
 			if (a.glyph != null){
-				a.inscribe(Armor.Glyph.randomCurse(a.glyph.getClass()));
+				//if we are freshly applying curse infusion, don't replace an existing curse
+				if (a.hasGoodGlyph() || a.curseInfusionBonus) {
+					a.inscribe(Armor.Glyph.randomCurse(a.glyph.getClass()));
+				}
 			} else {
 				a.inscribe(Armor.Glyph.randomCurse());
 			}
@@ -89,11 +97,17 @@ public class CurseInfusion extends InventorySpell {
 	
 	@Override
 	public int value() {
-		//prices of ingredients, divided by output quantity, rounds down
-		return (int)((30 + 50) * (quantity/3f));
+		return (int)(60 * (quantity/(float)Recipe.OUT_QUANTITY));
+	}
+
+	@Override
+	public int energyVal() {
+		return (int)(12 * (quantity/(float)Recipe.OUT_QUANTITY));
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
+
+		private static final int OUT_QUANTITY = 4;
 		
 		{
 			inputs =  new Class[]{ScrollOfRemoveCurse.class, MetalShard.class};
@@ -102,7 +116,7 @@ public class CurseInfusion extends InventorySpell {
 			cost = 6;
 			
 			output = CurseInfusion.class;
-			outQuantity = 4;
+			outQuantity = OUT_QUANTITY;
 		}
 		
 	}

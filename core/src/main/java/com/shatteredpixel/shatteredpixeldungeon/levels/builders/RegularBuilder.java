@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.Connecti
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.connection.MazeConnectionRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EntranceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ExitRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.watabou.utils.Random;
 
@@ -98,9 +96,9 @@ public abstract class RegularBuilder extends Builder {
 		singleConnections.clear();
 		multiConnections.clear();
 		for (Room r : rooms){
-			if (r instanceof EntranceRoom){
+			if (r.isEntrance()){
 				entrance = r;
-			} else if (r instanceof ExitRoom) {
+			} else if (r.isExit()) {
 				exit = r;
 			} else if (r instanceof ShopRoom && r.maxConnections(Room.ALL) == 1){
 				shop = r;
@@ -123,7 +121,7 @@ public abstract class RegularBuilder extends Builder {
 		while (roomsOnMainPath > 0 && !multiConnections.isEmpty()){
 			Room r = multiConnections.remove(0);
 			if (r instanceof StandardRoom){
-				roomsOnMainPath -= ((StandardRoom) r).sizeCat.roomValue;
+				roomsOnMainPath -= ((StandardRoom) r).sizeFactor();
 			} else {
 				roomsOnMainPath--;
 			}
@@ -136,7 +134,7 @@ public abstract class RegularBuilder extends Builder {
 	protected void weightRooms(ArrayList<Room> rooms){
 		for (Room r : rooms.toArray(new Room[0])){
 			if (r instanceof StandardRoom){
-				for (int i = 1; i < ((StandardRoom) r).sizeCat.connectionWeight(); i++)
+				for (int i = 1; i < ((StandardRoom) r).connectionWeight(); i++)
 					rooms.add(r);
 			}
 		}
@@ -228,7 +226,7 @@ public abstract class RegularBuilder extends Builder {
 			}
 			if (r.maxConnections(Room.ALL) > 1 && Random.Int(3) == 0) {
 				if (r instanceof StandardRoom){
-					for (int j = 0; j < ((StandardRoom) r).sizeCat.connectionWeight(); j++){
+					for (int j = 0; j < ((StandardRoom) r).connectionWeight(); j++){
 						branchable.add(r);
 					}
 				} else {

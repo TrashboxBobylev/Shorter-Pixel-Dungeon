@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,7 +149,7 @@ public class AscensionChallenge extends Buff {
 	//hero speed is halved and capped at 1x at 6+ stacks
 	public static float modifyHeroSpeed(float speed){
 		if (Dungeon.hero.buff(AscensionChallenge.class) != null
-				&& Dungeon.hero.buff(AscensionChallenge.class).stacks > 6f){
+				&& Dungeon.hero.buff(AscensionChallenge.class).stacks >= 6f){
 			return Math.min(speed/2f, 1f);
 		}
 

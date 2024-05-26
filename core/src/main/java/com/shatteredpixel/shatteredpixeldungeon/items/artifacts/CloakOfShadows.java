@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -180,16 +180,20 @@ public class CloakOfShadows extends Artifact {
 		if (charge < chargeCap) {
 			if (!isEquipped(target)) amount *= 0.75f*target.pointsInTalent(Talent.LIGHT_CLOAK)/3f;
 			partialCharge += 0.25f*amount;
-			if (partialCharge >= 1){
-				partialCharge--;
+			while (partialCharge >= 1f) {
 				charge++;
-				updateQuickslot();
+				partialCharge--;
 			}
+			if (charge >= chargeCap){
+				partialCharge = 0;
+				charge = chargeCap;
+			}
+			updateQuickslot();
 		}
 	}
 
-	public void overCharge(int amount){
-		charge = Math.min(charge+amount, chargeCap+amount);
+	public void directCharge(int amount){
+		charge = Math.min(charge+amount, chargeCap);
 		updateQuickslot();
 	}
 	
@@ -238,7 +242,7 @@ public class CloakOfShadows extends Artifact {
 					partialCharge += chargeToGain;
 				}
 
-				if (partialCharge >= 1) {
+				while (partialCharge >= 1) {
 					charge++;
 					partialCharge -= 1;
 					if (charge == chargeCap){
@@ -352,6 +356,9 @@ public class CloakOfShadows extends Artifact {
 		}
 
 		public void dispel(){
+			if (turnsToCost <= 0 && charge > 0){
+				charge--;
+			}
 			updateQuickslot();
 			detach();
 		}

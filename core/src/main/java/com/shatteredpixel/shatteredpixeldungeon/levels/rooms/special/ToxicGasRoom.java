@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -72,7 +73,7 @@ public class ToxicGasRoom extends SpecialRoom {
 		}
 
 		//skeleton with 2x gold, somewhat far from entry
-		//then 2 chests with regular gold (no mimics here)
+		//then 2 chests with regular gold (no mimics, chance for trinket catalyst)
 		//we generate excess positions to ensure skull is far from entrance
 		ArrayList<Integer> goldPositions = new ArrayList<>();
 		for (int i = 0; i < 8; i++){
@@ -97,7 +98,9 @@ public class ToxicGasRoom extends SpecialRoom {
 		level.drop(mainGold, furthestPos).type = Heap.Type.SKELETON;
 
 		for (int i = 0; i < 2; i++){
-			level.drop(new Gold().random(), goldPositions.remove(0)).type = Heap.Type.CHEST;
+			Item item = level.findPrizeItem(TrinketCatalyst.class);
+			if (item == null) item = new Gold().random();
+			level.drop(item, goldPositions.remove(0)).type = Heap.Type.CHEST;
 		}
 
 		level.addItemToSpawn(new PotionOfPurity());

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ public class ScrollOfChallenge extends ExoticScroll {
 
 				boolean[] visibleCells = new boolean[Dungeon.level.length()];
 				Point c = Dungeon.level.cellToPoint(pos);
-				ShadowCaster.castShadow(c.x, c.y, visibleCells, Dungeon.level.losBlocking, 8);
+				ShadowCaster.castShadow(c.x, c.y, Dungeon.level.width(), visibleCells, Dungeon.level.losBlocking, 8);
 				int count=0;
 				for (boolean b : visibleCells){
 					if (b) count++;

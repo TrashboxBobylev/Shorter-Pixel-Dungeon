@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -276,11 +276,16 @@ public class LloydsBeacon extends Artifact {
 	public void charge(Hero target, float amount) {
 		if (charge < chargeCap){
 			partialCharge += 0.25f*amount;
-			if (partialCharge >= 1){
+			while (partialCharge >= 1){
 				partialCharge--;
 				charge++;
-				updateQuickslot();
+
 			}
+			if (charge >= chargeCap){
+				partialCharge = 0;
+				charge = chargeCap;
+			}
+			updateQuickslot();
 		}
 	}
 
@@ -314,7 +319,7 @@ public class LloydsBeacon extends Artifact {
 			if (charge < chargeCap && !cursed && Regeneration.regenOn()) {
 				partialCharge += 1 / (100f - (chargeCap - charge)*10f);
 
-				if (partialCharge >= 1) {
+				while (partialCharge >= 1) {
 					partialCharge --;
 					charge ++;
 

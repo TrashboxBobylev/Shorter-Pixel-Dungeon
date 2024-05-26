@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,11 @@ public class DeviceCompat {
 				//TODO implement functionality for other platforms here
 				return true;
 		}
+	}
+
+	//return APi level on Android, major OS version on iOS, 0 on desktop
+	public static int getPlatformVersion(){
+		return Gdx.app.getVersion();
 	}
 
 	public static boolean isAndroid(){

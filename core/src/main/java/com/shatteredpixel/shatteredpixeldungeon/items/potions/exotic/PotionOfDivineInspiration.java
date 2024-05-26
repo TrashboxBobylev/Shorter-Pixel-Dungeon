@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 public class PotionOfDivineInspiration extends ExoticPotion {
 	
@@ -133,7 +134,7 @@ public class PotionOfDivineInspiration extends ExoticPotion {
 					new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
 					GLog.p(Messages.get(PotionOfDivineInspiration.class, "bonus"));
 
-					if (!anonymous){
+					if (!anonymous && Random.Float() < talentChance){
 						Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
 					}
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.effects;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -38,6 +39,7 @@ public class Pushing extends Actor {
 	private int to;
 	
 	private Effect effect;
+	private Char ch;
 
 	private Callback callback;
 
@@ -46,6 +48,7 @@ public class Pushing extends Actor {
 	}
 	
 	public Pushing( Char ch, int from, int to ) {
+		this.ch = ch;
 		sprite = ch.sprite;
 		this.from = from;
 		this.to = to;
@@ -63,16 +66,18 @@ public class Pushing extends Actor {
 	
 	@Override
 	protected boolean act() {
-		if (sprite != null) {
+		Actor.remove( Pushing.this );
+
+		if (sprite != null && sprite.parent != null) {
 			if (Dungeon.level.heroFOV[from] || Dungeon.level.heroFOV[to]){
 				sprite.visible = true;
 			}
 			if (effect == null) {
 				new Effect();
 			}
+		} else {
+			return true;
 		}
-
-		Actor.remove( Pushing.this );
 
 		//so that all pushing effects at the same time go simultaneously
 		for ( Actor actor : Actor.all() ){
@@ -81,6 +86,15 @@ public class Pushing extends Actor {
 		}
 		return false;
 
+	}
+
+	public static boolean pushingExistsForChar(Char ch) {
+		for (Actor a : all()){
+			if (a instanceof Pushing && ((Pushing)a).ch == ch){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public class Effect extends Visual {
@@ -122,7 +136,8 @@ public class Pushing extends Actor {
 				killAndErase();
 				Actor.remove(Pushing.this);
 				if (callback != null) callback.call();
-				
+				GameScene.sortMobSprites();
+
 				next();
 			}
 		}

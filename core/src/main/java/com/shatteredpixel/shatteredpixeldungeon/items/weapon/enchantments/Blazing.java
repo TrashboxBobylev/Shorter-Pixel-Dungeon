@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class Blazing extends Weapon.Enchantment {
 			}
 
 			if (powerMulti > 0){
-				int burnDamage = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
+				int burnDamage = Char.combatRoll( 1, 3 + Dungeon.scalingDepth()/4 );
 				burnDamage = Math.round(burnDamage * 0.67f * powerMulti);
 				if (burnDamage > 0) {
 					defender.damage(burnDamage, this);

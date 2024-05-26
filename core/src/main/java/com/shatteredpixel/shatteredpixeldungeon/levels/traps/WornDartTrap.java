@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ public class WornDartTrap extends Trap {
 								reset(pos, finalTarget.sprite, new Dart(), new Callback() {
 									@Override
 									public void call() {
-										int dmg = Random.NormalIntRange(4, 8) - finalTarget.drRoll();
+										int dmg = Char.combatRoll(4, 8) - finalTarget.drRoll();
 										finalTarget.damage(dmg, WornDartTrap.this);
 										if (finalTarget == Dungeon.hero && !finalTarget.isAlive()){
 											Dungeon.fail( WornDartTrap.this  );
@@ -93,7 +93,7 @@ public class WornDartTrap extends Trap {
 								});
 						return false;
 					} else {
-						finalTarget.damage(Random.NormalIntRange(4, 8) - finalTarget.drRoll(), WornDartTrap.this);
+						finalTarget.damage(Char.combatRoll(4, 8) - finalTarget.drRoll(), WornDartTrap.this);
 						return true;
 					}
 				} else {

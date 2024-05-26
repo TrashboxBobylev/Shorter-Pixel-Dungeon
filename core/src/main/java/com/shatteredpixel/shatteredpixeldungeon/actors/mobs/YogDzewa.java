@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,17 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -87,6 +79,7 @@ public class YogDzewa extends Mob {
 		properties.add(Property.BOSS);
 		properties.add(Property.IMMOVABLE);
 		properties.add(Property.DEMONIC);
+		properties.add(Property.STATIC);
 	}
 
 	private int phase = 0;
@@ -245,9 +238,9 @@ public class YogDzewa extends Mob {
 
 					if (hit( this, ch, true )) {
 						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-							ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
+							ch.damage(Char.combatRoll(30, 50), new Eye.DeathGaze());
 						} else {
-							ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
+							ch.damage(Char.combatRoll(20, 30), new Eye.DeathGaze());
 						}
 						if (Dungeon.level.heroFOV[pos]) {
 							ch.sprite.flash();
@@ -303,7 +296,7 @@ public class YogDzewa extends Mob {
 				}
 
 				//don't want to overly punish players with slow move or attack speed
-				spend(GameMath.gate(TICK, Dungeon.hero.cooldown(), 3*TICK));
+				spend(GameMath.gate(TICK, (int)Math.ceil(Dungeon.hero.cooldown()), 3*TICK));
 				Dungeon.hero.interrupt();
 
 				abilityCooldown += Random.NormalFloat(MIN_ABILITY_CD, MAX_ABILITY_CD);
@@ -429,7 +422,7 @@ public class YogDzewa extends Mob {
 		}
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null){
+		if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmgTaken/3f);
 			else                                                    lock.addTime(dmgTaken/2f);
 		}
@@ -469,12 +462,14 @@ public class YogDzewa extends Mob {
 	}
 
 	public void updateVisibility( Level level ){
+		int viewDistance = 4;
 		if (phase > 1 && isAlive()){
-			level.viewDistance = 4 - (phase-1);
-		} else {
-			level.viewDistance = 4;
+			viewDistance = Math.max(4 - (phase-1), 1);
 		}
-		level.viewDistance = Math.max(1, level.viewDistance);
+		if (Dungeon.isChallenged(Challenges.DARKNESS)) {
+			viewDistance = Math.min(viewDistance, 2);
+		}
+		level.viewDistance = viewDistance;
 		if (Dungeon.hero != null) {
 			if (Dungeon.hero.buff(Light.class) == null) {
 				Dungeon.hero.viewDistance = level.viewDistance;
@@ -504,7 +499,7 @@ public class YogDzewa extends Mob {
 	@Override
 	public void aggro(Char ch) {
 		for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-			if (Dungeon.level.distance(pos, mob.pos) <= 4 &&
+			if (mob != ch && Dungeon.level.distance(pos, mob.pos) <= 4 &&
 					(mob instanceof Larva || mob instanceof YogRipper || mob instanceof YogEye || mob instanceof YogScorpio)) {
 				mob.aggro(ch);
 			}
@@ -571,17 +566,6 @@ public class YogDzewa extends Mob {
 		}
 
 		return desc;
-	}
-
-	{
-		immunities.add( Dread.class );
-		immunities.add( Terror.class );
-		immunities.add( Amok.class );
-		immunities.add( Charm.class );
-		immunities.add( Sleep.class );
-		immunities.add( Vertigo.class );
-		immunities.add( Frost.class );
-		immunities.add( Paralysis.class );
 	}
 
 	private static final String PHASE = "phase";
@@ -661,12 +645,12 @@ public class YogDzewa extends Mob {
 
 		@Override
 		public int damageRoll() {
-			return Random.NormalIntRange( 9, 15 );
+			return Char.combatRoll( 9, 15 );
 		}
 
 		@Override
 		public int drRoll() {
-			return super.drRoll() + Random.NormalIntRange(0, 2);
+			return super.drRoll() + Char.combatRoll(0, 2);
 		}
 
 	}

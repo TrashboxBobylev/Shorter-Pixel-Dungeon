@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SkeletonSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class Skeleton extends Mob {
 	
@@ -55,7 +54,7 @@ public class Skeleton extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1, 7 );
+		return Char.combatRoll( 1, 7 );
 	}
 	
 	@Override
@@ -69,8 +68,9 @@ public class Skeleton extends Mob {
 		for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
 			Char ch = findChar( pos + PathFinder.NEIGHBOURS8[i] );
 			if (ch != null && ch.isAlive()) {
-				int damage = Math.round(Random.NormalIntRange(3, 9));
+				int damage = Math.round(Char.combatRoll(3, 9));
 				damage = Math.round( damage * AscensionChallenge.statModifier(this));
+				//armor is 2x effective against bone explosion
 				damage = Math.max( 0,  damage - (ch.drRoll() + ch.drRoll()) );
 				ch.damage( damage, this );
 				if (ch == Dungeon.hero && !ch.isAlive()) {
@@ -109,7 +109,7 @@ public class Skeleton extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 3);
+		return super.drRoll() + Char.combatRoll(0, 3);
 	}
 
 }

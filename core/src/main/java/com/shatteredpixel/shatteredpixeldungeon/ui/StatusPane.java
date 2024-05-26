@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -235,6 +235,10 @@ public class StatusPane extends Component {
 	
 	private static final int[] warningColors = new int[]{0x660000, 0xCC0000, 0x660000};
 
+	private int oldHP = 0;
+	private int oldShield = 0;
+	private int oldMax = 0;
+
 	@Override
 	public void update() {
 		super.update();
@@ -245,7 +249,7 @@ public class StatusPane extends Component {
 
 		if (!Dungeon.hero.isAlive()) {
 			avatar.tint(0x000000, 0.5f);
-		} else if ((health/(float)max) < 0.3f) {
+		} else if ((health/(float)max) <= 0.3f) {
 			warning += Game.elapsed * 5f *(0.4f - (health/(float)max));
 			warning %= 1f;
 			avatar.tint(ColorMath.interpolate(warning, warningColors), 0.5f );
@@ -265,10 +269,15 @@ public class StatusPane extends Component {
 			rawShielding.scale.x = 0;
 		}
 
-		if (shield <= 0){
-			hpText.text(health + "/" + max);
-		} else {
-			hpText.text(health + "+" + shield +  "/" + max);
+		if (oldHP != health || oldShield != shield || oldMax != max){
+			if (shield <= 0) {
+				hpText.text(health + "/" + max);
+			} else {
+				hpText.text(health + "+" + shield + "/" + max);
+			}
+			oldHP = health;
+			oldShield = shield;
+			oldMax = max;
 		}
 
 		if (large) {

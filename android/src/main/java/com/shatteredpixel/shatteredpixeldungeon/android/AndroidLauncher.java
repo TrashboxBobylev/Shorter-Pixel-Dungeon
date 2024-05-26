@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ public class AndroidLauncher extends AndroidApplication {
 			GdxNativesLoader.load();
 			FreeType.initFreeType();
 		} catch (Exception e){
-			AndroidMissingNativesHandler.errorMsg = e.getMessage();
+			AndroidMissingNativesHandler.error = e;
 			Intent intent = new Intent(this, AndroidMissingNativesHandler.class);
 			startActivity(intent);
 			finish();
@@ -119,6 +119,9 @@ public class AndroidLauncher extends AndroidApplication {
 			config.g = 6;
 			config.b = 5;
 		}
+
+		//we manage this ourselves
+		config.useImmersiveMode = false;
 		
 		config.useCompass = false;
 		config.useAccelerometer = false;

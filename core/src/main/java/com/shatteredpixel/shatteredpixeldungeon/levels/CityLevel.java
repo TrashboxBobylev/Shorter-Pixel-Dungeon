@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,6 +143,7 @@ public static final String[] CITY_TRACK_LIST
 	public String tileDesc(int tile) {
 		switch (tile) {
 			case Terrain.ENTRANCE:
+			case Terrain.ENTRANCE_SP:
 				return Messages.get(CityLevel.class, "entrance_desc");
 			case Terrain.EXIT:
 				return Messages.get(CityLevel.class, "exit_desc");

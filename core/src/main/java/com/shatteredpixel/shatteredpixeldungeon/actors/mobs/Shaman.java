@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ public abstract class Shaman extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 2, 8 );
+		return Char.combatRoll( 2, 8 );
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public abstract class Shaman extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 3);
+		return super.drRoll() + Char.combatRoll(0, 3);
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public abstract class Shaman extends Mob {
 				if (enemy == Dungeon.hero) Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
 			}
 			
-			int dmg = Random.NormalIntRange( 3, 11 );
+			int dmg = Char.combatRoll( 3, 11 );
 			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 			enemy.damage( dmg, new EarthenBolt() );
 			

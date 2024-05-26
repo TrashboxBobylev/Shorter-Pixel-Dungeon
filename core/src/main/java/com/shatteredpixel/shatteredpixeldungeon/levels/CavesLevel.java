@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ public class CavesLevel extends RegularLevel {
 				GLog.w(Messages.get(Blacksmith.class, "cant_enter_old"));
 			} else if (smith == null || !Blacksmith.Quest.given() || Blacksmith.Quest.completed()) {
 				GLog.w(Messages.get(Blacksmith.class, "entrance_blocked"));
-			} else if (!Blacksmith.Quest.started() && Blacksmith.Quest.Type() != 0){
+			} else if (!Blacksmith.Quest.started() && Blacksmith.Quest.Type() != Blacksmith.Quest.OLD){
 				final Pickaxe pick = hero.belongings.getItem(Pickaxe.class);
 				Game.runOnRenderThread(new Callback() {
 					@Override
@@ -210,6 +210,7 @@ public class CavesLevel extends RegularLevel {
 	public String tileDesc( int tile ) {
 		switch (tile) {
 			case Terrain.ENTRANCE:
+			case Terrain.ENTRANCE_SP:
 				return Messages.get(CavesLevel.class, "entrance_desc");
 			case Terrain.EXIT:
 				return Messages.get(CavesLevel.class, "exit_desc");

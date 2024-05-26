@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ public class PoisonDartTrap extends Trap {
 								reset(pos, finalTarget.sprite, new PoisonDart(), new Callback() {
 									@Override
 									public void call() {
-										int dmg = Random.NormalIntRange(4, 8) - finalTarget.drRoll();
+										int dmg = Char.combatRoll(4, 8) - finalTarget.drRoll();
 										finalTarget.damage(dmg, PoisonDartTrap.this);
 										if (finalTarget == Dungeon.hero){
 											//for the poison dart traps in the Tengu fight
@@ -116,7 +116,7 @@ public class PoisonDartTrap extends Trap {
 								});
 						return false;
 					} else {
-						finalTarget.damage(Random.NormalIntRange(4, 8) - finalTarget.drRoll(), PoisonDartTrap.this);
+						finalTarget.damage(Char.combatRoll(4, 8) - finalTarget.drRoll(), PoisonDartTrap.this);
 						Buff.affect( finalTarget, Poison.class ).set( poisonAmount() );
 						return true;
 					}

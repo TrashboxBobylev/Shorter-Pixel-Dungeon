@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -225,7 +225,7 @@ public class ScrollOfTeleportation extends Scroll {
 		boolean[] passable = Dungeon.level.passable;
 
 		if (Char.hasProp(ch, Char.Property.LARGE)){
-			passable = BArray.or(passable, Dungeon.level.openSpace, null);
+			passable = BArray.and(passable, Dungeon.level.openSpace, null);
 		}
 
 		PathFinder.buildDistanceMap(ch.pos, passable);

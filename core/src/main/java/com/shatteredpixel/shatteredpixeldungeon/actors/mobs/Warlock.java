@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ public class Warlock extends Mob implements Callback {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 8, 14 );
+		return Char.combatRoll( 8, 14 );
 	}
 	
 	@Override
@@ -73,7 +73,7 @@ public class Warlock extends Mob implements Callback {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 5);
+		return super.drRoll() + Char.combatRoll(0, 5);
 	}
 	
 	@Override
@@ -116,7 +116,7 @@ public class Warlock extends Mob implements Callback {
 				Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
 			}
 			
-			int dmg = Random.NormalIntRange( 6, 12 );
+			int dmg = Char.combatRoll( 6, 12 );
 			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 			enemy.damage( dmg, new DarkBolt() );
 			

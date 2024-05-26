@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GnollSprite;
-import com.watabou.utils.Random;
 
 public class Gnoll extends Mob {
 	
@@ -43,7 +42,7 @@ public class Gnoll extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1, 5 );
+		return Char.combatRoll( 1, 5 );
 	}
 	
 	@Override
@@ -53,6 +52,6 @@ public class Gnoll extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 2);
+		return super.drRoll() + Char.combatRoll(0, 2);
 	}
 }

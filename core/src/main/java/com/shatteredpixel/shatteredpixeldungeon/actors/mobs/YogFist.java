@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
@@ -151,7 +152,7 @@ public abstract class YogFist extends Mob {
 		int dmgTaken = preHP - HP;
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (dmgTaken > 0 && lock != null){
+		if (dmgTaken > 0 && lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmgTaken/4f);
 			else                                                    lock.addTime(dmgTaken/2f);
 		}
@@ -171,12 +172,12 @@ public abstract class YogFist extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 9, 19 );
+		return Char.combatRoll( 9, 19 );
 	}
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 9);
+		return super.drRoll() + Char.combatRoll(0, 9);
 	}
 
 	{
@@ -384,8 +385,8 @@ public abstract class YogFist extends Mob {
 			GameScene.add(Blob.seed(pos, 0, ToxicGas.class));
 
 			if (Dungeon.level.water[pos] && HP < HT) {
-				sprite.emitter().burst( Speck.factory(Speck.HEALING), 3 );
-				HP += HT/50;
+				sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(HT/50), FloatingText.HEALING);
+				HP = Math.min(HT, HP + HT/50);
 			}
 
 			return super.act();
@@ -448,7 +449,7 @@ public abstract class YogFist extends Mob {
 
 		@Override
 		public int damageRoll() {
-			return Random.NormalIntRange( 14, 26 );
+			return Char.combatRoll( 14, 26 );
 		}
 
 		@Override
@@ -498,7 +499,7 @@ public abstract class YogFist extends Mob {
 			Char enemy = this.enemy;
 			if (hit( this, enemy, true )) {
 
-				enemy.damage( Random.NormalIntRange(8, 16), new LightBeam() );
+				enemy.damage( Char.combatRoll(8, 16), new LightBeam() );
 				Buff.prolong( enemy, Blindness.class, Blindness.DURATION/2f );
 
 				if (!enemy.isAlive() && enemy == Dungeon.hero) {
@@ -564,7 +565,7 @@ public abstract class YogFist extends Mob {
 			Char enemy = this.enemy;
 			if (hit( this, enemy, true )) {
 
-				enemy.damage( Random.NormalIntRange(8, 16), new DarkBolt() );
+				enemy.damage( Char.combatRoll(8, 16), new DarkBolt() );
 
 				Light l = enemy.buff(Light.class);
 				if (l != null){

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,12 +50,11 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
-import com.watabou.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class SmokeBomb extends ArmorAbility {
 
@@ -179,7 +178,7 @@ public class SmokeBomb extends ArmorAbility {
 		public int drRoll() {
 			int dr = super.drRoll();
 
-			dr += Random.NormalIntRange(Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT),
+			dr += Char.combatRoll(Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT),
 					3*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT));
 
 			return dr;

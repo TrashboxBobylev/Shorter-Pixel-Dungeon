@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,11 +33,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EarthGuardianSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -329,6 +331,9 @@ public class WandOfLivingEarth extends DamageWand {
 				this.wandLevel = wandLevel;
 				HT = 10 + 4 * wandLevel;
 			}
+			if (HP != 0){
+				sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healthToAdd), FloatingText.HEALING);
+			}
 			HP = Math.min(HT, HP + healthToAdd);
 			//half of hero's evasion
 			defenseSkill = (hero.lvl + 4)/2;
@@ -348,16 +353,16 @@ public class WandOfLivingEarth extends DamageWand {
 
 		@Override
 		public int damageRoll() {
-			return Random.NormalIntRange(2, 4 + Dungeon.scalingDepth()/2);
+			return Char.combatRoll(2, 4 + Dungeon.scalingDepth()/2);
 		}
 
 		@Override
 		public int drRoll() {
 			int dr = super.drRoll();
 			if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
-				return dr + Random.NormalIntRange(wandLevel, 2 + wandLevel);
+				return dr + Char.combatRoll(wandLevel, 2 + wandLevel);
 			} else {
-				return dr + Random.NormalIntRange(wandLevel, 3 + 3 * wandLevel);
+				return dr + Char.combatRoll(wandLevel, 3 + 3 * wandLevel);
 			}
 		}
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -64,7 +65,7 @@ public class Blacksmith extends NPC {
 			Notes.remove( Notes.Landmark.TROLL );
 			return true;
 		}
-		if (Dungeon.level.visited[pos]){
+		if (Dungeon.level.visited[pos] && !Quest.started()){
 			Notes.add( Notes.Landmark.TROLL );
 		}
 		return super.act();
@@ -102,8 +103,8 @@ public class Blacksmith extends NPC {
 
 				switch (Quest.type){
 					case Quest.CRYSTAL: msg2 += Messages.get(Blacksmith.this, "intro_quest_crystal"); break;
-					case Quest.FUNGI:   msg2 += Messages.get(Blacksmith.this, "intro_quest_fungi"); break;
 					case Quest.GNOLL:   msg2 += Messages.get(Blacksmith.this, "intro_quest_gnoll"); break;
+					case Quest.FUNGI:   msg2 += Messages.get(Blacksmith.this, "intro_quest_fungi"); break;
 				}
 
 			}
@@ -190,7 +191,13 @@ public class Blacksmith extends NPC {
 				}
 			} else {
 
-				tell(Messages.get(this, "reminder"));
+				String msg = Messages.get(this, "reminder") + "\n\n";
+				switch (Quest.type){
+					case Quest.CRYSTAL: msg += Messages.get(Blacksmith.this, "reminder_crystal"); break;
+					case Quest.GNOLL:   msg += Messages.get(Blacksmith.this, "reminder_gnoll"); break;
+					case Quest.FUNGI:   msg += Messages.get(Blacksmith.this, "reminder_fungi"); break;
+				}
+				tell(msg);
 
 			}
 		} else if (Quest.type == Quest.OLD && Quest.reforges == 0) {
@@ -202,7 +209,7 @@ public class Blacksmith extends NPC {
 				}
 			});
 
-		} else if (Quest.favor > 0 || Quest.pickaxe != null && Statistics.questScores[2] >= 2500) {
+		} else if (Quest.rewardsAvailable()) {
 
 			Game.runOnRenderThread(new Callback() {
 				@Override
@@ -259,8 +266,8 @@ public class Blacksmith extends NPC {
 		private static int type = 0;
 		public static final int OLD = 0;
 		public static final int CRYSTAL = 1;
-		public static final int FUNGI = 2;
-		public static final int GNOLL = 3;
+		public static final int GNOLL = 2;
+		public static final int FUNGI = 3; //The fungi quest is not implemented, only exists partially in code
 		//pre-v2.2.0
 		private static boolean alternative; //false for mining gold, true for bat blood
 
@@ -281,6 +288,8 @@ public class Blacksmith extends NPC {
 
 		//pre-generate these so they are consistent between seeds
 		public static ArrayList<Item> smithRewards;
+		public static Weapon.Enchantment smithEnchant;
+		public static Armor.Glyph smithGlyph;
 		
 		public static void reset() {
 			type        = 0;
@@ -300,6 +309,8 @@ public class Blacksmith extends NPC {
 			smiths      = 0;
 
 			smithRewards = null;
+			smithEnchant = null;
+			smithGlyph = null;
 		}
 		
 		private static final String NODE	= "blacksmith";
@@ -320,6 +331,8 @@ public class Blacksmith extends NPC {
 		private static final String UPGRADES	= "upgrades";
 		private static final String SMITHS	    = "smiths";
 		private static final String SMITH_REWARDS = "smith_rewards";
+		private static final String ENCHANT		= "enchant";
+		private static final String GLYPH		= "glyph";
 		
 		public static void storeInBundle( Bundle bundle ) {
 			
@@ -343,7 +356,13 @@ public class Blacksmith extends NPC {
 				node.put( UPGRADES, upgrades );
 				node.put( SMITHS, smiths );
 
-				if (smithRewards != null) node.put( SMITH_REWARDS, smithRewards );
+				if (smithRewards != null) {
+					node.put( SMITH_REWARDS, smithRewards );
+					if (smithEnchant != null) {
+						node.put(ENCHANT, smithEnchant);
+						node.put(GLYPH, smithGlyph);
+					}
+				}
 			}
 			
 			bundle.put( NODE, node );
@@ -380,6 +399,10 @@ public class Blacksmith extends NPC {
 
 				if (node.contains( SMITH_REWARDS )){
 					smithRewards = new ArrayList<>((Collection<Item>) ((Collection<?>) node.getCollection( SMITH_REWARDS )));
+					if (node.contains(ENCHANT)) {
+						smithEnchant = (Weapon.Enchantment) node.get(ENCHANT);
+						smithGlyph   = (Armor.Glyph) node.get(GLYPH);
+					}
 				}
 
 			} else {
@@ -393,9 +416,8 @@ public class Blacksmith extends NPC {
 				rooms.add(new BlacksmithRoom());
 				spawned = true;
 
-				//currently only the crystal quest is ready to play
-				//we still roll for quest type however, to ensure seed consistency
-				type = 1+Random.Int(1);
+				//Currently cannot roll the fungi quest, as it is not fully implemented
+				type = Random.IntRange(1, 2);
 				alternative = false;
 				
 				given = false;
@@ -442,6 +464,14 @@ public class Blacksmith extends NPC {
 				}
 				i.cursed = false;
 			}
+
+			// 30% base chance to be enchanted, stored separately so status isn't revealed early
+			float enchantRoll = Random.Float();
+			if (enchantRoll <= 0.3f * ParchmentScrap.enchantChanceMultiplier()){
+				smithEnchant = Weapon.Enchantment.random();
+				smithGlyph = Armor.Glyph.random();
+			}
+
 		}
 
 		public static int Type(){
@@ -495,6 +525,12 @@ public class Blacksmith extends NPC {
 			if (bossBeaten) favor += 1000;
 
 			Statistics.questScores[2] = favor;
+		}
+
+		public static boolean rewardsAvailable(){
+			return favor > 0
+					|| (Quest.smithRewards != null && Quest.smiths > 0)
+					|| (pickaxe != null && Statistics.questScores[2] >= 2500);
 		}
 
 		//if the blacksmith is generated pre-v2.2.0, and the player never spawned a mining test floor

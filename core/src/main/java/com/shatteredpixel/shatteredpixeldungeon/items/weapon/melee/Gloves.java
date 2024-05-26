@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,19 @@ public class Gloves extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		Sai.comboStrikeAbility(hero, target, 0.45f, this);
+		//+(2+0.5*lvl) damage, roughly +67% base damage, +50% scaling
+		int dmgBoost = augment.damageFactor(2 + Math.round(0.5f*buffedLvl()));
+		Sai.comboStrikeAbility(hero, target, 0, dmgBoost, this);
+	}
+
+	@Override
+	public String abilityInfo() {
+		int dmgBoost = levelKnown ? 2 + Math.round(0.5f*buffedLvl()) : 2;
+		if (levelKnown){
+			return Messages.get(this, "ability_desc", augment.damageFactor(dmgBoost));
+		} else {
+			return Messages.get(this, "typical_ability_desc", augment.damageFactor(dmgBoost));
+		}
 	}
 
 }

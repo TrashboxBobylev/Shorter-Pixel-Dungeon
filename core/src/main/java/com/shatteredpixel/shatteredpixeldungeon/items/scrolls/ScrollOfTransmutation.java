@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,14 +31,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.AlchemicalCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.Elixir;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -47,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -65,16 +67,28 @@ public class ScrollOfTransmutation extends InventoryScroll {
 
 	@Override
 	protected boolean usableOnItem(Item item) {
-		return item instanceof MeleeWeapon ||
-				(item instanceof MissileWeapon && (!(item instanceof Dart) || item instanceof TippedDart)) ||
-				(item instanceof Potion && !(item instanceof Elixir || item instanceof Brew || item instanceof AlchemicalCatalyst)) ||
-				//the extra check here prevents a single scroll being used on itself
-				(item instanceof Scroll && (!(item instanceof ScrollOfTransmutation) || item.quantity() > 1)) ||
-				item instanceof Ring ||
-				item instanceof Wand ||
-				item instanceof Plant.Seed ||
-				item instanceof Runestone ||
-				item instanceof Artifact;
+		//all melee weapons, except pickaxe when in a mining level
+		if (item instanceof MeleeWeapon){
+			return !(item instanceof Pickaxe && Dungeon.level instanceof MiningLevel);
+
+		//all missile weapons except untipped darts
+		} else if (item instanceof MissileWeapon){
+			return item.getClass() != Dart.class;
+
+		//all regular or exotic potions. No brews or elixirs
+		} else if (item instanceof Potion){
+			return !(item instanceof Elixir || item instanceof Brew);
+
+		//all regular or exotic scrolls, except itself
+		} else if (item instanceof Scroll){
+			return item != this || item.quantity() > 1;
+
+		//all rings, wands, artifacts, trinkets, seeds, and runestones
+		} else {
+			return item instanceof Ring || item instanceof Wand || item instanceof Artifact
+					|| item instanceof Trinket || item instanceof Plant.Seed
+					|| item instanceof Runestone;
+		}
 	}
 	
 	@Override
@@ -109,7 +123,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 					item.detach(Dungeon.hero.belongings.backpack);
 					if (!result.collect()) {
 						Dungeon.level.drop(result, curUser.pos).sprite.drop();
-					} else if (Dungeon.hero.belongings.getSimilar(result) != null){
+					} else if (result.stackable && Dungeon.hero.belongings.getSimilar(result) != null){
 						result = Dungeon.hero.belongings.getSimilar(result);
 					}
 				}
@@ -162,6 +176,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			} else {
 				return a;
 			}
+		} else if (item instanceof Trinket) {
+			return changeTrinket( (Trinket)item );
 		} else {
 			return null;
 		}
@@ -277,6 +293,19 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		return null;
 	}
+
+	private static Trinket changeTrinket( Trinket t ){
+		Trinket n;
+		do {
+			n = (Trinket)Generator.random(Generator.Category.TRINKET);
+		} while ( Challenges.isItemBlocked(n) || n.getClass() == t.getClass());
+
+		n.level(t.trueLevel());
+		n.levelKnown = t.levelKnown;
+		n.cursed = t.cursed;
+
+		return n;
+	}
 	
 	private static Wand changeWand( Wand w ) {
 		Wand n;
@@ -344,6 +373,6 @@ public class ScrollOfTransmutation extends InventoryScroll {
 
 	@Override
 	public int energyVal() {
-		return isKnown() ? 8 * quantity : super.energyVal();
+		return isKnown() ? 10 * quantity : super.energyVal();
 	}
 }

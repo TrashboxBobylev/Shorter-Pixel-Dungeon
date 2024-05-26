@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ public class DwarfKing extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 9, 17 );
+		return Char.combatRoll( 9, 17 );
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class DwarfKing extends Mob {
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 6);
+		return super.drRoll() + Char.combatRoll(0, 6);
 	}
 
 	private int phase = 1;
@@ -439,8 +439,8 @@ public class DwarfKing extends Mob {
 
 	@Override
 	public void damage(int dmg, Object src) {
-		//hero only counts as unarmed if they have no weapon and aren't benefiting from force
-		if (src == Dungeon.hero && (Dungeon.hero.belongings.weapon() != null || Dungeon.hero.buff(RingOfForce.Force.class) != null)){
+		//hero counts as unarmed if they aren't attacking with a weapon and aren't benefiting from force
+		if (src == Dungeon.hero && (!RingOfForce.fightingUnarmed(Dungeon.hero) || Dungeon.hero.buff(RingOfForce.Force.class) != null)){
 			Statistics.qualifiedForBossChallengeBadge = false;
 		//Corrosion, corruption, and regrowth do no direct damage and so have their own custom logic
 		//Transfusion damages DK and so doesn't need custom logic
@@ -465,7 +465,7 @@ public class DwarfKing extends Mob {
 		super.damage(dmg, src);
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null && !isImmune(src.getClass())){
+		if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg/5f);
 			else                                                    lock.addTime(dmg/3f);
 		}
@@ -675,7 +675,7 @@ public class DwarfKing extends Mob {
 					}
 				} else {
 					Char ch = Actor.findChar(pos);
-					ch.damage(Random.NormalIntRange(20, 40), target);
+					ch.damage(Char.combatRoll(20, 40), this);
 					if (((DwarfKing)target).phase == 2){
 						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 							target.damage(target.HT/18, new KingDamager());

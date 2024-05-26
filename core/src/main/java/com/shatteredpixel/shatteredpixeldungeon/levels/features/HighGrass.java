@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
@@ -38,7 +39,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Camouflage;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Random;
@@ -78,7 +81,7 @@ public class HighGrass {
 				if (naturalism != null) {
 					if (!naturalism.isCursed()) {
 						naturalismLevel = naturalism.itemLevel() + 1;
-						naturalism.charge(1);
+						naturalism.charge();
 					} else {
 						naturalismLevel = -1;
 					}
@@ -87,13 +90,6 @@ public class HighGrass {
 				//berries try to drop on floors 2/3/4/6/7/8, to a max of 4/6
 				if (ch instanceof Hero && ((Hero) ch).hasTalent(Talent.NATURES_BOUNTY)){
 					int berriesAvailable = 2 + 2*((Hero) ch).pointsInTalent(Talent.NATURES_BOUNTY);
-
-					//pre-1.3.0 saves
-					Talent.NatureBerriesAvailable oldAvailable = ch.buff(Talent.NatureBerriesAvailable.class);
-					if (oldAvailable != null){
-						Buff.affect(ch, Talent.NatureBerriesDropped.class).countUp(berriesAvailable - oldAvailable.count());
-						oldAvailable.detach();
-					}
 
 					Talent.NatureBerriesDropped dropped = Buff.affect(ch, Talent.NatureBerriesDropped.class);
 					berriesAvailable -= dropped.count();
@@ -117,15 +113,32 @@ public class HighGrass {
 
 				}
 			}
+
+			//grass gives 1/3 the normal amount of loot in fungi level
+			if (Dungeon.level instanceof MiningLevel
+					&& Blacksmith.Quest.Type() == Blacksmith.Quest.FUNGI
+					&& Random.Int(3) != 0){
+				naturalismLevel = -1;
+			}
 			
 			if (naturalismLevel >= 0) {
 				// Seed, scales from 1/25 to 1/9
-				if (Random.Int(25 - (naturalismLevel * 4)) == 0) {
-					level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
+				float lootChance = 1/(25f - naturalismLevel*4f);
+
+				// absolute max drop rate is ~1/6.5 with footwear of nature, ~1/18 without
+				lootChance *= PetrifiedSeed.grassLootMultiplier();
+
+				if (Random.Float() < lootChance) {
+					if (Random.Float() < PetrifiedSeed.stoneInsteadOfSeedChance()) {
+						level.drop(Generator.randomUsingDefaults(Generator.Category.STONE), pos).sprite.drop();
+					} else {
+						level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
+					}
 				}
 				
 				// Dew, scales from 1/6 to 1/4
-				if (Random.Int(6 - naturalismLevel/2) == 0) {
+				lootChance = 1/(6f -naturalismLevel/2f);
+				if (Random.Float() < lootChance) {
 					level.drop(new Dewdrop(), pos).sprite.drop();
 				}
 			}

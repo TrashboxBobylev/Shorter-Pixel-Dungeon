@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.AquaBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -159,11 +159,11 @@ public class WandOfBlastWave extends DamageWand {
 				int oldPos = ch.pos;
 				ch.pos = newPos;
 				if (finalCollided && ch.isActive()) {
-					ch.damage(Random.NormalIntRange(finalDist, 2*finalDist), this);
+					ch.damage(Char.combatRoll(finalDist, 2*finalDist), new Knockback());
 					if (ch.isActive()) {
 						Paralysis.prolong(ch, Paralysis.class, 1 + finalDist/2f);
 					} else if (ch == Dungeon.hero){
-						if (cause instanceof WandOfBlastWave || cause instanceof AquaBlast){
+						if (cause instanceof WandOfBlastWave){
 							Badges.validateDeathFromFriendlyMagic();
 						}
 						Dungeon.fail(cause);
@@ -181,8 +181,17 @@ public class WandOfBlastWave extends DamageWand {
 		}));
 	}
 
+	public static class Knockback{}
+
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
+
+		Talent.EmpoweredStrikeTracker tracker = attacker.buff(Talent.EmpoweredStrikeTracker.class);
+
+		if (tracker != null){
+			tracker.delayedDetach = true;
+		}
+
 		//acts like elastic enchantment
 		//we delay this with an actor to prevent conflicts with regular elastic
 		//so elastic always fully resolves first, then this effect activates
@@ -197,6 +206,7 @@ public class WandOfBlastWave extends DamageWand {
 				if (defender.isAlive()) {
 					new BlastWaveOnHit().proc(staff, attacker, defender, damage);
 				}
+				if (tracker != null) tracker.detach();
 				return true;
 			}
 		});

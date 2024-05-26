@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,8 +52,10 @@ public class Chilling extends Weapon.Enchantment {
 			if (existing != null){
 				durationToAdd = Math.min(durationToAdd, (6f*powerMulti)-existing.cooldown());
 			}
-			
-			Buff.affect( defender, Chill.class, durationToAdd );
+
+			if (durationToAdd > 0) {
+				Buff.affect(defender, Chill.class, durationToAdd);
+			}
 			Splash.at( defender.sprite.center(), 0xFFB2D6FF, 5);
 
 		}

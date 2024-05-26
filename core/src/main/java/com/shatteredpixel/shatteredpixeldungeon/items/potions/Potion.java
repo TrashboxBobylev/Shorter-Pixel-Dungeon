@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.ItemStatusHandler;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
@@ -101,8 +102,8 @@ public class Potion extends Item {
 			put("ivory",ItemSpriteSheet.POTION_IVORY);
 		}
 	};
-	
-	private static final HashSet<Class<?extends Potion>> mustThrowPots = new HashSet<>();
+
+	protected static final HashSet<Class<?extends Potion>> mustThrowPots = new HashSet<>();
 	static{
 		mustThrowPots.add(PotionOfToxicGas.class);
 		mustThrowPots.add(PotionOfLiquidFlame.class);
@@ -115,13 +116,11 @@ public class Potion extends Item {
 		mustThrowPots.add(PotionOfShroudingFog.class);
 		mustThrowPots.add(PotionOfStormClouds.class);
 		
-		//also all brews, hardcoded
+		//also all brews except unstable, hardcoded
 	}
 	
-	private static final HashSet<Class<?extends Potion>> canThrowPots = new HashSet<>();
+	protected static final HashSet<Class<?extends Potion>> canThrowPots = new HashSet<>();
 	static{
-		canThrowPots.add(AlchemicalCatalyst.class);
-		
 		canThrowPots.add(PotionOfPurity.class);
 		canThrowPots.add(PotionOfLevitation.class);
 		
@@ -138,6 +137,8 @@ public class Potion extends Item {
 
 	//affects how strongly on-potion talents trigger from this potion
 	protected float talentFactor = 1;
+	//the chance (0-1) of whether on-potion talents trigger from this potion
+	protected float talentChance = 1;
 	
 	{
 		stackable = true;
@@ -287,7 +288,7 @@ public class Potion extends Item {
 		
 		hero.sprite.operate( hero.pos );
 
-		if (!anonymous){
+		if (!anonymous && Random.Float() < talentChance){
 			Talent.onPotionUsed(curUser, curUser.pos, talentFactor);
 		}
 	}
@@ -300,10 +301,13 @@ public class Potion extends Item {
 			
 		} else  {
 
-			Dungeon.level.pressCell( cell );
+			//aqua brew specifically doesn't press cells, so it can disarm traps
+			if (!(this instanceof AquaBrew)){
+				Dungeon.level.pressCell( cell );
+			}
 			shatter( cell );
 
-			if (!anonymous){
+			if (!anonymous && Random.Float() < talentChance){
 				Talent.onPotionUsed(curUser, cell, talentFactor);
 			}
 			
@@ -315,10 +319,10 @@ public class Potion extends Item {
 	}
 	
 	public void shatter( int cell ) {
+		splash( cell );
 		if (Dungeon.level.heroFOV[cell]) {
 			GLog.i( Messages.get(Potion.class, "shatter") );
 			Sample.INSTANCE.play( Assets.Sounds.SHATTER );
-			splash( cell );
 		}
 	}
 
@@ -391,20 +395,23 @@ public class Potion extends Item {
 	}
 	
 	protected void splash( int cell ) {
-
 		Fire fire = (Fire)Dungeon.level.blobs.get( Fire.class );
-		if (fire != null)
-			fire.clear( cell );
-
-		final int color = splashColor();
+		if (fire != null) {
+			fire.clear(cell);
+		}
 
 		Char ch = Actor.findChar(cell);
 		if (ch != null && ch.alignment == Char.Alignment.ALLY) {
 			Buff.detach(ch, Burning.class);
 			Buff.detach(ch, Ooze.class);
-			Splash.at( ch.sprite.center(), color, 5 );
-		} else {
-			Splash.at( cell, color, 5 );
+		}
+
+		if (Dungeon.level.heroFOV[cell]) {
+			if (ch != null) {
+				Splash.at(ch.sprite.center(), splashColor(), 5);
+			} else {
+				Splash.at(cell, splashColor(), 5);
+			}
 		}
 	}
 	

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
@@ -242,7 +241,7 @@ public class SentryRoom extends SpecialRoom {
 				if (fieldOfView[Dungeon.hero.pos]
 						&& Dungeon.level.map[Dungeon.hero.pos] == Terrain.EMPTY_SP
 						&& room.inside(Dungeon.level.cellToPoint(Dungeon.hero.pos))
-						&& Dungeon.hero.buff(LostInventory.class) == null){
+						&& !Dungeon.hero.belongings.lostInventory()){
 
 					if (curChargeDelay > 0.001f){ //helps prevent rounding errors
 						if (curChargeDelay == initialChargeDelay) {
@@ -278,7 +277,7 @@ public class SentryRoom extends SpecialRoom {
 
 		public void onZapComplete(){
 			if (hit(this, Dungeon.hero, true)) {
-				Dungeon.hero.damage(Random.NormalIntRange(2 + Dungeon.depth / 2, 4 + Dungeon.depth), new Eye.DeathGaze());
+				Dungeon.hero.damage(Char.combatRoll(2 + Dungeon.depth / 2, 4 + Dungeon.depth), new Eye.DeathGaze());
 				if (!Dungeon.hero.isAlive()) {
 					Badges.validateDeathFromEnemyMagic();
 					Dungeon.fail(this);

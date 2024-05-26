@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2023 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,17 +25,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
@@ -76,8 +71,9 @@ public class CrystalSpire extends Mob {
 		alignment = Alignment.NEUTRAL;
 
 		properties.add(Property.IMMOVABLE);
-		properties.add(Property.MINIBOSS);
+		properties.add(Property.BOSS);
 		properties.add(Property.INORGANIC);
+		properties.add(Property.STATIC);
 	}
 
 	private float abilityCooldown;
@@ -126,14 +122,14 @@ public class CrystalSpire extends Mob {
 				Char ch = Actor.findChar(i);
 
 				if (ch != null && !(ch instanceof CrystalWisp || ch instanceof CrystalSpire)){
-					int dmg = Random.NormalIntRange(6, 15);
+					int dmg = Char.combatRoll(6, 15);
 
 					//guardians are hit harder by the attack
 					if (ch instanceof CrystalGuardian) {
 						dmg += 12; //18-27 damage
 						Buff.prolong(ch, Cripple.class, 30f);
 					}
-					ch.damage(dmg, CrystalSpire.this);
+					ch.damage(dmg, new SpireSpike());
 
 					int movePos = i;
 					//crystal guardians get knocked away from the hero, others get knocked away from the spire
@@ -207,6 +203,8 @@ public class CrystalSpire extends Mob {
 
 		return true;
 	}
+
+	public static class SpireSpike{}
 
 	private void diamondAOEAttack(){
 		targetedCells.clear();
@@ -296,7 +294,7 @@ public class CrystalSpire extends Mob {
 
 	@Override
 	public boolean isInvulnerable(Class effect) {
-		return effect != Pickaxe.class;
+		return super.isInvulnerable(effect) || effect != Pickaxe.class;
 	}
 
 	@Override
@@ -312,7 +310,6 @@ public class CrystalSpire extends Mob {
 			final Pickaxe p = Dungeon.hero.belongings.getItem(Pickaxe.class);
 
 			if (p == null){
-				//maybe a game log entry here?
 				return true;
 			}
 
@@ -327,6 +324,8 @@ public class CrystalSpire extends Mob {
 					abilityCooldown -= dmg/10f;
 					sprite.bloodBurstA(Dungeon.hero.sprite.center(), dmg);
 					sprite.flash();
+
+					BossHealthBar.bleed(HP <= HT/3);
 
 					if (isAlive()) {
 						Sample.INSTANCE.play(Assets.Sounds.SHATTER, 1f, Random.Float(1.15f, 1.25f));
@@ -353,7 +352,7 @@ public class CrystalSpire extends Mob {
 						for (Char ch : Actor.chars()){
 							if (fieldOfView[ch.pos]) {
 								if (ch instanceof CrystalGuardian) {
-									ch.damage(ch.HT, this);
+									ch.damage(ch.HT, new SpireSpike());
 								}
 								if (ch instanceof CrystalWisp) {
 									Buff.affect(ch, Blindness.class, 5f);
@@ -510,13 +509,6 @@ public class CrystalSpire extends Mob {
 
 	{
 		immunities.add( Blindness.class );
-
-		immunities.add( Paralysis.class );
-		immunities.add( Amok.class );
-		immunities.add( Sleep.class );
-		immunities.add( Terror.class );
-		immunities.add( Dread.class );
-		immunities.add( Vertigo.class );
 	}
 
 }
