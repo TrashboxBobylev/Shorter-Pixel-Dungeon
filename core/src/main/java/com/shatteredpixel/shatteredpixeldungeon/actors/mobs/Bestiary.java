@@ -32,6 +32,7 @@ public class Bestiary {
 	public static ArrayList<Class<? extends Mob>> getMobRotation( int depth ){
 		ArrayList<Class<? extends Mob>> mobs = standardMobRotation( depth );
 		addRareMobs(depth, mobs);
+		swapMobAlts(mobs);
 		Random.shuffle(mobs);
 		return mobs;
 	}
@@ -164,7 +165,7 @@ public class Bestiary {
 	
 	//switches out regular mobs for their alt versions when appropriate
 	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation){
-		float altChance = 1/50f * RatSkull.exoticChanceMultiplier();
+		float altChance = 1/30f * RatSkull.exoticChanceMultiplier();
 		for (int i = 0; i < rotation.size(); i++){
 			if (Random.Float() < altChance) {
 				Class<? extends Mob> cl = rotation.get(i);
