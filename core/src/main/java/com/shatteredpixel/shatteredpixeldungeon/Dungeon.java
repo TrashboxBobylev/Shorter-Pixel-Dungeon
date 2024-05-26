@@ -551,11 +551,11 @@ public class Dungeon {
 	public static boolean enchStoneNeeded(){
 		//1 enchantment stone, spawns on chapter 2 or 3
 		if (!LimitedDrops.ENCH_STONE.dropped()){
-			int region = 1+depth/5;
+			int region = 1+depth/4;
 			if (region > 1){
-				int floorsVisited = depth - 5;
-				if (floorsVisited > 4) floorsVisited--; //skip floor 10
-				return Random.Int(9-floorsVisited) == 0; //1/8 chance each floor
+				int floorsVisited = depth - 4;
+				if (floorsVisited > 3) floorsVisited--; //skip floor 10
+				return Random.Int(7-floorsVisited) == 0; //1/8 chance each floor
 			}
 		}
 		return false;
@@ -563,20 +563,20 @@ public class Dungeon {
 
 	public static boolean intStoneNeeded(){
 		//one stone on floors 1-3
-		return depth < 5 && !LimitedDrops.INT_STONE.dropped() && Random.Int(4-depth) == 0;
+		return depth < 4 && !LimitedDrops.INT_STONE.dropped() && Random.Int(3-depth) == 0;
 	}
 
 	public static boolean trinketCataNeeded(){
 		//one trinket catalyst on floors 1-3
-		return depth < 5 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(4-depth) == 0;
+		return depth < 4 && !LimitedDrops.TRINKET_CATA.dropped() && Random.Int(3-depth) == 0;
 	}
 
 	public static boolean labRoomNeeded(){
 		//one laboratory each floor set, in floor 3 or 4, 1/2 chance each floor
-		int region = 1+depth/5;
+		int region = 1+depth/4;
 		if (region > LimitedDrops.LAB_ROOM.count){
-			int floorThisRegion = depth%5;
-			if (floorThisRegion >= 4 || (floorThisRegion == 3 && Random.Int(2) == 0)){
+			int floorThisRegion = depth%4;
+			if (floorThisRegion >= 3 || (floorThisRegion == 2 && Random.Int(2) == 0)){
 				return true;
 			}
 		}
