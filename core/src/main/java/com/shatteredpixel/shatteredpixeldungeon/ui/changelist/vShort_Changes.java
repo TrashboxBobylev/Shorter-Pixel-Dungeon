@@ -12,7 +12,18 @@ import java.util.ArrayList;
 
 public class vShort_Changes {
     public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("Short-1.3", true, "");
+        ChangeInfo changes = new ChangeInfo("Short-1.4", true, "");
+        changes.hardlight(0xCCCCCC);
+        changeInfos.add(changes);
+        changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
+                "_-_ Released May 26th, 2024"));
+        changes.addButton(new ChangeButton(Icons.get(Icons.SHPX), "ShatteredPD",
+                "_-_ Ported everything from Shattered 2.4.1.\n" +
+                        "_-_ Reintroduced alt variants and increased their chance to appear from 1/50 to 1/30."));
+        changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(ChangesScene.class, "misc"),
+                "_-_ Fixed next chapter mob spawns not accounting for Shorter's chapter length."));
+
+        changes = new ChangeInfo("Short-1.3", true, "");
         changes.hardlight(0xCCCCCC);
         changeInfos.add(changes);
         changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
