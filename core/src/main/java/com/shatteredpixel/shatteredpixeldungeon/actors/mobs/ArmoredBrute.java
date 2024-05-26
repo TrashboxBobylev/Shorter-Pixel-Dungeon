@@ -46,7 +46,7 @@ public class ArmoredBrute extends Brute {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + 4; //4-12 DR total
+		return super.drRoll() + 2; //2-7 DR total
 	}
 	
 	@Override
