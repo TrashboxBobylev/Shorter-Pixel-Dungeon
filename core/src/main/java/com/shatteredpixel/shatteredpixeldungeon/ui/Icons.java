@@ -170,10 +170,10 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 119, 0, 16, 16 ) );
 				break;
 			case BOBY:
-				icon.frame( icon.texture.uvRectBySize( 136, 0, 15, 18 ) );
+				icon.frame( icon.texture.uvRectBySize( 241, 110, 15, 18 ) );
 				break;
 			case SHORTER_CHEST:
-				icon.frame( icon.texture.uvRectBySize( 0, 80, 16, 16 ) );
+				icon.frame( icon.texture.uvRectBySize( 224, 112, 16, 16 ) );
 				break;
 
 			case JOURNAL:
