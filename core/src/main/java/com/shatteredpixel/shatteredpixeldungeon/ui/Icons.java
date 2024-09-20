@@ -45,13 +45,6 @@ public enum Icons {
 	BOBY,
 	SHORTER_CHEST,
 
-	//rankings and hero select icons, spacing for 16x16
-	STAIRS,
-	WARRIOR,
-	MAGE,
-	ROGUE,
-	HUNTRESS,
-	DUELIST,
 	JOURNAL,
 
 	//grey icons, mainly used for buttons, spacing for 16x16
