@@ -66,12 +66,12 @@ public class Dagger extends MeleeWeapon {
 			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
 				//deals 75% toward max to max on surprise, instead of min to max.
 				int diff = max() - min();
-				int damage = augment.damageFactor(Char.combatRoll(
+				int damage = augment.damageFactor(Hero.heroDamageIntRange(
 						min() + Math.round(diff*0.75f),
 						max()));
 				int exStr = hero.STR() - STRReq();
 				if (exStr > 0) {
-					damage += Char.combatRoll(0, exStr);
+					damage += Hero.heroDamageIntRange(0, exStr);
 				}
 				return damage;
 			}
@@ -102,6 +102,11 @@ public class Dagger extends MeleeWeapon {
 		}
 	}
 
+	@Override
+	public String upgradeAbilityStat(int level) {
+		return Integer.toString(2+level);
+	}
+
 	public static void sneakAbility(Hero hero, Integer target, int maxDist, int invisTurns, MeleeWeapon wep){
 		if (target == null) {
 			return;
@@ -121,7 +126,6 @@ public class Dagger extends MeleeWeapon {
 
 		wep.beforeAbilityUsed(hero, null);
 		Buff.affect(hero, Invisibility.class, invisTurns-1); //1 fewer turns as ability is instant
-		hero.next();
 
 		Dungeon.hero.sprite.turnTo( Dungeon.hero.pos, target);
 		Dungeon.hero.pos = target;
@@ -134,6 +138,7 @@ public class Dagger extends MeleeWeapon {
 		CellEmitter.get( Dungeon.hero.pos ).burst( Speck.factory( Speck.WOOL ), 6 );
 		Sample.INSTANCE.play( Assets.Sounds.PUFF );
 
+		hero.next();
 		wep.afterAbilityUsed(hero);
 	}
 }

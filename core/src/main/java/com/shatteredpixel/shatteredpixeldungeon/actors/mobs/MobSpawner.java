@@ -21,26 +21,55 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Bestiary {
-	
-	public static ArrayList<Class<? extends Mob>> getMobRotation( int depth ){
+public class MobSpawner extends Actor {
+	{
+		actPriority = BUFF_PRIO; //as if it were a buff.
+	}
+
+	@Override
+	protected boolean act() {
+
+		if (Dungeon.level.mobCount() < Dungeon.level.mobLimit()) {
+
+			if (Dungeon.level.spawnMob(12)){
+				spend(Dungeon.level.respawnCooldown());
+			} else {
+				//try again in 1 turn
+				spend(TICK);
+			}
+
+		} else {
+			spend(Dungeon.level.respawnCooldown());
+		}
+
+		return true;
+	}
+
+	public void resetCooldown(){
+		spend(-cooldown());
+		spend(Dungeon.level.respawnCooldown());
+	}
+
+	public static ArrayList<Class<? extends Mob>> getMobRotation(int depth ){
 		ArrayList<Class<? extends Mob>> mobs = standardMobRotation( depth );
 		addRareMobs(depth, mobs);
 		swapMobAlts(mobs);
 		Random.shuffle(mobs);
 		return mobs;
 	}
-	
+
 	//returns a rotation of standard mobs, unshuffled.
 	private static ArrayList<Class<? extends Mob>> standardMobRotation( int depth ){
 		switch(depth){
-			
+
 			// Sewers
 			case 1: default:
 				//3x rat, 1x snake
@@ -74,7 +103,6 @@ public class Bestiary {
 						Thief.class,
 						DM100.class,
 						Necromancer.class));
-				
 			// Caves
 			case 9:
 				//2x bat, 1x brute, 1x shaman
@@ -93,7 +121,6 @@ public class Bestiary {
 						Brute.class,
 						Shaman.random(),
 						DM200.class));
-				
 			// City
 			case 13:
 				//3x ghoul, 1x elemental
@@ -131,42 +158,42 @@ public class Bestiary {
 						Eye.class, Eye.class, Eye.class, Eye.class, Eye.class,
 						Scorpio.class));
 		}
-		
+
 	}
-	
+
 	//has a chance to add a rarely spawned mobs to the rotation
 	public static void addRareMobs( int depth, ArrayList<Class<?extends Mob>> rotation ){
-		
+
 		switch (depth){
-			
+
 			// Sewers
 			default:
 				return;
 			case 3:
 				if (Random.Float() < 0.025f) rotation.add(Thief.class);
 				return;
-				
+
 			// Prison
 			case 7:
 				if (Random.Float() < 0.025f) rotation.add(Bat.class);
 				return;
-				
+
 			// Caves
 			case 11:
 				if (Random.Float() < 0.025f) rotation.add(Ghoul.class);
 				return;
-				
+
 			// City
 			case 15:
 				if (Random.Float() < 0.025f) rotation.add(Succubus.class);
 				return;
 		}
 	}
-	
+
 	//switches out regular mobs for their alt versions when appropriate
-	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation){
-		float altChance = 1/30f * RatSkull.exoticChanceMultiplier();
-		for (int i = 0; i < rotation.size(); i++){
+	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation) {
+		float altChance = 1 / 30f * RatSkull.exoticChanceMultiplier();
+		for (int i = 0; i < rotation.size(); i++) {
 			if (Random.Float() < altChance) {
 				Class<? extends Mob> cl = rotation.get(i);
 				if (cl == Rat.class) {
@@ -175,7 +202,7 @@ public class Bestiary {
 					cl = CausticSlime.class;
 				} else if (cl == Thief.class) {
 					cl = Bandit.class;
-				} else if (cl == Necromancer.class){
+				} else if (cl == Necromancer.class) {
 					cl = SpectralNecromancer.class;
 				} else if (cl == Brute.class) {
 					cl = ArmoredBrute.class;

@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -112,7 +113,6 @@ public class Hunger extends Buff implements Hero.Doom {
 					GLog.w( Messages.get(this, "onhungry") );
 
 					if (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_FOOD)){
-						GLog.p(Messages.get(Guidebook.class, "hint"));
 						GameScene.flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_FOOD);
 					}
 
@@ -120,8 +120,14 @@ public class Hunger extends Buff implements Hero.Doom {
 				level = newLevel;
 
 			}
-			
-			spend( target.buff( Shadows.class ) == null ? STEP : STEP * 1.5f );
+
+			float hungerDelay = STEP;
+			if (target.buff(Shadows.class) != null){
+				hungerDelay *= 1.5f;
+			}
+			hungerDelay /= SaltCube.hungerGainMultiplier();
+
+			spend( hungerDelay );
 
 		} else {
 

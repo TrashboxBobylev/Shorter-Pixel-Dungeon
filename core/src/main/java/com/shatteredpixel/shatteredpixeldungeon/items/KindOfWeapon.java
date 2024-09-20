@@ -33,12 +33,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 abstract public class KindOfWeapon extends EquipableItem {
 
@@ -120,7 +120,6 @@ abstract public class KindOfWeapon extends EquipableItem {
 			activate( hero );
 			Talent.onItemEquipped(hero, this);
 			Badges.validateDuelistUnlock();
-			ActionIndicator.refresh();
 			updateQuickslot();
 
 			cursedKnown = true;
@@ -168,7 +167,6 @@ abstract public class KindOfWeapon extends EquipableItem {
 			activate( hero );
 			Talent.onItemEquipped(hero, this);
 			Badges.validateDuelistUnlock();
-			ActionIndicator.refresh();
 			updateQuickslot();
 
 			cursedKnown = true;
@@ -235,7 +233,11 @@ abstract public class KindOfWeapon extends EquipableItem {
 	abstract public int max(int lvl);
 
 	public int damageRoll( Char owner ) {
-		return Char.combatRoll( min(), max() );
+		if (owner instanceof Hero){
+			return Hero.heroDamageIntRange(min(), max());
+		} else {
+			return Random.NormalIntRange(min(), max());
+		}
 	}
 	
 	public float accuracyFactor( Char owner, Char target ) {

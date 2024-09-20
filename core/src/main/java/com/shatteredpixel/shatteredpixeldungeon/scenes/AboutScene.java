@@ -88,7 +88,7 @@ public class AboutScene extends PixelScene {
 				Icons.SHPX.get(),
 				"Developed by: _Evan Debenham_\nBased on Pixel Dungeon's open source",
 				"ShatteredPixel.com",
-				shpxLink);
+				"https://ShatteredPixel.com");
 		if (landscape()){
 			shpx.setRect(boby.left(), boby.bottom() + 8, colWidth, 0);
 		} else {
@@ -98,7 +98,7 @@ public class AboutScene extends PixelScene {
 		addLine(shpx.top() - 4, content);
 
 		CreditsBlock alex = new CreditsBlock(false, Window.SHPX_COLOR,
-				"Hero Art & Design:",
+				"Splash Art & Design:",
 				Icons.ALEKS.get(),
 				"Aleksandar Komitov",
 				"akomitov.artstation.com",

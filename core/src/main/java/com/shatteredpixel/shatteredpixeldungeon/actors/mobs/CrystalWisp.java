@@ -75,7 +75,7 @@ public class CrystalWisp extends Mob{
 
 	@Override
 	public int damageRoll() {
-		return Char.combatRoll( 5, 10 );
+		return Random.NormalIntRange( 5, 10 );
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class CrystalWisp extends Mob{
 
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 5);
+		return super.drRoll() + Random.NormalIntRange(0, 5);
 	}
 
 	@Override
@@ -113,6 +113,12 @@ public class CrystalWisp extends Mob{
 		}
 	}
 
+	@Override
+	public void die(Object cause) {
+		flying = false;
+		super.die(cause);
+	}
+
 	//used so resistances can differentiate between melee and magical attacks
 	public static class LightBeam {}
 
@@ -123,7 +129,7 @@ public class CrystalWisp extends Mob{
 		Char enemy = this.enemy;
 		if (hit( this, enemy, true )) {
 
-			int dmg = Char.combatRoll( 5, 10 );
+			int dmg = Random.NormalIntRange( 5, 10 );
 			enemy.damage( dmg, new LightBeam() );
 
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {

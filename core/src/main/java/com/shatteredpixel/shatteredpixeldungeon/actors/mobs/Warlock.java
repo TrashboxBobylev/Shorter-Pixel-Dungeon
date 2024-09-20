@@ -63,7 +63,7 @@ public class Warlock extends Mob implements Callback {
 	
 	@Override
 	public int damageRoll() {
-		return Char.combatRoll( 8, 14 );
+		return Random.NormalIntRange( 8, 14 );
 	}
 	
 	@Override
@@ -73,7 +73,7 @@ public class Warlock extends Mob implements Callback {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 5);
+		return super.drRoll() + Random.NormalIntRange(0, 5);
 	}
 	
 	@Override
@@ -113,10 +113,10 @@ public class Warlock extends Mob implements Callback {
 			//TODO would be nice for this to work on ghost/statues too
 			if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
 				Buff.prolong( enemy, Degrade.class, Degrade.DURATION );
-				Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
+				Sample.INSTANCE.play( Assets.Sounds.DEGRADE );
 			}
 			
-			int dmg = Char.combatRoll( 6, 12 );
+			int dmg = Random.NormalIntRange( 6, 12 );
 			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 			enemy.damage( dmg, new DarkBolt() );
 			

@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 public class Rat extends Mob {
 
@@ -34,7 +35,7 @@ public class Rat extends Mob {
 		
 		HP = HT = 4;
 		defenseSkill = 2;
-		
+
 		maxLvl = 3;
 	}
 
@@ -49,7 +50,7 @@ public class Rat extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Char.combatRoll( 0, 4 );
+		return Random.NormalIntRange( 0, 4 );
 	}
 	
 	@Override
@@ -59,7 +60,7 @@ public class Rat extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 1);
+		return super.drRoll() + Random.NormalIntRange(0, 1);
 	}
 
 	private static final String RAT_ALLY = "rat_ally";

@@ -80,6 +80,12 @@ public class Bee extends Mob {
 		potHolder = bundle.getInt( POTHOLDER );
 		if (bundle.contains(ALIGMNENT)) alignment = bundle.getEnum( ALIGMNENT, Alignment.class);
 	}
+
+	@Override
+	public void die(Object cause) {
+		flying = false;
+		super.die(cause);
+	}
 	
 	public void spawn( int level ) {
 		this.level = level;
@@ -111,7 +117,7 @@ public class Bee extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Char.combatRoll( HT / 10, HT / 4 );
+		return Random.NormalIntRange( HT / 10, HT / 4 );
 	}
 	
 	@Override
@@ -187,12 +193,17 @@ public class Bee extends Mob {
 
 	@Override
 	protected boolean getCloser(int target) {
-		if (alignment == Alignment.ALLY && enemy == null && buffs(AllyBuff.class).isEmpty()){
+		if (alignment == Alignment.ALLY && enemy == null && buffs(AllyBuff.class).isEmpty()) {
 			target = Dungeon.hero.pos;
 		} else if (enemy != null && Actor.findById(potHolder) == enemy) {
 			target = enemy.pos;
-		} else if (potPos != -1 && (state == WANDERING || Dungeon.level.distance(target, potPos) > 3))
-			this.target = target = potPos;
+		} else if (potPos != -1 && (state == WANDERING || Dungeon.level.distance(target, potPos) > 3)) {
+			if (!Dungeon.level.insideMap(potPos)){
+				potPos = -1;
+			} else {
+				this.target = target = potPos;
+			}
+		}
 		return super.getCloser( target );
 	}
 	

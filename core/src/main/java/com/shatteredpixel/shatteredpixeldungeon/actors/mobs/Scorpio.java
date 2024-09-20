@@ -56,7 +56,7 @@ public class Scorpio extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Char.combatRoll( 12, 19 );
+		return Random.NormalIntRange( 12, 19 );
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public class Scorpio extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return super.drRoll() + Char.combatRoll(0, 10);
+		return super.drRoll() + Random.NormalIntRange(0, 10);
 	}
 	
 	@Override
