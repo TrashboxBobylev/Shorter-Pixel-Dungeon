@@ -185,9 +185,9 @@ public class TitleScene extends PixelScene {
 		float buttonAreaWidth = landscape() ? PixelScene.MIN_WIDTH_L-6 : PixelScene.MIN_WIDTH_P-2;
 		float btnAreaLeft = (Camera.main.width - buttonAreaWidth) / 2f;
 		if (landscape()) {
-			btnPlay.setRect(btnAreaLeft, topRegion+GAP, (buttonAreaWidth/2)-1, BTN_HEIGHT);
+			btnPlay.setRect(btnAreaLeft, topRegion+GAP, (buttonAreaWidth)-1, BTN_HEIGHT);
 			align(btnPlay);
-			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (float) (Math.floor(buttonAreaWidth/3f)-1), BTN_HEIGHT);
+			btnRankings.setRect(btnPlay.left(), btnPlay.bottom()+ GAP, (float) (Math.floor(buttonAreaWidth/2f)-1), BTN_HEIGHT);
 			btnBadges.setRect(btnRankings.right()+2, btnRankings.top(), btnRankings.width(), BTN_HEIGHT);
 			btnSettings.setRect(btnRankings.left(), btnRankings.bottom() + GAP, btnRankings.width()*.66f, BTN_HEIGHT);
 			btnChanges.setRect(btnSettings.right()+2, btnSettings.top(), btnRankings.width()*.66f, BTN_HEIGHT);
