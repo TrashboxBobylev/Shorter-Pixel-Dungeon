@@ -212,6 +212,10 @@ public class BrokenSeal extends Item {
 
 	public static class WarriorShield extends ShieldBuff {
 
+		{
+			detachesAtZero = false;
+		}
+
 		private Armor armor;
 		private float partialShield;
 		private final float RECHARGE_RATE = 30f;
@@ -256,21 +260,6 @@ public class BrokenSeal extends Item {
 			} else {
 				return 0;
 			}
-		}
-		
-		@Override
-		//logic edited slightly as buff should not detach
-		public int absorbDamage(int dmg) {
-			if (shielding() <= 0) return dmg;
-
-			if (shielding() >= dmg){
-				decShield(dmg);
-				dmg = 0;
-			} else {
-				dmg -= shielding();
-				decShield(shielding());
-			}
-			return dmg;
 		}
 	}
 }

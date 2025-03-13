@@ -78,7 +78,7 @@ public class MagicalInfusion extends InventorySpell {
 
 		Catalog.countUse(curItem.getClass());
 		if (Random.Float() < ((Spell) curItem).talentChance) {
-			Talent.onScrollUsed(curUser, curUser.pos, ((Spell) curItem).talentFactor);
+			Talent.onScrollUsed(curUser, curUser.pos, ((Spell) curItem).talentFactor, getClass());
 		}
 	}
 
@@ -103,7 +103,6 @@ public class MagicalInfusion extends InventorySpell {
 		Badges.validateItemLevelAquired(item);
 
 		Catalog.countUse(item.getClass());
-		Catalog.countUse(getClass());
 
 		Statistics.upgradesUsed++;
 

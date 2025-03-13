@@ -110,7 +110,7 @@ public class MasterThievesArmband extends Artifact {
 		}
 	}
 
-	private CellSelector.Listener targeter = new CellSelector.Listener(){
+	public CellSelector.Listener targeter = new CellSelector.Listener(){
 
 		@Override
 		public void onSelect(Integer target) {
@@ -180,6 +180,8 @@ public class MasterThievesArmband extends Artifact {
 							Buff.prolong(ch, Blindness.class, debuffDuration);
 							Buff.prolong(ch, Cripple.class, debuffDuration);
 
+							artifactProc(ch, visiblyUpgraded(), 1);
+
 							charge--;
 							exp += 3;
 							Talent.onArtifactUsed(Dungeon.hero);
@@ -207,6 +209,7 @@ public class MasterThievesArmband extends Artifact {
 
 	//counter of 0 for attempt but no success, 1 for success
 	public static class StolenTracker extends CounterBuff {
+		{ revivePersists = true; }
 		public void setItemStolen(boolean stolen){ if (stolen) countUp(1); }
 		public boolean itemWasStolen(){ return count() > 0; }
 	}
@@ -261,6 +264,7 @@ public class MasterThievesArmband extends Artifact {
 		public boolean act() {
 			if (cursed && Dungeon.gold > 0 && Random.Int(5) == 0){
 				Dungeon.gold--;
+				updateQuickslot();
 			}
 
 			spend(TICK);

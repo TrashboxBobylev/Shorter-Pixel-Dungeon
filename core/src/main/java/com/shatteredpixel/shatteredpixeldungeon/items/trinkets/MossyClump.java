@@ -38,8 +38,8 @@ public class MossyClump extends Trinket {
 
 	@Override
 	protected int upgradeEnergyCost() {
-		//6 -> 15(21) -> 20(41) -> 25(66)
-		return 15+5*level();
+		//6 -> 10(16) -> 15(31) -> 20(51)
+		return 10+5*level();
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class MossyClump extends Trinket {
 			Random.pushGenerator(Dungeon.seed+1);
 				clump.levelFeels.add(true);
 				clump.levelFeels.add(true);
-				clump.levelFeels.add(true);
+				clump.levelFeels.add(false);
 				clump.levelFeels.add(false);
 				clump.levelFeels.add(false);
 				clump.levelFeels.add(false);
