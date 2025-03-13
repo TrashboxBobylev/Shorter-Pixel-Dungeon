@@ -243,7 +243,7 @@ public class ChangesScene extends PixelScene {
 			}
 		};
 		if (changesSelected != 0) btn3_X.textColor( 0xBBBBBB );
-		btn3_X.setRect(list.left()-4f, list.bottom(), 19, changesSelected == 0 ? 19 : 15);
+		btn3_X.setRect(btnShorter_X.right()-4f, list.bottom(), 16, changesSelected == 0 ? 19 : 15);
 		addToBack(btn3_X);
 
 		StyledButton btn2_X = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "2.X", 8){
@@ -257,7 +257,7 @@ public class ChangesScene extends PixelScene {
 			}
 		};
 		if (changesSelected != 1) btn2_X.textColor( 0xBBBBBB );
-		btn2_X.setRect(btn3_X.right()-2, list.bottom(), 19, changesSelected == 1 ? 19 : 15);
+		btn2_X.setRect(btn3_X.right()-2, list.bottom(), 16, changesSelected == 1 ? 19 : 15);
 		addToBack(btn2_X);
 
 		StyledButton btn1_X = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "1.X", 8){
@@ -271,7 +271,7 @@ public class ChangesScene extends PixelScene {
 			}
 		};
 		if (changesSelected != 2) btn1_X.textColor( 0xBBBBBB );
-		btn1_X.setRect(btn2_X.right()-2, list.bottom(), 19, changesSelected == 2 ? 19 : 15);
+		btn1_X.setRect(btn2_X.right()-2, list.bottom(), 16, changesSelected == 2 ? 19 : 15);
 		addToBack(btn1_X);
 
 		StyledButton btn0_9 = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "0.9", 8){
@@ -285,7 +285,7 @@ public class ChangesScene extends PixelScene {
 			}
 		};
 		if (changesSelected != 3) btn0_9.textColor( 0xBBBBBB );
-		btn0_9.setRect(btn1_X.right()-2, list.bottom(), 19, changesSelected == 3 ? 19 : 15);
+		btn0_9.setRect(btn1_X.right()-2, list.bottom(), 16, changesSelected == 3 ? 19 : 15);
 		addToBack(btn0_9);
 
 		StyledButton btn0_8 = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "0.8", 8){
@@ -299,7 +299,7 @@ public class ChangesScene extends PixelScene {
 			}
 		};
 		if (changesSelected != 4) btn0_8.textColor( 0xBBBBBB );
-		btn0_8.setRect(btn0_9.right()-2, list.bottom(), 19, changesSelected == 4 ? 19 : 15);
+		btn0_8.setRect(btn0_9.right()-2, list.bottom(), 16, changesSelected == 4 ? 19 : 15);
 		addToBack(btn0_8);
 		
 		StyledButton btn0_7 = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "0.7", 8){
@@ -313,7 +313,7 @@ public class ChangesScene extends PixelScene {
 			}
 		};
 		if (changesSelected != 5) btn0_7.textColor( 0xBBBBBB );
-		btn0_7.setRect(btn0_8.right()-2, btn0_8.top(), 19, changesSelected == 5 ? 19 : 15);
+		btn0_7.setRect(btn0_8.right()-2, btn0_8.top(), 16, changesSelected == 5 ? 19 : 15);
 		addToBack(btn0_7);
 		
 		StyledButton btn0_6 = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "0.6", 8){
@@ -327,7 +327,7 @@ public class ChangesScene extends PixelScene {
 			}
 		};
 		if (changesSelected != 6) btn0_6.textColor( 0xBBBBBB );
-		btn0_6.setRect(btn0_7.right()-2, btn0_8.top(), 19, changesSelected == 6 ? 19 : 15);
+		btn0_6.setRect(btn0_7.right()-2, btn0_8.top(), 16, changesSelected == 6 ? 19 : 15);
 		addToBack(btn0_6);
 
 		StyledButton btnOld = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "0.5-", 8){
@@ -341,7 +341,7 @@ public class ChangesScene extends PixelScene {
 			}
 		};
 		if (changesSelected != 7) btnOld.textColor( 0xBBBBBB );
-		btnOld.setRect(btn0_6.right()-2, btn0_8.top(), 22, changesSelected == 7 ? 19 : 15);
+		btnOld.setRect(btn0_6.right()-2, btn0_8.top(), 19, changesSelected == 7 ? 19 : 15);
 		addToBack(btnOld);
 
 		Archs archs = new Archs();
