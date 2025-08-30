@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,6 @@ public class SPDSettings extends GameSettings {
 	
 	public static final String KEY_FULLSCREEN	= "fullscreen";
 	public static final String KEY_LANDSCAPE	= "landscape";
-	public static final String KEY_POWER_SAVER 	= "power_saver";
 	public static final String KEY_ZOOM			= "zoom";
 	public static final String KEY_BRIGHTNESS	= "brightness";
 	public static final String KEY_GRID 	    = "visual_grid";
@@ -65,31 +64,7 @@ public class SPDSettings extends GameSettings {
 	}
 	
 	public static boolean fullscreen() {
-		return getBoolean( KEY_FULLSCREEN, DeviceCompat.isDesktop() );
-	}
-	
-	public static void landscape( boolean value ){
-		put( KEY_LANDSCAPE, value );
-		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
-	}
-	
-	//can return null because we need to directly handle the case of landscape not being set
-	// as there are different defaults for different devices
-	public static Boolean landscape(){
-		if (contains(KEY_LANDSCAPE)){
-			return getBoolean(KEY_LANDSCAPE, false);
-		} else {
-			return null;
-		}
-	}
-	
-	public static void powerSaver( boolean value ){
-		put( KEY_POWER_SAVER, value );
-		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
-	}
-	
-	public static boolean powerSaver(){
-		return getBoolean( KEY_POWER_SAVER, false );
+		return getBoolean( KEY_FULLSCREEN, true );
 	}
 	
 	public static void zoom( int value ) {
@@ -212,7 +187,8 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean systemFont(){
 		return getBoolean(KEY_SYSTEMFONT,
-				(language() == Languages.KOREAN || language() == Languages.CHINESE || language() == Languages.JAPANESE));
+				(language() == Languages.CHI_SMPL || language() == Languages.CHI_TRAD
+						|| language() == Languages.KOREAN || language() == Languages.JAPANESE));
 	}
 
 	public static void vibration(boolean value){
@@ -461,8 +437,8 @@ public class SPDSettings extends GameSettings {
 	
 	public static Point windowResolution(){
 		return new Point(
-				getInt( KEY_WINDOW_WIDTH, 800, 720, Integer.MAX_VALUE ),
-				getInt( KEY_WINDOW_HEIGHT, 600, 400, Integer.MAX_VALUE )
+				1920,
+				1080
 		);
 	}
 	

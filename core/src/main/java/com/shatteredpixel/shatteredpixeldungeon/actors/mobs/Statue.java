@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,10 @@ public class Statue extends Mob {
 		
 		HP = HT = 4 + Dungeon.depth;
 		defenseSkill = 2 + Dungeon.depth;
+	}
+
+	public Weapon weapon(){
+		return weapon;
 	}
 	
 	private static final String WEAPON	= "weapon";
@@ -146,7 +150,9 @@ public class Statue extends Mob {
 	
 	@Override
 	public void beckon( int cell ) {
-		// Do nothing
+		if (state != PASSIVE){
+			super.beckon(cell);
+		}
 	}
 	
 	@Override

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,12 +42,13 @@ public class HeavyBoomerang extends MissileWeapon {
 		
 		tier = 4;
 		sticky = false;
+		baseUses = 5;
 	}
 	
 	@Override
 	public int max(int lvl) {
 		return (int) (3 * tier +                  //12 base, down from 16
-						(tier-1) * lvl*0.75f);               //scaling unchanged
+						(tier-1) * lvl*0.75f);             //3 scaling, down from 4
 	}
 
 	boolean circleBackhit = false;
@@ -55,7 +56,6 @@ public class HeavyBoomerang extends MissileWeapon {
 	@Override
 	protected float adjacentAccFactor(Char owner, Char target) {
 		if (circleBackhit){
-			circleBackhit = false;
 			return 1.5f;
 		}
 		return super.adjacentAccFactor(owner, target);
@@ -95,7 +95,7 @@ public class HeavyBoomerang extends MissileWeapon {
 			this.returnPos = returnPos;
 			this.returnDepth = returnDepth;
 			this.returnBranch = returnBranch;
-			left = 3;
+			left = 4;
 		}
 		
 		public int returnPos(){
@@ -125,6 +125,7 @@ public class HeavyBoomerang extends MissileWeapon {
 									new Callback() {
 										@Override
 										public void call() {
+											detach();
 											if (returnTarget == target){
 												if (!boomerang.spawnedForEffect) {
 													if (target instanceof Hero && boomerang.doPickUp((Hero) target)) {
@@ -140,6 +141,7 @@ public class HeavyBoomerang extends MissileWeapon {
 												if (((Hero)target).shoot( returnTarget, boomerang )) {
 													boomerang.decrementDurability();
 												}
+												boomerang.circleBackhit = false;
 												if (!boomerang.spawnedForEffect && boomerang.durability > 0) {
 													Dungeon.level.drop(boomerang, returnPos).sprite.drop();
 												}
@@ -153,7 +155,6 @@ public class HeavyBoomerang extends MissileWeapon {
 					visual.alpha(0f);
 					float duration = Dungeon.level.trueDistance(thrownPos, returnPos) / 20f;
 					target.sprite.parent.add(new AlphaTweener(visual, 1f, duration));
-					detach();
 					return false;
 				}
 			}

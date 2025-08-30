@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ThrowingClub extends MissileWeapon {
@@ -32,10 +33,19 @@ public class ThrowingClub extends MissileWeapon {
 		hitSoundPitch = 1.1f;
 		
 		tier = 2;
-		baseUses = 15;
+		baseUses = 12;
 		sticky = false;
 	}
-	
+
+	@Override
+	public boolean doPickUp(Hero hero, int pos) {
+		if (super.doPickUp(hero, pos)){
+			hero.spendAndNext( -hero.cooldown() );
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public int max(int lvl) {
 		return (int) (3 * tier +                  //6 base, down from 8

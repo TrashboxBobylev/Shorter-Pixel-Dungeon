@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,6 @@ public class PixelScene extends Scene {
 
 	public static int defaultZoom = 0;
 	public static int maxDefaultZoom = 0;
-	public static int maxScreenZoom = 0;
 	public static float minZoom;
 	public static float maxZoom;
 
@@ -121,7 +120,7 @@ public class PixelScene extends Scene {
 		}
 
 		maxDefaultZoom = (int)Math.min(Game.width/minWidth, Game.height/minHeight);
-		maxScreenZoom = (int)Math.min(Game.dispWidth/minWidth, Game.dispHeight/minHeight);
+		maxDefaultZoom = Math.max(2, maxDefaultZoom);
 		defaultZoom = SPDSettings.scale();
 
 		if (defaultZoom < Math.ceil( Game.density * 2 ) || defaultZoom > maxDefaultZoom){
@@ -157,9 +156,8 @@ public class PixelScene extends Scene {
 			renderedTextPageSize = 1024;
 		}
 		//asian languages have many more unique characters, so increase texture size to anticipate that
-		if (Messages.lang() == Languages.KOREAN ||
-				Messages.lang() == Languages.CHINESE ||
-				Messages.lang() == Languages.JAPANESE){
+		if (Messages.lang() == Languages.CHI_SMPL || Messages.lang() == Languages.CHI_TRAD ||
+				Messages.lang() == Languages.KOREAN || Messages.lang() == Languages.JAPANESE){
 			renderedTextPageSize *= 2;
 		}
 		Game.platform.setupFontGenerators(renderedTextPageSize, SPDSettings.systemFont());
@@ -324,8 +322,11 @@ public class PixelScene extends Scene {
 	}
 
 	public static RenderedTextBlock renderTextBlock(String text, int size ){
-		RenderedTextBlock result = new RenderedTextBlock( text, size*defaultZoom);
-		result.zoom(1/(float)defaultZoom);
+		//some systems (macOS mainly) require this back buffer check to ensure
+		// that we're working with real pixels, not logical ones
+		float scale = DeviceCompat.getRealPixelScaleX();
+		RenderedTextBlock result = new RenderedTextBlock( text, size*Math.round(defaultZoom*scale));
+		result.zoom(1/(float)Math.round(defaultZoom*scale));
 		return result;
 	}
 

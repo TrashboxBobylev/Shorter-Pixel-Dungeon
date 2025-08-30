@@ -2,12 +2,9 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://storage.googleapis.com/r8-releases/raw")
-        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.1'
+        classpath 'com.android.tools.build:gradle:8.11.1'
     }
 }
 
@@ -17,25 +14,28 @@ allprojects {
         appName = 'Shorter Pixel Dungeon'
         appPackageName = 'com.trashboxbobylev.shorterpd'
 
-        appVersionCode = 832
+        appVersionCode = 865
         appVersionName = 'Short-1.6.0'
 
-        appJavaCompatibility = JavaVersion.VERSION_1_8
+        appJavaCompatibility = JavaVersion.VERSION_11
 
-        appAndroidCompileSDK = 34
-        appAndroidMinSDK = 14
-        appAndroidTargetSDK = 34
+        appAndroidCompileSDK = 35   //Android 15
+        appAndroidMinSDK = 21       //Android 5.0
+        // TODO currently we've opted-out of edge-to-edge but it will be required for Android 16
+        //  Need to figure out how the game will handle drawing into notches (and unify with iOS)
+        //  See: https://developer.android.com/about/versions/15/behavior-changes-15#ux
+        appAndroidTargetSDK = 35    //Android 15
 
-        gdxVersion = '1.12.1'
-        gdxControllersVersion = '2.2.4-SNAPSHOT'
-        robovmVersion = '2.3.21'
+        gdxVersion = '1.13.6-SNAPSHOT' //using snapshot as 1.13.5 has issues with Android R8
+        gdxControllersVersion = '2.2.4'
+        robovmVersion = '2.3.23'
     }
     version = appVersionName
 
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
     }
 
 }

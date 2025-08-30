@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +23,12 @@ package com.shatteredpixel.shatteredpixeldungeon.ios;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.backends.iosrobovm.DefaultIOSInput;
 import com.badlogic.gdx.backends.iosrobovm.custom.HWMachine;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.watabou.input.ControllerHandler;
 import com.watabou.noosa.Game;
@@ -44,6 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IOSPlatformSupport extends PlatformSupport {
+
 	@Override
 	public void updateDisplaySize() {
 		//non-zero safe insets on left/top/right means device has a notch, show status bar
@@ -54,18 +55,12 @@ public class IOSPlatformSupport extends PlatformSupport {
 		} else {
 			UIApplication.getSharedApplication().setStatusBarHidden(true);
 		}
+	}
 
-		if (!SPDSettings.fullscreen()) {
-			int insetChange = Gdx.graphics.getSafeInsetBottom() - Game.bottomInset;
-			Game.bottomInset = Gdx.graphics.getSafeInsetBottom();
-			Game.height -= insetChange;
-			Game.dispHeight = Game.height;
-		} else {
-			Game.height += Game.bottomInset;
-			Game.dispHeight = Game.height;
-			Game.bottomInset = 0;
-		}
-		Gdx.gl.glViewport(0, Game.bottomInset, Game.width, Game.height);
+	@Override
+	public boolean supportsFullScreen() {
+		//fullscreen is always enabled on iOS
+		return false;
 	}
 
 	@Override
@@ -122,6 +117,12 @@ public class IOSPlatformSupport extends PlatformSupport {
 	@Override
 	public void setHonorSilentSwitch( boolean value ) {
 		OALSimpleAudio.sharedInstance().setHonorSilentSwitch(value);
+	}
+
+	public void setOnscreenKeyboardVisible(boolean value, boolean multiline){
+		//iOS keyboard says 'done' even with this change, but the behaviour is correct at least
+		((DefaultIOSInput)Gdx.input).setKeyboardCloseOnReturnKey(!multiline);
+		super.setOnscreenKeyboardVisible(value, multiline);
 	}
 
 	/* FONT SUPPORT */
