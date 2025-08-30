@@ -12,7 +12,15 @@ import java.util.ArrayList;
 
 public class vShort_Changes {
     public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ) {
-        ChangeInfo changes = new ChangeInfo("Short-1.6", true, "");
+        ChangeInfo changes = new ChangeInfo("Short-1.7", true, "");
+        changes.hardlight(0xCCCCCC);
+        changeInfos.add(changes);
+        changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
+                "_-_ Released August 31st, 2025"));
+        changes.addButton(new ChangeButton(Icons.get(Icons.SHPX), "ShatteredPD",
+                "_-_ Ported everything from Shattered 3.2.2."));
+
+        changes = new ChangeInfo("Short-1.6", true, "");
         changes.hardlight(0xCCCCCC);
         changeInfos.add(changes);
         changes.addButton( new ChangeButton(Icons.get(Icons.SHORTER_CHEST), "Developer Commentary",
